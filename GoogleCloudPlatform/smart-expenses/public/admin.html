@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Smart Expenses — Administration</title>
+  <script type="module">
+    document.documentElement.classList.remove('no-js');
+    document.documentElement.classList.add('js');
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuefire@2.2.5/dist/vuefire.min.js" integrity="sha256-vQM0eZquaU0G0GfHMapDIbHumVQBsf5ub5jQIst9iHw=" crossorigin="anonymous"></script>
+  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.0.0-beta.51/dist/themes/light.css">
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.0.0-beta.51/dist/shoelace.js"></script>
+
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+<span id="admin">
+<h1><sl-icon slot="prefix" name="file-earmark-plus-fill"></sl-icon> Expense reports</h1>
+
+<sl-breadcrumb>
+    <sl-breadcrumb-item href="/">
+        <sl-icon slot="prefix" name="house"></sl-icon>
+        Home
+    </sl-breadcrumb-item>
+    <sl-breadcrumb-item>
+        Manager approval
+    </sl-breadcrumb-item>
+</sl-breadcrumb>
+<br>
+
+<sl-tab-group>
+    <sl-tab slot="nav" panel="awaiting">
+        <sl-icon name="hourglass-split"></sl-icon> &nbsp;
+        Awaiting approval
+    </sl-tab>
+    <sl-tab slot="nav" panel="approved">
+        <sl-icon name="check2-circle"></sl-icon> &nbsp;
+        Approved
+    </sl-tab>
+    <sl-tab slot="nav" panel="rejected">
+        <sl-icon name="exclamation-octagon"></sl-icon> &nbsp;
+        Rejected
+    </sl-tab>
+    <sl-tab slot="nav" panel="error">
+        <sl-icon name="bug"></sl-icon> &nbsp;
+        Error
+    </sl-tab>
+  
+    <sl-tab-panel name="awaiting">
+        <template v-for="report in reportsAwaiting" :key="report.id">
+            <sl-card class="card-header">
+                <div slot="header">
+                    Report: <strong>{{ report.id }}</strong>
+                </div>
+                <div v-for="file in report.summary">
+                    <sl-details :summary="file.summary.supplier || 'Unknown vendor'">
+                        <ul>
+                            <li v-for="line in file.summary.lineItems">
+                                {{ line }}
+                            </li>
+                        </ul>
+                        <div v-if="file.summary.total">
+                            <strong>
+                                TOTAL: {{ file.summary.total }}
+                                <span v-if="file.summary.currency">{{ file.summary.currency }}</span>
+                            </strong>
+                        </div>
+                    </sl-details>
+                    <br>
+                </div>
+                <br>
+                <sl-button type="success" pill @click="approval(report.id, true)" :disabled="actionOnReport.includes(report.id)">
+                    <sl-icon slot="prefix" name="check2-circle"></sl-icon>
+                    Approve
+                </sl-button>
+                <sl-button type="danger" pill @click="approval(report.id, false)" :disabled="actionOnReport.includes(report.id)">
+                    <sl-icon slot="prefix" name="exclamation-octagon"></sl-icon>
+                    Reject
+                </sl-button>
+            </sl-card>
+        </template>
+    </sl-tab-panel>
+    <sl-tab-panel name="approved">
+        <template v-for="report in reportsApproved" v-bind:key="report.id">
+            <sl-card class="card-header">
+                <div slot="header">
+                    Report: <strong>{{ report.id }}</strong>
+                </div>
+                <div v-for="file in report.summary">
+                    <sl-details :summary="file.summary.supplier || 'Unknown vendor'">
+                        <ul>
+                            <li v-for="line in file.summary.lineItems">
+                                {{ line }}
+                            </li>
+                        </ul>
+                        <div v-if="file.summary.total">
+                            <strong>
+                                TOTAL: {{ file.summary.total }}
+                                <span v-if="file.summary.currency">{{ file.summary.currency }}</span>
+                            </strong>
+                        </div>
+                    </sl-details>
+                    <br>
+                </div>
+                <br>
+            </sl-card>
+        </template>
+    </sl-tab-panel>
+    <sl-tab-panel name="rejected">
+        <template v-for="report in reportsRejected" v-bind:key="report.id">
+            <sl-card class="card-header">
+                <div slot="header">
+                    Report: <strong>{{ report.id }}</strong>
+                </div>
+                <div v-for="file in report.summary">
+                    <sl-details :summary="file.summary.supplier || 'Unknown vendor'">
+                        <ul>
+                            <li v-for="line in file.summary.lineItems">
+                                {{ line }}
+                            </li>
+                        </ul>
+                        <div v-if="file.summary.total">
+                            <strong>
+                                TOTAL: {{ file.summary.total }}
+                                <span v-if="file.summary.currency">{{ file.summary.currency }}</span>
+                            </strong>
+                        </div>
+                    </sl-details>
+                    <br>
+                </div>
+                <br>
+            </sl-card>
+        </template>    
+    </sl-tab-panel>
+    <sl-tab-panel name="error">
+        <template v-for="report in reportsError" v-bind:key="report.id">
+            <sl-card class="card-header">
+                <div slot="header">
+                    Report: <strong>{{ report.id }}</strong>
+                </div>
+                <div v-for="file in report.summary">
+                    <sl-details :summary="file.summary.supplier || 'Unknown vendor'">
+                        <ul>
+                            <li v-for="line in file.summary.lineItems">
+                                {{ line }}
+                            </li>
+                        </ul>
+                        <div v-if="file.summary.total">
+                            <strong>
+                                TOTAL: {{ file.summary.total }}
+                                <span v-if="file.summary.currency">{{ file.summary.currency }}</span>
+                            </strong>
+                        </div>
+                    </sl-details>
+                    <br>
+                </div>
+                <br>
+            </sl-card>
+        </template>    
+    </sl-tab-panel>
+  </sl-tab-group>
+
+</span>
+
+<script src="https://www.gstatic.com/firebasejs/8.9.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.9.0/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.9.0/firebase-storage.js"></script>
+
+<script type="module" src="/js/common.js"></script>
+<script type="module" src="/js/admin.js"></script>
+</body>
+</html>

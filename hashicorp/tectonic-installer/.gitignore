@@ -1,0 +1,14 @@
+*.aci
+.terraform
+.terraformrc
+config.tfvars
+id_rsa*
+pull-secret.json
+ssh-key.pem
+tectonic-*.tar.gz
+tectonic-license.txt
+terraform.tfstate*
+terraform.tfvars
+build/
+bin/
+modules/update-payload/generated/

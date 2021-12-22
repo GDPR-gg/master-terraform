@@ -1,0 +1,13 @@
+.kitchen/
+credentials.json
+**/.terraform
+**/terraform.tfstate.d
+**/terraform.tfstate
+**/ssh/key
+*.pyc
+.idea
+.vscode
+
+
+# tf lock file
+.terraform.lock.hcl

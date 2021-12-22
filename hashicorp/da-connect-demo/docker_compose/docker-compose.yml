@@ -1,0 +1,45 @@
+version: '3'
+services:
+
+  consul_server:
+    image: nicholasjackson/consul_connect:latest
+    environment:
+      CONSUL_BIND_INTERFACE: eth0
+      CONSUL_UI_BETA: "true"
+    ports:
+      - "8501:8500"
+    networks:
+      connect_network: {}
+  
+  service1:
+    image: nicholasjackson/consul_connect_agent:latest
+    volumes:
+      - "./connect_service1a.json:/servicea.json"
+      - "./connect_service1b.json:/serviceb.json"
+    networks:
+      connect_network: {}
+    environment:
+      CONSUL_BIND_INTERFACE: eth0
+      CONSUL_CLIENT_INTERFACE: eth0
+    command:
+      - "-retry-join"
+      - "consul_server"
+  
+  service2:
+    image: nicholasjackson/consul_connect_agent:latest
+    volumes:
+      - "./connect_service1a.json:/servicea.json"
+      - "./connect_service1b.json:/serviceb.json"
+    networks:
+      connect_network: {}
+    environment:
+      CONSUL_BIND_INTERFACE: eth0
+      CONSUL_CLIENT_INTERFACE: eth0
+    command:
+      - "-retry-join"
+      - "consul_server"
+
+networks:
+  connect_network:
+    external: false
+    driver: bridge

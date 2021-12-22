@@ -1,0 +1,30 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+      http:
+exporters:
+  logging:
+    loglevel: debug
+  prometheus:
+    endpoint: 0.0.0.0:9990
+    namespace: reporting-api-demo
+    send_timestamps: true
+    metric_expiration: 30m
+processors:
+  memory_limiter:
+    check_interval: 1s
+    limit_mib: 4000
+    spike_limit_mib: 800
+  batch:
+service:
+  pipelines:
+    metrics:
+      receivers:
+      - otlp
+      processors:
+      - memory_limiter
+      - batch
+      exporters:
+      - logging
+      - prometheus

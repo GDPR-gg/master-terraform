@@ -1,0 +1,214 @@
+# Copyright 2020 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+timeout: 3600s
+tags:
+  - modern-cicd-anthos
+substitutions:
+  _BUILD_IMAGES: "true"
+  _PROJECT_ID: ${PROJECT_ID}
+options:
+    substitution_option: 'ALLOW_LOOSE'
+steps:
+# Create build-installation-image
+- name: "gcr.io/cloud-builders/gcloud"
+  id: "build-install-image"
+  entrypoint: bash
+  args:
+    - -c
+    - |
+      [[ "${_BUILD_IMAGES}" == "false" ]] && exit 0
+      gcloud builds submit --config=build-image/cloudbuild.yaml --substitutions _PROJECT_ID=${_PROJECT_ID}
+  waitFor: ["-"]
+
+- name: "gcr.io/cloud-builders/gcloud"
+  id: "enable-services"
+  entrypoint: bash
+  args:
+    - -c
+    - |
+      # Enable services that may not have been enabled on a clean project
+      gcloud services enable cloudbuild.googleapis.com --project=${_PROJECT_ID}
+      gcloud services enable container.googleapis.com --project=${_PROJECT_ID}
+      gcloud services enable anthos.googleapis.com --project=${_PROJECT_ID}
+      gcloud services enable serviceusage.googleapis.com --project=${_PROJECT_ID}
+      gcloud services enable containeranalysis.googleapis.com --project=${_PROJECT_ID}
+      gcloud services enable cloudkms.googleapis.com --project=${_PROJECT_ID}
+      gcloud services enable binaryauthorization.googleapis.com --project=${_PROJECT_ID}
+      gcloud services enable secretmanager.googleapis.com --project=${_PROJECT_ID}
+      gcloud services enable cloudresourcemanager.googleapis.com --project=${_PROJECT_ID}
+  waitFor: ["-"]
+
+## Destroy in reverse order
+#
+# 5 Output
+- name: "gcr.io/cloud-builders/gcloud"
+  id: "trigger-destroy-output"
+  dir: "5_output"
+  entrypoint: bash
+  args:
+    - -c
+    - |
+      gcloud builds submit --config=cloudbuild-destroy.yaml --substitutions _PROJECT_ID=${_PROJECT_ID}
+
+# 4 Apps
+- name: "gcr.io/cloud-builders/gcloud"
+  id: "trigger-destroy-demo-apps"
+  dir: "4_demo"
+  entrypoint: bash
+  args:
+    - -c
+    - |
+      gcloud builds submit --config=cloudbuild-destroy.yaml --substitutions _PROJECT_ID=${_PROJECT_ID}
+  waitFor: ["trigger-destroy-output"]
+
+# 3 ACM
+- name: "gcr.io/cloud-builders/gcloud"
+  id: "trigger-destroy-acm"
+  dir: "3_acm"
+  entrypoint: bash
+  args:
+    - -c
+    - |
+      gcloud builds submit --config=cloudbuild-destroy.yaml --substitutions _PROJECT_ID=${_PROJECT_ID}
+  waitFor: ["trigger-destroy-demo-apps"]
+
+# 2 CICD
+- name: "gcr.io/cloud-builders/gcloud"
+  id: "trigger-destroy-gitlab"
+  dir: "2_gitlab"
+  entrypoint: bash
+  args:
+    - -c
+    - |
+      gcloud builds submit --config=cloudbuild-destroy.yaml --substitutions _PROJECT_ID=${_PROJECT_ID}
+  waitFor: ["trigger-destroy-acm"]
+
+# 1 Clusters
+- name: "gcr.io/cloud-builders/gcloud"
+  id: "trigger-destroy-clusters"
+  dir: "1_clusters"
+  entrypoint: bash
+  args:
+    - -c
+    - |
+      gcloud builds submit --config=cloudbuild-destroy.yaml --substitutions _PROJECT_ID=${_PROJECT_ID}
+  waitFor: ["trigger-destroy-gitlab"]
+
+# 0 Foundation (last)
+- name: "gcr.io/cloud-builders/gcloud"
+  id: "trigger-destroy-foundation"
+  dir: "0_foundation"
+  entrypoint: bash
+  args:
+    - -c
+    - |
+      # Allow the foundation destroy to fail
+      gcloud builds submit --config=cloudbuild-destroy.yaml --substitutions _PROJECT_ID=${_PROJECT_ID} || true
+  waitFor: ["trigger-destroy-clusters"]
+
+
+# - name: 'gcr.io/${PROJECT_ID}/anthos-platform-installer'
+#   id: 'destroy-all'
+#   entrypoint: 'bash'
+#   args:
+#   - '-xe'
+#   - '-c'
+#   - |
+#     for ar in $(gcloud beta artifacts repositories list --format json | jq '.AR[].name'); do
+#       gcloud config set artifacts/location us-central1
+#       gcloud beta artifacts repositories delete ${ar//\"} --quiet
+#     done
+
+#     for db in $(gcloud sql instances list --format json | jq -r '.[].name'); do
+#       gcloud sql instances delete ${db} --async --quiet
+#     done
+
+#     if [ $(gcloud redis instances list --region us-central1 | wc -l) -ne 0 ]; then
+#       gcloud redis instances delete gitlab --region us-central1 --async --quiet
+#     fi
+
+#     for cluster in $(gcloud container clusters list --format json | jq -c '.[]|{name: .name,zone: .zone}'); do
+#       cluster_name=$(jq -r '.name' <<< $cluster)
+#       cluster_zone=$(jq -r '.zone' <<< $cluster)
+#       gcloud container clusters delete ${cluster_name} --region ${cluster_zone} --async --quiet
+#     done
+
+#     while [ $(gcloud sql instances list | wc -l) -ne 0 ]; do sleep 5s; done
+#     while [ $(gcloud redis instances list --region us-central1 | wc -l) -ne 0 ]; do sleep 5s; done
+#     while [ $(gcloud container clusters list | wc -l) -ne 0 ]; do sleep 5s; done
+
+#     for sa in $(gcloud iam service-accounts list --format json | jq -r '.[].email'); do
+#       [[ $sa = hipster* ]] && gcloud iam service-accounts delete ${sa} --quiet
+#       [[ $sa = petabank* ]] && gcloud iam service-accounts delete ${sa} --quiet
+#       [[ $sa = tf* ]] && gcloud iam service-accounts delete ${sa} --quiet
+#       [[ $sa = gitlab* ]] && gcloud iam service-accounts delete ${sa} --quiet
+#     done
+
+#     for peering in $(gcloud compute networks peerings list --format json | jq -r '.[].peerings[].name'); do
+#       gcloud compute networks peerings delete ${peering} --network gitlab
+#     done
+
+#     if [ $(gcloud compute addresses list | grep -c gitlab-sql) -ne 0 ]; then
+#       gcloud compute addresses delete gitlab-sql --global --quiet
+#     fi
+#     if [ $(gcloud compute networks subnets list | grep -c gitlab) -ne 0 ]; then
+#       gcloud compute networks subnets delete gitlab --region us-central1 --quiet
+#     fi
+
+#     if [ $(gcloud compute networks subnets list | grep -c anthos-platform-central) -ne 0 ]; then
+#       gcloud compute networks subnets delete anthos-platform-central --region us-central1 --quiet
+#     fi
+#     if [ $(gcloud compute networks subnets list | grep -c anthos-platform-east) -ne 0 ]; then
+#       gcloud compute networks subnets delete anthos-platform-east --region us-east1 --quiet
+#     fi
+
+#     for fw in $(gcloud compute firewall-rules list --format json | jq -r '.[].name'); do
+#       gcloud compute firewall-rules delete ${fw} --quiet
+#     done
+
+#     if [ $(gcloud compute networks list | grep -c gitlab) -ne 0 ]; then
+#       gcloud compute networks delete gitlab --quiet
+#     fi
+#     if [ $(gcloud compute networks list | grep -c anthos-platform) -ne 0 ]; then
+#       gcloud compute networks delete anthos-platform --quiet
+#     fi
+
+#     if [ $(gcloud services list --filter="name~binaryauthorization.googleapis.com" --format="value(name)" | wc -w) -gt 0 ]; then
+#       attestors=$(gcloud container binauthz attestors list --format="value('name')")
+
+#       if [ $(echo $attestors | wc -w) -gt 0 ]; then
+#           # Remove Attestors
+#           for attestor in $attestors; do
+#               gcloud container binauthz attestors delete $attestor
+#           done
+
+#           # Remove notes (because gcloud does not remove them)
+#           access=$(gcloud auth print-access-token)
+#           notes=$(curl -H "Authorization: Bearer ${access}" "https://containeranalysis.googleapis.com/v1/projects/${PROJECT_ID}/notes/")
+#           if [ "$notes" != "{}" ]; then
+#               for NOTE_ID in $(echo $notes | jq -r '.notes[].name' ); do
+#                   curl -vvv -X DELETE \
+#                       -H "Authorization: Bearer ${access}" \
+#                       "https://containeranalysis.googleapis.com/v1/projects/${PROJECT_ID}/notes/${NOTE_ID##*/}"
+#               done
+#           fi
+#       fi
+#     fi # check for binary authorization
+
+#     for bucket in $(gsutil ls); do
+#       [[ $bucket = gs://${PROJECT_ID}* ]] && gsutil rm -rf ${bucket}
+#     done
+#     gsutil rm -rf gs://artifacts.${PROJECT_ID}.appspot.com/ || true
+

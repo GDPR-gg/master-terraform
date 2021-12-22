@@ -1,0 +1,68 @@
+language: ruby
+rvm:
+  - 2.3.1
+
+script:
+
+  - echo "Install gem dependencies"
+  - bundle install
+
+  - echo "Install and setup google-cloud-gemserver"
+  - rake install
+  - google-cloud-gemserver gen_config
+
+  - echo "Workaround to run tests with GOOGLE_APPLICATION_CREDENTIALS set before it has been decrypted"
+  - export TMP_CREDS=$GOOGLE_APPLICATION_CREDENTIALS
+  - unset GOOGLE_APPLICATION_CREDENTIALS
+
+  - echo "Run unit tests"
+  - bundle exec rake test
+
+  - echo "reset GOOGLE_APPLICATION_CREDENTIALS"
+  - export GOOGLE_APPLICATION_CREDENTIALS=$TMP_CREDS
+
+  # You need to be a project member to run acceptance and integration tests
+  - if [ -z ${PROJECT_MEMBER+x} ]; then
+      echo "User is not a project member. Skipping acceptance and integration tests.";
+    else
+      echo "Decrypt secrets";
+      echo -n "$GEMSERVER_ENCRYPTION_KEY" | openssl enc -d -aes-256-cbc -salt -in secrets/app.yaml.enc -out secrets/app.yaml -pass stdin;
+      echo -n "$GEMSERVER_ENCRYPTION_KEY" | openssl enc -d -aes-256-cbc -salt -in secrets/service-account-key.json.enc -out secrets/service-account-key.json -pass stdin;
+      cp secrets/app.yaml ~/.google_cloud_gemserver/app.yaml;
+
+      echo "Install gcloud SDK";
+      export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)";
+      echo "deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list;
+      curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -;
+      sudo apt-get update && sudo apt-get install google-cloud-sdk;
+
+      echo "Authenticate with gcloud";
+      gcloud auth activate-service-account --key-file secrets/service-account-key.json;
+
+      echo "Install and setup Cloud SQL proxy";
+      wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64;
+      mv cloud_sql_proxy.linux.amd64 cloud_sql_proxy;
+      chmod +x cloud_sql_proxy;
+      sudo mkdir /cloudsql;
+      sudo chmod 777 /cloudsql;
+
+      echo "Start cloud_sql_proxy";
+      ./cloud_sql_proxy -instances=$CLOUD_SQL_ICN -dir=/cloudsql &
+
+      echo "Setup gemserver keys";
+      touch ~/.gem/credentials;
+      chmod 0600 ~/.gem/credentials;
+      echo "Writing [colon]GEMSERVER_KEY_NAME[colon] $GEMSERVER_KEY to ~/.gem/credentials in a convoluted way because Travis parses strings with [colon] as mappings";
+      echo :$GEMSERVER_KEY_NAME >> ~/.gem/credentials;
+      sed -i '$s/$/:/' ~/.gem/credentials;
+      sed -i '$s/$/ '"$GEMSERVER_KEY"'/' ~/.gem/credentials;
+      bundle config $GEMSERVER_PRIVATE_URL $GEMSERVER_KEY;
+
+      echo "Run acceptance tests";
+      gcloud config set project $PROJECT_NAME;
+      host=$GEMSERVER_URL key=$GEMSERVER_KEY_NAME bundle exec rake acceptance;
+
+      echo "Run integration tests";
+      gcloud config set project $PROJECT_NAME;
+      host=$GEMSERVER_URL key=$GEMSERVER_KEY_NAME bundle exec rake integration;
+    fi

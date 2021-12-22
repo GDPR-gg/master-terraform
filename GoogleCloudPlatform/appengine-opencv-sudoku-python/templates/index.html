@@ -1,0 +1,218 @@
+{% extends "templates/base.html" %}
+{% block content %}
+
+      <!-- Static navbar -->
+      <div class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Sudoku Solver</a>
+          </div>
+          <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+              <li class="active"><a href="#">Capture and Solve</a></li>
+              <li><a href="/upload">Upload and Solve</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div><!--/.container-fluid -->
+      </div>
+
+  <div class="content">
+    <h2>OpenCV Example</h2>
+      <div class='select'>
+        <label for='videoSource'>Video source:&nbsp;</label><select id='videoSource'></select>
+      </div>
+
+    <div class="abox">
+      <p>Take a screenshot of a Sudoku puzzle:</p>
+      <form role="form" id="form1" action="/stage" enctype="multipart/form-data" method="post">
+        <input type="hidden" name="sudoku" id="sudoku">
+        <input type="hidden" name="is_video" id="is_video" value="yes">
+        <button type="button" class="btn btn-primary" id="screenshot-button">Take!</button>
+        <input type="submit" class="btn btn-primary" value="Solve" id="solve">
+        <button type="button" disabled class="btn btn-primary" name="showvid-button"
+          id="showvid-button">Again!</button>
+      </form> <br/>
+      <div class="row">
+        <div class="col-md-5">
+          <video id="screenshot-stream" style="width:95%;" autoplay></video>
+          <img style="display:none;width:95%;" id="puzzleres" src="" alt="solved Sudoku image" />
+        </div>
+        <div class="col-md-5">
+          <img id="screenshot" style="width:95%;" src="">
+          <canvas id="screenshot-canvas" style="width:95%;display:none;"></canvas>
+        </div>
+        </div>
+        <div class="row">
+        <div class="col-md-5">
+          <img style="display:none;width:95%;" id="puzzleres" src="" alt="solved Sudoku image" />
+        </div>
+      </div>
+    </div>
+
+</div> <!-- end content -->
+
+<script>
+
+  $("#showvid-button").click(function(){
+    $('#puzzleres').hide();
+    $('#screenshot-stream').show();
+    $(this).prop("disabled",true);
+  });
+
+ $("#form1").submit(function(){
+    $('#screenshot-stream').hide();
+
+    var formData = new FormData($(this)[0]);
+    $.ajax({
+    url:$(this).attr("action"),
+    type: 'POST',
+    data: formData,
+    async: false,
+    success: function (data) {
+      console.log(data);
+      var solved_url = data.solved_url;
+      if (solved_url) {
+      // check for results to show up
+      setTimeout(function show_results() {
+        console.log("in setTimeout, checking " + solved_url);
+        var img = new Image();
+        img.onload = function() {
+          $('#puzzleres').attr('src', solved_url);
+          $('#puzzleres').show();
+          $("#showvid-button").prop("disabled",false);
+        };
+        img.onerror = function() {
+          setTimeout(show_results, 200);
+        }
+        img.src = solved_url;
+        }, 200);
+       }
+    },
+    cache: false,
+    contentType: false,
+    processData: false
+    });
+    return false;
+});
+
+function errorCallback(e) {
+  console.log(e);
+  if (e.code == 1) {
+    alert('User denied access to their camera');
+  } else {
+    alert('getUserMedia() not supported in your browser.');
+  }
+}
+
+var sudoku = document.querySelector('#sudoku');
+var videoElement = document.querySelector('#screenshot-stream');
+var button = document.querySelector('#screenshot-start-stop');
+var screenshot_button = document.querySelector('#screenshot-button');
+var canvas = document.querySelector('#screenshot-canvas');
+var img = document.querySelector('#screenshot');
+var ctx = canvas.getContext('2d');
+var localMediaStream = null;
+
+var videoSelect = document.querySelector("select#videoSource");
+
+function sizeCanvas() {
+  // video.onloadedmetadata not firing in Chrome so we have to hack.
+  // See crbug.com/110938.
+  setTimeout(function() {
+    canvas.width = videoElement.videoWidth;
+    canvas.height = videoElement.videoHeight;
+    img.height = videoElement.offsetHeight;
+    img.width = videoElement.offsetWidth;
+  }, 100);
+}
+
+
+function snapshot() {
+  console.log("in snapshot");
+  var canvas = document.createElement('canvas');
+  var ctx = canvas.getContext('2d');
+  // make canvas size equal to the video source
+  canvas.width = videoElement.videoWidth;
+  canvas.height = videoElement.videoHeight;
+  // for some reason img height is smaller than the video
+  // but I think it's unrelated problem. this adjustment is
+  // only for a visual aspect as the canvas data URL won't change.
+  img.height = videoElement.offsetHeight;
+  img.width = videoElement.offsetWidth;
+  ctx.drawImage(videoElement, 0, 0);
+  img.src = sudoku.value = canvas.toDataURL('image/png');
+}
+
+screenshot_button.addEventListener('click', function(e) {
+  if (localMediaStream) {
+    $('#puzzleres').hide();
+    snapshot();
+
+    return;
+  }
+}, false);
+
+navigator.getUserMedia = navigator.getUserMedia ||
+  navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+
+function gotSources(sourceInfos) {
+  for (var i = 0; i != sourceInfos.length; ++i) {
+    var sourceInfo = sourceInfos[i];
+    var option = document.createElement("option");
+    option.value = sourceInfo.id;
+    if (sourceInfo.kind === 'audio') {
+    }
+    else if (sourceInfo.kind === 'video') {
+      option.text = sourceInfo.label || 'camera ' + (videoSelect.length + 1);
+      videoSelect.appendChild(option);
+    } else {
+      console.log('Some other kind of source: ', sourceInfo);
+    }
+  }
+}
+
+if (typeof MediaStreamTrack === 'undefined'){
+  alert('This browser does not support MediaStreamTrack.');
+} else {
+  MediaStreamTrack.getSources(gotSources);
+}
+
+
+function successCallback(stream) {
+  window.stream = stream; // make stream available to console
+  videoElement.src = window.URL.createObjectURL(stream);
+  localMediaStream = stream;
+  sizeCanvas();
+  videoElement.play();
+}
+
+function errorCallback(error){
+  console.log("navigator.getUserMedia error: ", error);
+}
+
+function start(){
+  if (!!window.stream) {
+    videoElement.src = null;
+    window.stream.stop();
+  }
+  var videoSource = videoSelect.value;
+  var constraints = {
+    video: {
+      optional: [{sourceId: videoSource}]
+    }
+  };
+  navigator.getUserMedia(constraints, successCallback, errorCallback);
+}
+
+videoSelect.onchange = start;
+
+start();
+
+</script>
+{% endblock %}

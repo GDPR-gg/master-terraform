@@ -1,0 +1,314 @@
+# Copyright 2018 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+tide:
+  merge_method:
+    GoogleCloudPlatform/guest-agent: squash
+    GoogleCloudPlatform/guest-configs: squash
+    GoogleCloudPlatform/guest-diskexpand: squash
+    GoogleCloudPlatform/guest-logging-go: squash
+    GoogleCloudPlatform/guest-oslogin: squash
+    GoogleCloudPlatform/guest-test-infra: squash
+    GoogleCloudPlatform/osconfig: squash
+    GoogleCloudPlatform/artifact-registry-apt-transport: squash
+    GoogleCloudPlatform/artifact-registry-yum-plugin: squash
+    GoogleCloudPlatform/blueprints: squash
+    kubeflow: squash
+  merge_commit_template:
+    kubeflow:
+      title: "{{ .Title }} (#{{ .Number }})"
+  target_urls:
+    "*": https://oss-prow.knative.dev/tide
+    "looker/helltool": https://oss-prow-private.knative.dev/tide
+    "GoogleCloudPlatform/blueprints": https://prow.infra.cft.dev/tide
+  queries:
+  - repos:
+    - GoogleCloudPlatform/guest-agent
+    - GoogleCloudPlatform/guest-configs
+    - GoogleCloudPlatform/guest-diskexpand
+    - GoogleCloudPlatform/guest-logging-go
+    - GoogleCloudPlatform/guest-oslogin
+    - GoogleCloudPlatform/guest-test-infra
+    - GoogleCloudPlatform/osconfig
+    - GoogleCloudPlatform/artifact-registry-apt-transport
+    - GoogleCloudPlatform/artifact-registry-yum-plugin
+    - GoogleCloudPlatform/oss-test-infra
+    - GoogleCloudPlatform/testgrid
+    - GoogleCloudPlatform/k8s-cloud-provider
+    labels:
+    - lgtm
+    - approved
+    missingLabels:
+    - do-not-merge
+    - do-not-merge/hold
+    - do-not-merge/invalid-owners-file
+    - do-not-merge/work-in-progress
+  - orgs:
+    - kubeflow
+    labels:
+    - lgtm
+    - approved
+    missingLabels:
+    - do-not-merge
+    - do-not-merge/hold
+    - do-not-merge/invalid-owners-file
+    - do-not-merge/work-in-progress
+    - needs-rebase
+  - author: google-oss-robot
+    labels: # google-oss-robot should only create autobump PR with this label
+    - skip-review
+    missingLabels:
+    - do-not-merge
+    - do-not-merge/hold
+    - do-not-merge/invalid-owners-file
+    - do-not-merge/work-in-progress
+    repos:
+    - GoogleCloudPlatform/oss-test-infra
+
+plank:
+  job_url_prefix_config:
+    '*': https://oss-prow.knative.dev/view/
+    'looker': https://oss-prow-private.knative.dev/view/
+    "GoogleCloudPlatform/blueprints": https://prow.infra.cft.dev/view/
+  pod_pending_timeout: 30m
+  pod_unscheduled_timeout: 10m
+  build_cluster_status_file: 'gs://oss-prow/oss-prow-build-clusters-statuses.json'
+  report_templates:
+    "looker/helltool": "View Performance Test Results Here:\n  [Frontend Tests](https://meta.looker.com/dashboards/8195?My%20Commit={{with index .Spec.Refs.Pulls 0}}{{.SHA}}{{end}})\n  [Backend Tests](https://meta.looker.com/dashboards/8194?My%20Commit={{with index .Spec.Refs.Pulls 0}}{{.SHA}}{{end}})"
+  default_decoration_config_entries:
+  - config:
+      timeout: 7200000000000 # 2h
+      grace_period: 15000000000 # 15s
+      utility_images:
+        clonerefs: "gcr.io/k8s-prow/clonerefs:v20211118-04a9593fd9"
+        initupload: "gcr.io/k8s-prow/initupload:v20211118-04a9593fd9"
+        entrypoint: "gcr.io/k8s-prow/entrypoint:v20211118-04a9593fd9"
+        sidecar: "gcr.io/k8s-prow/sidecar:v20211118-04a9593fd9"
+      gcs_configuration:
+        bucket: "oss-prow"
+        path_strategy: "explicit"
+      gcs_credentials_secret: "service-account" # TODO(fejta): remove https://github.com/GoogleCloudPlatform/oss-test-infra/issues/202
+  - cluster: default
+    config:
+      gcs_credentials_secret: "" # Use workload identity
+      default_service_account_name: "prowjob-default-sa" # SA in build cluster
+  - cluster: test-infra-trusted
+    config:
+      gcs_credentials_secret: "" # Use workload identity
+      default_service_account_name: "prowjob-default-sa" # SA in build cluster
+  - cluster: build-looker-private
+    config:
+      gcs_configuration:
+        bucket: "looker-private"
+      gcs_credentials_secret: "" # Use workload identity
+      default_service_account_name: "prowjob-default-sa" # SA in build cluster
+      ssh_key_secrets:
+      - looker-ssh-deploy-key
+  - cluster: build-looker-int-test
+    config:
+      gcs_configuration:
+        bucket: "looker-private"
+      gcs_credentials_secret: "" # Use workload identity
+      default_service_account_name: "prowjob-default-sa" # SA in build cluster
+      ssh_key_secrets:
+      - looker-ssh-deploy-key
+  - cluster: build-looker-16
+    config:
+      gcs_configuration:
+        bucket: "looker-private"
+      gcs_credentials_secret: "" # Use workload identity
+      default_service_account_name: "prowjob-default-sa" # SA in build cluster
+      ssh_key_secrets:
+      - looker-ssh-deploy-key
+  - cluster: build-looker-32
+    config:
+      gcs_configuration:
+        bucket: "looker-private"
+      gcs_credentials_secret: "" # Use workload identity
+      default_service_account_name: "prowjob-default-sa" # SA in build cluster
+      ssh_key_secrets:
+      - looker-ssh-deploy-key
+  - cluster: build-elcarro
+    config:
+      gcs_configuration:
+        bucket: "oss-prow-elcarro"
+      default_service_account_name: "prowjob-default-sa" # Use workload identity
+      gcs_credentials_secret: ""                         # rather than service account key secret
+  - cluster: build-blueprints
+    config:
+      gcs_configuration:
+        bucket: "blueprints-prow"
+      default_service_account_name: "prowjob-default-sa" # Use workload identity
+      gcs_credentials_secret: ""                         # rather than service account key secret
+  - cluster: gcp-guest
+    config:
+      gcs_configuration:
+        bucket: "oss-prow"
+      default_service_account_name: "prowjob-default-sa" # Use workload identity
+      gcs_credentials_secret: ""                         # rather than service account key secret
+  - cluster: build-bms-oracle-team
+    config:
+      gcs_configuration:
+        bucket: "bmaas-testing-prow-bucket"
+      default_service_account_name: "prowjob-default-sa" # Use workload identity
+      gcs_credentials_secret: ""                         # rather than service account key secret
+
+
+sinker:
+  resync_period: 1m
+  max_prowjob_age: 48h
+  max_pod_age: 48h
+  terminated_pod_ttl: 30m
+
+prowjob_namespace: default
+pod_namespace: test-pods
+log_level: debug
+
+prowjob_default_entries:
+  - cluster: "build-looker-16"
+    repo: "*"
+    config:
+      tenant_id: 'looker'
+  - cluster: "build-looker-32"
+    repo: "*"
+    config:
+      tenant_id: 'looker'
+  - cluster: "build-looker-int-test"
+    repo: "*"
+    config:
+      tenant_id: 'looker'
+  - cluster: "build-looker-private"
+    repo: "*"
+    config:
+      tenant_id: 'looker'
+  - cluster: '*'
+    repo: 'looker'
+    config:
+      tenant_id: 'looker'
+  - cluster: '*'
+    repo: 'GoogleCloudPlatform/blueprints'
+    config:
+      tenant_id: 'blueprints'
+  - cluster: 'build-blueprints'
+    repo: '*'
+    config:
+      tenant_id: 'blueprints'
+
+branch-protection:
+  orgs:
+    kubeflow:
+      protect: true
+      required_status_checks:
+        contexts:
+        - cla/google
+      exclude:
+      - "^revert-" # don't protect revert branches
+      - "^dependabot/" # don't protect branches created by dependabot
+      - "-patch-" # don't protect branches created by editing on GitHub UI
+
+deck:
+  google_analytics: G-NQ9CERRMYD
+  spyglass:
+    announcement: "Googlers: Please join <a href='https://groups.google.com/a/google.com/g/prow-announce'>the prow-announce@google.com group</a> to receive important Prow related updates. Consider adding your team as a subgroup!"
+    size_limit: 500000000 # 500MB
+    gcs_browser_prefix: https://pantheon.corp.google.com/storage/browser/ # TODO(fejta): something publicly accessible
+    testgrid_config: gs://k8s-testgrid/config
+    testgrid_root: https://testgrid.k8s.io/
+    lenses:
+      - lens:
+          name: metadata
+        required_files:
+          - started.json|finished.json
+        optional_files:
+          - podinfo.json
+      - lens:
+          name: buildlog
+        required_files:
+          - build-log.txt
+      - lens:
+          name: junit
+        required_files:
+          - artifacts/junit.*\.xml
+      - lens:
+          name: podinfo
+        required_files:
+          - podinfo.json
+      - lens:
+          name: html
+        required_files:
+          - ^artifacts/.*\.html$
+  rerun_auth_configs:
+    '*':
+      github_orgs:
+      - GoogleCloudPlatform
+  additional_allowed_buckets:
+    - compute-image-tools-test
+    - gcp-guest-testgrid
+  hidden_repos:
+  - looker
+
+in_repo_config:
+  enabled:
+    chaotoppicks: true
+    GoogleCloudPlatform/blueprints: true
+    GoogleCloudPlatform/oss-test-infra: true
+    looker/helltool: true
+
+  allowed_clusters:
+    "*": []
+    "chaotoppicks": ["default"] # For experimenting purpose, will remove once done with experiments
+    "GoogleCloudPlatform/blueprints": ["build-blueprints"]
+    "GoogleCloudPlatform/oss-test-infra": ["default"]
+    "looker/helltool": ["build-looker-private", "build-looker-int-test", "build-looker-16", "build-looker-32"]
+
+# settings for github reporter from crier
+github_reporter:
+  # summary_comment_repos is a list of orgs and org/repos for which failure report
+  # comments is only sent when all jobs from current PR are finished.
+  summary_comment_repos:
+  - looker/helltool
+
+presets:
+# docker-in-docker preset
+#
+# NOTE: This requires using an entrypoint or base image with the runner.sh
+# script. An example can be found at:
+#
+#   https://github.com/kubernetes/test-infra/blob/master/images/bootstrap/runner.sh
+#
+# You must ALSO set the following on your PodSpec:
+#
+#   securityContext:
+#     privileged: true
+- labels:
+    preset-dind-enabled: "true"
+  env:
+  - name: DOCKER_IN_DOCKER_ENABLED
+    value: "true"
+  volumes:
+  - name: docker-graph
+    emptyDir: {}
+  volumeMounts:
+  - name: docker-graph
+    mountPath: /docker-graph
+
+pubsub_triggers:
+  - allowed_clusters:
+      - "build-looker-private"
+      - "build-looker-int-test"
+      - "build-looker-16"
+      - "build-looker-32"
+    project: 'prow-build-looker-github'
+    topics:
+      - "prow-test"

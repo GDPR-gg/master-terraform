@@ -1,0 +1,370 @@
+# Copyright 2018 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+triggers:
+- repos:
+  - kubeflow
+  join_org_url: "https://www.kubeflow.org/docs/about/contributing/"
+
+config_updater:
+  maps:
+    prow/oss/config.yaml:
+      name: config
+    prow/oss/plugins.yaml:
+      name: plugins
+    prow/prowjobs/**/*.yaml:
+      name: job-config
+    prow/knative/config.yaml: # For knative prow
+      name: config
+      clusters:
+        knative-prow-trusted:
+        - default
+    prow/knative/plugins.yaml: # For knative prow
+      name: plugins
+      clusters:
+        knative-prow-trusted:
+        - default
+
+approve:
+- repos:
+  - GoogleCloudPlatform
+  - google
+  - googleforgames
+  - grpc-ecosystem
+  - chaotoppicks
+  require_self_approval: false
+- repos:
+  - kubeflow/caffe2-operator
+  - kubeflow/chainer-operator
+  - kubeflow/common
+  - kubeflow/fate-operator
+  - kubeflow/kubeflow
+  - kubeflow/mpi-operator
+  - kubeflow/mxnet-operator
+  - kubeflow/pipelines
+  - kubeflow/pytorch-operator
+  - kubeflow/tf-operator
+  - kubeflow/xgboost-operator
+  require_self_approval: true
+
+blunderbuss:
+  use_status_availability: true
+
+lgtm:
+- repos:
+  - GoogleCloudPlatform
+  - chaotoppicks
+  - google
+  - googleforgames
+  - grpc-ecosystem
+  review_acts_as_lgtm: true
+- repos:
+  - GoogleCloudPlatform/testgrid
+  review_acts_as_lgtm: true
+  trusted_team_for_sticky_lgtm: testgrid-admins
+
+plugins:
+  GoogleCloudPlatform:
+    plugins:
+    - assign
+    - cat
+    - dog
+    - golint
+    - hold
+    - label
+    - pony
+    - shrug
+    - trigger
+    - yuks
+
+  GoogleCloudPlatform/artifact-registry-apt-transport:
+    plugins:
+    - approve
+    - blunderbuss
+    - lgtm
+    - owners-label
+    - size
+    - verify-owners
+  GoogleCloudPlatform/artifact-registry-yum-plugin:
+    plugins:
+    - approve
+    - blunderbuss
+    - lgtm
+    - owners-label
+    - size
+    - verify-owners
+  GoogleCloudPlatform/blueprints:
+    plugins:
+    - approve
+    - lgtm
+    - owners-label
+    - size
+    - verify-owners
+  GoogleCloudPlatform/compute-image-tools:
+    plugins:
+    - approve
+    - blunderbuss
+    - lgtm
+    - owners-label
+    - size
+    - verify-owners
+  GoogleCloudPlatform/elcarro-oracle-operator:
+    plugins:
+    - approve
+    - lgtm
+    - owners-label
+    - size
+    - verify-owners
+  GoogleCloudPlatform/esp-v2:
+    plugins:
+    - approve
+    - lgtm
+    - owners-label
+    - size
+    - verify-owners
+  GoogleCloudPlatform/guest-agent:
+    plugins:
+    - approve
+    - blunderbuss
+    - lgtm
+    - owners-label
+    - size
+    - verify-owners
+  GoogleCloudPlatform/guest-configs:
+    plugins:
+    - approve
+    - blunderbuss
+    - lgtm
+    - owners-label
+    - size
+    - verify-owners
+  GoogleCloudPlatform/guest-diskexpand:
+    plugins:
+    - approve
+    - blunderbuss
+    - lgtm
+    - owners-label
+    - size
+    - verify-owners
+  GoogleCloudPlatform/guest-logging-go:
+    plugins:
+    - approve
+    - lgtm
+    - owners-label
+    - size
+    - verify-owners
+  GoogleCloudPlatform/guest-oslogin:
+    plugins:
+    - approve
+    - blunderbuss
+    - lgtm
+    - owners-label
+    - size
+    - verify-owners
+  GoogleCloudPlatform/guest-test-infra:
+    plugins:
+    - approve
+    - blunderbuss
+    - lgtm
+    - owners-label
+    - size
+    - verify-owners
+  GoogleCloudPlatform/k8s-cloud-provider:
+    plugins:
+    - approve
+    - lgtm
+    - owners-label
+    - size
+    - verify-owners
+  GoogleCloudPlatform/osconfig:
+    plugins:
+    - approve
+    - blunderbuss
+    - lgtm
+    - owners-label
+    - size
+    - verify-owners
+  GoogleCloudPlatform/oss-test-infra:
+    plugins:
+    - approve
+    - blunderbuss
+    - config-updater
+    - heart
+    - lgtm
+    - lifecycle
+    - override
+    - owners-label
+    - size
+    - verify-owners
+    - wip
+  GoogleCloudPlatform/testgrid:
+    plugins:
+    - approve
+    - blunderbuss
+    - lgtm
+    - owners-label
+    - size
+    - verify-owners
+    - wip
+
+  googleforgames/agones:
+    plugins:
+    - approve # /approve
+    - assign # /assign and /cc
+    - blunderbuss # auto-/cc
+    - cat # /meow
+    - dog # /woof
+    - golint # /lint
+    - heart # encourage OWNERS changes
+    - hold # /hold PR from merge
+    - lgtm # /lgtm
+    - pony # /pony
+    - shrug # /shrug
+    - size # auto-add size label
+    - verify-owners # validate OWNERS file changes
+    - wip # draft-PR awareness
+    - yuks # /joke
+
+  google:
+    plugins:
+    - approve
+    - assign
+    - cat
+    - dog
+    - golint
+    - hold
+    - label
+    - lgtm
+    - owners-label
+    - pony
+    - shrug
+    - size
+    - trigger
+    - verify-owners
+    - wip
+    - yuks
+
+  kubeflow:
+    plugins:
+    - approve   # Enable /approve and /assign commands.
+    - assign
+    - blunderbuss
+    - golint
+    - help
+    - hold
+    - label
+    - lgtm
+    - lifecycle   # Lets PRs & issues be flagged as stale
+    - override
+    - project # Lets issues be tagged into projects
+    - size
+    - skip  # Allows cleaning up stale commit statuses
+    - verify-owners   # Validates OWNERS file changes in PRs.
+    - wip   # Applies a label to PRs with wip in the title to block merge
+
+  kubeflow/community:
+    plugins:
+    - trigger
+
+  kubeflow/community-infra:
+    plugins:
+    - trigger
+
+  kubeflow/gcp-blueprints:
+    plugins:
+    - trigger
+
+  kubeflow/internal-acls:
+    plugins:
+    - trigger
+
+  kubeflow/pipelines:
+    plugins:
+    - trigger
+
+  kubeflow/website:
+    plugins:
+    - trigger
+
+  # This is a gerrit repo so this config doesn't do anything. It is included
+  # to satisfy the checkconfig tool which expects all repos that configure
+  # jobs to enable the trigger plugin if a plugins.yaml is specified.
+  # https://github.com/kubernetes/test-infra/issues/14743
+  https://kunit-review.googlesource.com/linux:
+    plugins:
+    - trigger
+
+  # This is a gerrit repo so this config doesn't do anything. It is included
+  # to satisfy the checkconfig tool which expects all repos that configure
+  # jobs to enable the trigger plugin if a plugins.yaml is specified.
+  # https://github.com/kubernetes/test-infra/issues/14743
+  https://linux-review.googlesource.com/linux/kernel/git/torvalds/linux:
+    plugins:
+    - trigger
+
+  grpc-ecosystem/grpc-httpjson-transcoding:
+    plugins:
+    - approve
+    - assign
+    - cat
+    - dog
+    - golint
+    - hold
+    - label
+    - lgtm
+    - owners-label
+    - pony
+    - shrug
+    - size
+    - trigger
+    - verify-owners
+    - yuks
+
+  looker/helltool:
+    plugins:
+    - assign
+    - cat
+    - dog
+    - golint
+    - help
+    - hold
+    - label
+    - lgtm
+    - override
+    - owners-label
+    - pony
+    - shrug
+    - skip
+    - trigger
+    - verify-owners
+    - wip
+    - yuks
+
+  chaotoppicks:
+    plugins:
+    - approve
+    - assign
+    - cat
+    - dog
+    - golint
+    - hold
+    - label
+    - lgtm
+    - owners-label
+    - pony
+    - shrug
+    - size
+    - trigger
+    - verify-owners
+    - yuks

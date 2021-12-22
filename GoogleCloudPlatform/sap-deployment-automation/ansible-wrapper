@@ -1,0 +1,55 @@
+#!/bin/sh
+
+# Copyright 2021 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+set -e
+
+PYTHON_BASE=${PYTHON_BASE:-`pwd`/.cache/virtualenv}
+
+fail()
+{
+    printf >&2 "${1}\n"
+    exit 1
+}
+
+find_venv()
+{
+    if which python3 1>/dev/null; then
+        python3 -m venv --help >/dev/null 2>&1
+        if [ ${?} -eq 0 ]; then
+            echo 'python3 -m venv'
+            return
+        fi
+    fi
+    which virtualenv
+}
+
+ensure_venv()
+{
+    if [ ! -x ${PYTHON_BASE}/bin/pip ]; then
+        venv=`find_venv`
+        if [ -z "${venv}" ]; then
+            fail "Python 3 with the venv module or Python 2 with virtualenv must be installed..."
+        fi
+        ${venv} --system-site-packages ${PYTHON_BASE}
+    fi
+    if [ ! -f requirements.txt ]; then
+        fail "No requirements.txt found. This must be run from the root of the repository..."
+    fi
+    ${PYTHON_BASE}/bin/pip install -r requirements.txt
+}
+
+ensure_venv
+${PYTHON_BASE}/bin/ansible-playbook ${@}

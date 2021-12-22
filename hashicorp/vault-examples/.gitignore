@@ -1,0 +1,10 @@
+vault/
+.DS_Store
+go/path/*
+local-testing*
+dotnet/ExampleTests/path/*
+.vscode/
+
+[Bb]in/
+[Oo]bj/
+[Tt]estResults/

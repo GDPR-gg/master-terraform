@@ -1,0 +1,20 @@
+# Cloud builder for the dotnet builder.
+
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args:
+  - 'build'
+  - '--tag=gcr.io/$PROJECT_ID/dotnet'
+  - '.'
+
+# Build the test projects
+- name: 'gcr.io/$PROJECT_ID/dotnet'
+  args: ['build']
+  dir: 'examples/TestApp-2.0'
+
+- name: 'gcr.io/$PROJECT_ID/dotnet'
+  args: ['build']
+  dir: 'examples/TestApp-2.1'
+
+images:
+- 'gcr.io/$PROJECT_ID/dotnet'

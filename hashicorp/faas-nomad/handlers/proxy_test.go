@@ -1,0 +1,152 @@
+package handlers
+
+import (
+	"bytes"
+	"context"
+	"fmt"
+	"net/http"
+	"net/http/httptest"
+	"os"
+	"strings"
+	"testing"
+	"time"
+
+	"github.com/hashicorp/faas-nomad/consul"
+	hclog "github.com/hashicorp/go-hclog"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
+)
+
+var mockProxyClient *MockProxyClient
+
+func setupProxy(body string) (http.HandlerFunc, *httptest.ResponseRecorder, *http.Request) {
+	mockProxyClient = &MockProxyClient{}
+	mockServiceResolver = &consul.MockResolver{}
+
+	// override the retryDelay to improve test speed
+	retryDelay = 2 * time.Millisecond
+
+	r := httptest.NewRequest("POST", "/", bytes.NewReader([]byte(body)))
+	r = r.WithContext(context.WithValue(r.Context(), FunctionNameCTXKey, "function"))
+	rr := httptest.NewRecorder()
+
+	logger := hclog.Default()
+
+	return MakeProxy(
+		ProxyConfig{
+			Client:   mockProxyClient,
+			Resolver: mockServiceResolver,
+			Logger:   logger,
+			StatsD:   nil,
+			Timeout:  5 * time.Second,
+		},
+	), rr, r
+}
+
+func TestProxyHandlerOnGETReturnsBadRequest(t *testing.T) {
+	h, rr, r := setupProxy("")
+	r.Method = "GET"
+
+	h(rr, r)
+
+	assert.Equal(t, http.StatusBadRequest, rr.Code)
+}
+
+func TestProxyHandlerWithFunctionNameCallsResolve(t *testing.T) {
+	h, rr, r := setupProxy("")
+	mockProxyClient.On("GetFunctionName", mock.Anything).Return("function")
+	mockProxyClient.On("CallAndReturnResponse", mock.Anything, mock.Anything, mock.Anything).
+		Return([]byte{}, http.Header{}, http.StatusOK, nil)
+	mockServiceResolver.On("Resolve", "function").Return([]string{"http://testaddress"})
+
+	h(rr, r)
+
+	mockServiceResolver.AssertCalled(t, "Resolve", "function")
+}
+
+func TestProxyHandlerCallsCallAndReturnResponse(t *testing.T) {
+	h, rr, r := setupProxy("")
+	mockProxyClient.On("GetFunctionName", mock.Anything).Return("function")
+	mockProxyClient.On("CallAndReturnResponse", mock.Anything, mock.Anything, mock.Anything).
+		Return([]byte{}, http.Header{}, http.StatusOK, nil)
+	mockServiceResolver.On("Resolve", "function").Return([]string{"http://testaddress"})
+
+	h(rr, r)
+
+	mockProxyClient.AssertCalled(t, "CallAndReturnResponse", "http://testaddress", mock.Anything, mock.Anything)
+}
+
+func TestProxyHandlerReturnsErrorWhenNoEndpoints(t *testing.T) {
+	f := setEnv()
+	defer f()
+
+	h, rr, r := setupProxy("")
+	mockProxyClient.On("GetFunctionName", mock.Anything).Return("function")
+	mockProxyClient.On("CallAndReturnResponse", mock.Anything, mock.Anything, mock.Anything).
+		Return([]byte{}, http.Header{}, http.StatusOK, nil)
+	mockServiceResolver.On("Resolve", "function").Return([]string{})
+
+	h(rr, r)
+
+	mockProxyClient.AssertNotCalled(t, "CallAndReturnResponse", mock.Anything, mock.Anything, mock.Anything)
+	assert.Equal(t, http.StatusNotFound, rr.Code)
+}
+
+func TestProxyHandlerReturnsErrorWhenClientError(t *testing.T) {
+	f := setEnv()
+	defer f()
+
+	h, rr, r := setupProxy("")
+	mockProxyClient.On("GetFunctionName", mock.Anything).Return("function")
+	mockProxyClient.On("CallAndReturnResponse", mock.Anything, mock.Anything, mock.Anything).
+		Return([]byte{}, http.Header{}, http.StatusInternalServerError, fmt.Errorf("Oops, I did it again"))
+	mockServiceResolver.On("Resolve", "function").Return([]string{"http://testaddress"})
+
+	h(rr, r)
+
+	assert.Equal(t, http.StatusInternalServerError, http.StatusInternalServerError, rr.Code)
+}
+
+func TestProxyHandlerSetsHeadersOnSuccess(t *testing.T) {
+	f := setEnv()
+	defer f()
+
+	h, rr, r := setupProxy("")
+	mockProxyClient.On("GetFunctionName", mock.Anything).Return("function")
+	mockProxyClient.On("CallAndReturnResponse", mock.Anything, mock.Anything, mock.Anything).
+		Return([]byte{}, http.Header{"TestHeader": []string{"faas-nomad"}}, http.StatusOK, nil)
+	mockServiceResolver.On("Resolve", "function").Return([]string{"http://testaddress"})
+
+	h(rr, r)
+
+	assert.Equal(t, http.StatusOK, rr.Code)
+	assert.Equal(t, "faas-nomad", rr.Header().Get("TestHeader"), http.StatusOK, nil)
+}
+
+func TestProxyHandlerSetsBodyOnSuccess(t *testing.T) {
+	f := setEnv()
+	defer f()
+
+	h, rr, r := setupProxy("")
+	mockProxyClient.On("GetFunctionName", mock.Anything).Return("function")
+	mockProxyClient.On("CallAndReturnResponse", mock.Anything, mock.Anything, mock.Anything).
+		Return([]byte("Something Something"), http.Header{}, http.StatusOK, nil)
+	mockServiceResolver.On("Resolve", "function").Return([]string{"http://testaddress"})
+
+	h(rr, r)
+
+	assert.Equal(t, http.StatusOK, rr.Code)
+	assert.Equal(t, "Something Something", rr.Body.String())
+}
+
+func setEnv() func() {
+	env := os.Environ()
+	os.Setenv("HOST_IP", "myhost")
+
+	return func() {
+		for _, e := range env {
+			kv := strings.Split(e, "=")
+			os.Setenv(kv[0], kv[1])
+		}
+	}
+}

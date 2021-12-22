@@ -1,0 +1,56 @@
+# Copyright 2020 Google LLC
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+template:
+- name: de_template
+  display_name: "Data Engineering Template"
+  fields:
+    - field: source_col
+      type: String
+      display: "Source Column"
+      order: 8
+    - field: source_table
+      type: String
+      display: "Source Table"
+      order: 7
+    - field: pk_col
+      type: bool
+      display: "Primary Key Column"
+      order: 6
+    - field: fk_col
+      type: bool
+      display: "Foreign Key Column"
+      order: 5
+    - field: incr_col
+      type: bool
+      display: "Incremental Column"
+      order: 4
+    - field: null_col
+      type: bool
+      display: "Field can be NULL"
+      order: 3
+    - field: updatable_col
+      type: bool
+      display: "Field can be updated"
+      order: 2
+    - field: update_frequency
+      type: enum
+      values: SECONDS|30-MINUTES|1-HOUR|DAILY|WEEKLY|MONTHLY|ANNUAL
+      display: "Update Frequency"
+      order: 1
+    - field: row_count
+      type: double
+      display: "Target Table Row Count"
+      order: 0
+

@@ -1,0 +1,8 @@
+.build/
+.tests/
+.vscode/
+*.pyc
+*.swp
+.coverage
+.idea/*
+

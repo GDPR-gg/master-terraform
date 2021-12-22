@@ -1,0 +1,35 @@
+{
+  "name": "functions",
+  "description": "Cloud Functions for Firebase",
+  "scripts": {
+    "lint": "eslint .",
+    "start": "npm run shell"
+  },
+  "engines": {
+    "node": "12"
+  },
+  "eslintConfig": {
+    "extends": [
+      "eslint:recommended",
+      "plugin:import/errors",
+      "plugin:import/warnings",
+      "plugin:promise/recommended"
+    ]
+  },
+  "dependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.0.20",
+    "@google-cloud/datastore": "^6.4.0",
+    "@google-cloud/vision": "^2.3.1",
+    "cors": "^2.8.5",
+    "fluent-ffmpeg": "^2.1.2",
+    "googleapis": "^49.0.0",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "babel-eslint": "^9.0.0",
+    "eslint": "^5.16.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-promise": "^4.3.1"
+  },
+  "private": true
+}

@@ -1,0 +1,92 @@
+<!--
+ Copyright 2019 Google LLC
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<html>
+  <head>
+    <link rel="stylesheet" href="/static/css/damdemo-test.css">
+    <script src="/static/js/damdemo.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <h1>DAM Test Page</h1>
+    <div id="error_info" class="error-info hidden">
+      <div id="error" class="error"></div>
+      <div id="error_close" class="error-close">&times;</div>
+      <div id="error_desc" class="error-desc"></div>
+      <div id="error_hint" class="error-hint"></div>
+    </div>
+    <div class="box">
+      <h3>1. Select Token for DAM endpoint or dataset access</h3>
+      <select id="token_type">
+        <option value="dataset">dataset</option>
+        <option value="endpoint">endpoint</option>
+      </select>
+      <h3>2. Select Resource on DAM</h3>
+      <label for="hydra_url">Hydra URL: </label>
+      <input id="hydra_url" class="width-40" value="{{.HydraURL}}">
+      <label for="dam_url">DAM URL: </label>
+      <input id="dam_url" class="width-40" value="{{.DamURL}}">
+
+      <select id="resource_name" class="width1-4"></select>
+      <select id="resource_view" class="width1-4"></select>
+      <select id="resource_role" class="width1-4"></select>
+      <select id="resource_interface" class="width1-4"></select>
+      <div>
+        <a class="btn blue" id="add">Include Resource</a>
+        <a class="btn white" id="local-dam">Local DAM</a>
+        <a class="btn white" id="clear-page">Clear</a>
+        <span><label>realm: </label><input id="realm" class="width-100px" value="master" placeholder="realm name"></span>
+      </div>
+      <h4>&nbsp;&nbsp;&nbsp;Included Resources:</h4>
+      <textarea id="resources" class="full-width" value="" rows="4"></textarea>
+      <div>
+        <a id="auth-btn" class="btn blue">Auth for Resources</a>
+        <span><label>TTL: </label><input id="ttl" class="width-100px" value="3600" placeholder="seconds TTL"></span>
+      </div>
+    </div>
+    <div class="box">
+      <h3>3. Cart Resource Tokens</h3>
+      <div class="full-width">
+        <div id="auth_code_div" class="half-width float-left">
+          Auth Code: <span class="reveal-empty">-none-</span><a id="reveal-authcode" class="reveal-btn">show</a><span id="auth_code" class="revealed"></span>
+        </div>
+        <div id="access_token_div" class="half-width float-left">
+          DAM Access Token: <span class="reveal-empty">-none-</span>&nbsp;<a id="debug-jwt" class="jwt-btn">jwt.io</a> - <a id="reveal-accesstoken" class="reveal-btn">show</a><span id="token" class="revealed"></span>
+        </div>
+      </div>
+      <table id="cart_table" class="cart-table"></table>
+      <div>
+        <a id="cart-btn" class="btn white">Cart Tokens</a>
+        <a id="refresh" class="btn black">Refresh Token</a>
+        <a class="btn black" id="account-info">Account Info</a>
+      </div>
+      <div class="more-btn" data-toggle="more">more <span class="arrow">&#x25B2;</span></div>
+    </div>
+    <div id="more" class="box hidden">
+      <h3>4. DAM API (using realm from above)</h3>
+      <input id="api_path" class="full-width" value="config" placeholder="relative API path">
+      <textarea id="api_payload" class="full-width" value="" rows="2" placeholder="payload"></textarea>
+      <div>
+        <a id="api-get" class="btn blue">GET</a>
+        <a id="api-post" class="btn black">POST</a>
+        <a id="api-put" class="btn white">PUT</a>
+        <a id="api-patch" class="btn white">PATCH</a>
+        <a id="api-delete" class="btn red">DELETE</a>
+      </div>
+    </div>
+    <pre id="log"></pre>
+  </body>
+</html>

@@ -1,0 +1,30 @@
+---
+platform: linux
+
+image_resource:
+  type: registry-image
+  source: {repository: golang, tag: 1.12.10}
+
+inputs:
+  - name: terraform-provider-alicloud
+  - name: aliyun-cli
+
+run:
+  path: terraform-provider-alicloud/ci/tasks/run.sh
+params:
+  ALICLOUD_ACCESS_KEY:   ""
+  ALICLOUD_SECRET_KEY:   ""
+  ALICLOUD_REGION:       ""
+  ALICLOUD_ACCOUNT_ID:   ""
+  ALICLOUD_ACCOUNT_SITE: "Domestic"
+  TEST_CASE_CODE:        ""
+  SWEEPER:               ""
+  ACCESS_URL:            ""
+  ACCESS_USER_NAME:      ""
+  ACCESS_PASSWORD:       ""
+  DING_TALK_TOKEN:       ""
+  BUCKET_NAME:           "terraform-ci"
+  BUCKET_REGION:         "cn-beijing"
+  ALICLOUD_RESOURCE_GROUP_ID : ""
+  ALICLOUD_WAF_INSTANCE_ID: ""
+

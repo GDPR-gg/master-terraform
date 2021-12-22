@@ -1,0 +1,32 @@
+#!/bin/bash
+set -ea
+
+DOMAIN=test
+LISTEN="127.0.0.1"
+BOOTSTRAP="127.0.0.1:10000"
+STAT_UDP="127.0.0.1:10000"
+HTTP_UI="127.0.0.1:8080"
+LO=0
+HI=5
+
+required="DOMAIN BOOTSTRAP LISTEN STAT_UDP"
+
+for e in $required HTTP_UI LO HI; do
+    [ -r "env/$e" ] && eval "$e=`cat "env/$e"`"
+done
+
+mkdir -p data
+
+for i in `seq -f%04g "$LO" "$HI"`; do
+    bin/run-one $i \
+		> data/$i.log 2>&1 &
+
+    # Unset so that if set, only the first server will listen to http & stats
+    HTTP_UI=""
+
+    # Don't spam the poor bootstrap to death
+    sleep 0.1
+done
+
+trap 'kill $(jobs -p)' EXIT
+wait

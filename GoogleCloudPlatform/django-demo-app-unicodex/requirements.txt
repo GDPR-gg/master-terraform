@@ -1,0 +1,12 @@
+Django
+gunicorn
+django-environ
+psycopg2-binary
+django-storages[google]
+google-cloud-secret-manager
+google-auth
+
+# required for internal functionality, not deployement related
+requests
+pyyaml
+bs4

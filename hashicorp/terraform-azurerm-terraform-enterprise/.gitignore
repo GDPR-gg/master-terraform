@@ -1,0 +1,28 @@
+# Local .terraform directories
+**/.terraform/*
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
+# .tfvars files
+*.tfvars
+
+# terraform lock files
+.terraform.lock*
+
+# Examples
+examples/*/*.tfstate
+examples/*/*.tfstate.*
+examples/*/*.tfvars
+examples/*/*.lock*
+
+.DS_Store
+
+# Secrets
+*ptfe-license*
+*.pem*
+*.cer*
+*.key*
+*.rli*
+work

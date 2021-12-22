@@ -1,0 +1,73 @@
+#!/bin/bash
+# Copyright 2019 Google Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+echo "$ROAD_TRIP_HINT" > /root/.instruqt/hint.txt
+
+# Put the help text in help.txt
+echo "$ROAD_TRIP_HELP" > /root/.instruqt/help.txt
+
+# Put the choices text in choices.txt
+echo "$ROAD_TRIP_CHOICES" > /root/.instruqt/choices.txt
+
+cat <<EOF > ./query.sql
+WITH params AS (
+  SELECT id as roadtrip_id,
+         ST_GeogPoint(lat, long) AS center,
+         date,
+         50 AS maxdist_km
+  FROM \`instruqt-shadow.$DATASET_ID.road_trip\`
+),
+distance_from_center AS (
+  SELECT
+    id,
+    name,
+    state,
+    roadtrip_id,
+    date,
+    ST_GeogPoint(longitude, latitude) AS loc,
+    ST_Distance(ST_GeogPoint(longitude, latitude), params.center) AS dist_meters
+  FROM
+    \`bigquery-public-data.ghcn_d.ghcnd_stations\`,
+    params
+  WHERE ST_DWithin(ST_GeogPoint(longitude, latitude), params.center, params.maxdist_km*1000) AND
+    id IN (SELECT id FROM \`bigquery-public-data.ghcn_d.ghcnd_2019\` WHERE element IN ('TAVG'))
+),
+nearest_stations AS (
+  SELECT
+    *,
+    RANK() OVER (PARTITION BY roadtrip_id ORDER BY dist_meters ASC) AS rank
+  FROM
+    distance_from_center
+),
+avg_temp_per_day AS (
+  SELECT
+    nearest_stations.date,
+    AVG(ghcnd_2019.value) / 10 AS avg_temp_celsius
+  FROM
+    nearest_stations
+  LEFT JOIN
+    \`bigquery-public-data.ghcn_d.ghcnd_2019\` AS ghcnd_2019
+  ON
+    nearest_stations.date = ghcnd_2019.date AND
+    nearest_stations.id = ghcnd_2019.id
+  WHERE
+    rank = 1 AND
+    ghcnd_2019.element IN ('TAVG')
+  GROUP BY date
+  ORDER BY date DESC
+)
+SELECT * FROM avg_temp_per_day
+
+EOF

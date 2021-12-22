@@ -1,0 +1,45 @@
+# rcov generated
+coverage
+coverage.data
+
+# rdoc generated
+rdoc
+
+# yard generated
+doc
+.yardoc
+
+# bundler
+.bundle
+.byebug_history
+
+# For MacOS:
+.DS_Store
+
+# For MacOS:
+.DS_Store
+
+# For TextMate
+#*.tmproj
+#tmtags
+
+*.swp
+
+# For redcar:
+#.redcar
+
+# For rubinius:
+#*.rbc
+
+# For the gem
+test.db
+
+# For those using rbenv
+.ruby-version
+
+# For those who install gems locally to a vendor dir
+/vendor
+
+# Don't checkin Gemfile.lock 
+# See: http://yehudakatz.com/2010/12/16/clarifying-the-roles-of-the-gemspec-and-gemfile/
+Gemfile.lock

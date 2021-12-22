@@ -1,0 +1,60 @@
+{
+  "pathwayTitle": "Learn HashiCorp Vault",
+  "title": "Vault Token",
+  "description": "Learn the lifecycle of Vault client tokens.",
+  "difficulty": "beginner",
+  "time": "10 minutes",
+  "icon": "fa-vault",
+  "details": {
+    "intro": {
+      "text": "intro.md",
+      "credits": "https://learn.hashicorp.com/vault"
+    },
+    "steps": [
+      {
+        "title": "Tokens with Use Limit",
+        "text": "step1.md",
+        "code": "terminal.sh",
+        "courseData": "courseBase.sh"
+      },
+      {
+        "title": "Create a Periodic Token",
+        "text": "step2.md"
+      },
+      {
+        "title": "Create Short-Lived Tokens",
+        "text": "step3.md"
+      },
+      {
+        "title": "Create an Orphan Token",
+        "text": "step4.md"
+      },
+      {
+        "title": "Create a Token Role",
+        "text": "step5.md"
+      },
+      {
+        "title": "Renew and Revoke Tokens",
+        "text": "step6.md"
+      },
+      {
+        "title": "Apply Token Types",
+        "text": "step7.md"
+      }
+    ],
+    "finish": {
+      "text": "finish.md",
+      "credits": "https://learn.hashicorp.com/vault"
+    }
+  },
+  "environment": {
+    "showdashboard": true,
+    "uilayout": "terminal",
+    "uimessage1": "\u001b[32mYour Interactive Bash Terminal. A safe place to learn and execute commands.\u001b[m\r\n"
+  },
+  "backend": {
+    "imageid": "hashicorp-hashistack",
+    "lifetime": 30
+  },
+  "private": true
+}

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <OutputPath>bin\</OutputPath>
+    <ProjectGuid>{8abcf5fe-ec92-4ffb-96e5-821790941e57}</ProjectGuid>
+    <ProjectTypeGuids>{3AF33F2E-1136-4D97-BBB7-1795711AC8B8};{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}</ProjectTypeGuids>
+    <EnableTypeScript>true</EnableTypeScript>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">15.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <ItemGroup>
+    <Content Include="package.json" />
+    <Content Include="tsconfig.json" />
+    <TypeScriptCompile Include="aggregate-error.ts" />
+    <TypeScriptCompile Include="asserts.ts" />
+    <TypeScriptCompile Include="exec-options.ts" />
+    <TypeScriptCompile Include="format.ts" />
+    <TypeScriptCompile Include="handle-rejection.ts" />
+    <TypeScriptCompile Include="register-mocks.ts" />
+    <TypeScriptCompile Include="strings.ts" />
+    <TypeScriptCompile Include="task-result.ts" />
+  </ItemGroup>
+  <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsTools.targets" />
+  <PropertyGroup>
+    <BuildDependsOn>
+      NpmInstall;
+      $(BuildDependsOn);
+      NpmPack;
+    </BuildDependsOn>
+  </PropertyGroup>
+  <Target Name="NpmInstall"
+          Inputs="package.json"
+          Outputs="node_modules\">
+    <Exec Command="npm install" WorkingDirectory="$(MSBuildProjectDirectory)" />
+  </Target>
+  <Target Name="NpmPack"
+          Inputs="@(ConfigFile);@(TypeScriptCompile)"
+          Outputs="$(OutputPath)\common-0.0.1.tgz">
+    <Exec Command="npm pack $(MSBuildProjectDirectory)" WorkingDirectory="$(OutputPath)"/>
+  </Target>
+</Project>

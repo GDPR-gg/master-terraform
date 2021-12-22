@@ -1,0 +1,20 @@
+[
+  {
+    "get_message": {
+      "call": "http.post",
+      "args": {
+        "url": "https://www.example.com/endpoint",
+        "body": {
+          "some_val": "Hello World",
+          "another_val": 123
+        }
+      },
+      "result": "the_message"
+    }
+  },
+  {
+    "return_value": {
+      "return": "${the_message.body}"
+    }
+  }
+]

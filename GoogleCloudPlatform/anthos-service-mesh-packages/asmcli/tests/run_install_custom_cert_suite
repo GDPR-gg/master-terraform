@@ -1,0 +1,105 @@
+#!/bin/bash
+set -CeEu
+set -o pipefail
+
+SPATH="$(readlink -f "$0")"
+SDIR="$(dirname "${SPATH}")"; export SDIR;
+SCRIPT_NAME="${0##*/}"
+
+# shellcheck source=common.sh
+. "${SDIR}/common.sh"
+
+cd "${SDIR}"
+
+main() {
+  # CLI setup
+  parse_args "$@"
+
+  echo "Generating certificates..."
+  TMP_DIR="$(mktemp -d)"
+  if [[ -z "${TMP_DIR}" ]]; then
+    fatal "Encountered error when running mktemp -d!"
+  fi
+  pushd "${TMP_DIR}"
+
+  curl -LO -H "Accept: application/vnd.github.v3.raw" \
+    https://api.github.com/repos/istio/istio/contents/tools/certs/common.mk
+  curl -LO -H "Accept: application/vnd.github.v3.raw" \
+    https://api.github.com/repos/istio/istio/contents/tools/certs/Makefile.selfsigned.mk
+
+  set +e
+  CERT_PREFIX="$(tr -dc a-z0-9 </dev/urandom | head -c 4)"
+  set -e
+
+  make -f Makefile.selfsigned.mk root-ca
+  make -f Makefile.selfsigned.mk "${CERT_PREFIX}"-cacerts
+
+  TEST_ROOT="$(readlink -f root-cert.pem)"
+  TEST_CHAIN="$(readlink -f "${CERT_PREFIX}"/cert-chain.pem)"
+  TEST_CERT="$(readlink -f "${CERT_PREFIX}"/ca-cert.pem)"
+  TEST_KEY="$(readlink -f "${CERT_PREFIX}"/ca-key.pem)"
+
+  popd
+  EXTRA_FLAGS="--ca-cert ${TEST_CERT} --ca-key ${TEST_KEY} --root-cert ${TEST_ROOT} --cert-chain ${TEST_CHAIN}"
+
+  run_basic_test "install" "citadel" "${EXTRA_FLAGS}"; RETVAL=$?;
+  trap 'kubectl delete secrets cacerts -n istio-system; cleanup_lt_cluster "${LT_NAMESPACE}" "${OUTPUT_DIR}" "${REV}"' ERR
+  install_strict_policy "${LT_NAMESPACE}"
+  roll "${LT_NAMESPACE}"
+
+  # https://istio.io/latest/docs/tasks/security/cert-management/plugin-ca-cert/#verifying-the-certificates
+  echo "Getting current certs from running pods..."
+
+  # grab an arbitrary pod
+  CHECK_FROM="$(kubectl get pods -n "${LT_NAMESPACE}" \
+    | grep currencyservice \
+    | awk '{ print $1 }')"
+
+  # grab an arbitrary but different IP:PORT
+  CHECK_TO="$(kubectl get service -n "${LT_NAMESPACE}" \
+    | grep cartservice \
+    | awk '{ split($5, a, "/"); split(a[1], a, ":"); print $3 ":" a[1] }')"
+
+  pushd "${TMP_DIR}"
+  # openssl can give some weird return values sometimes
+  set +e
+  set +o pipefail
+  # use openssl from A to B to get the cert chain and split them into files
+  # seems like 3 is the root cert, 2 is the ca cert, 4 is the chain
+  kubectl exec -n "${LT_NAMESPACE}" "${CHECK_FROM}" -c istio-proxy -- \
+    openssl s_client -showcerts -connect "${CHECK_TO}" \
+    | sed -n '/-----BEGIN CERTIFICATE-----/{:start /-----END CERTIFICATE-----/!{N;b start};/.*/p}' \
+    | awk 'BEGIN {counter=0;} /BEGIN CERT/{counter++} { print > "cert-" counter ".pem"}'
+
+  echo "Checking certificates..."
+
+  WANT_HASH="$(openssl x509 -in "${TEST_ROOT}" -modulus -noout)"
+  GOT_HASH="$(openssl x509 -in cert-3.pem -modulus -noout)"
+  warn "Root certificate:"
+  warn "Got: ${GOT_HASH}"
+  warn "Wanted: ${WANT_HASH}"
+  if [[ "${WANT_HASH}" != "${GOT_HASH}" ]]; then
+    fatal "Generated root certificate differs from the one from sidecar!"
+  fi
+
+  WANT_HASH="$(openssl x509 -in "${TEST_CERT}" -modulus -noout)"
+  GOT_HASH="$(openssl x509 -in cert-2.pem -modulus -noout)"
+  warn "CA certificate:"
+  warn "Got: ${GOT_HASH}"
+  warn "Wanted: ${WANT_HASH}"
+  if [[ "${WANT_HASH}" != "${GOT_HASH}" ]]; then
+    fatal "Generated CA certificate differs from the one from sidecar!"
+  fi
+
+  if ! openssl verify -trusted "${TEST_ROOT}" cert-4.pem; then
+    fatal "Couldn't verify the cert chain using generated root cert!"
+  fi
+
+  echo "Success!"
+
+  # Cluster teardown
+  kubectl delete secrets cacerts -n istio-system
+  cleanup_lt_cluster "${LT_NAMESPACE}" "${OUTPUT_DIR}" "${REV}"
+}
+
+main "$@"

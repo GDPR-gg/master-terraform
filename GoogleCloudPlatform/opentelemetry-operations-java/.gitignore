@@ -1,0 +1,20 @@
+# Gradle
+.gradle/
+out/
+.project
+.settings
+.classpath
+
+# IDE(A) files
+.idea/
+.settings/
+.vscode/
+.classpath
+.project
+
+# Build artifacts
+build/
+bin/
+
+# Mock server download
+mock_server*

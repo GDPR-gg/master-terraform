@@ -1,0 +1,49 @@
+receivers:
+  dockerstats:
+  nginxstats:
+    stats_url: @NGINX_STATS_URL@
+  vmage:
+    build_date: @BUILD_DATE@
+    vm_image_name: @IMAGE_NAME@
+    vm_ready_time: @VM_READY_TIME@
+    vm_start_time: @VM_START_TIME@
+
+processors:
+  resource:
+    attributes:
+    - key: opencensus.resourcetype
+      value: "gae_instance"
+      action: upsert
+    - key: cloud.region
+      value: "@REGION@"
+      action: upsert
+    - key: appengine.service.id
+      value: "@SERVICE@"
+      action: upsert
+    - key: appengine.version.id
+      value: "@VERSION@"
+      action: upsert
+    - key: appengine.instance.id
+      value: "@INSTANCE@"
+      action: upsert
+
+exporters:
+  googlecloud:
+    metric:
+      prefix: appengine.googleapis.com/flex/internal
+      skip_create_descriptor: true
+  googlecloud/instance:
+    metric:
+      prefix: appengine.googleapis.com/flex/instance
+      skip_create_descriptor: true
+
+service:
+  pipelines:
+    metrics:
+      receivers: [vmage, nginxstats]
+      processors: [resource]
+      exporters: [googlecloud]
+    metrics/instance:
+      receivers: [dockerstats]
+      processors: [resource]
+      exporters: [googlecloud/instance]

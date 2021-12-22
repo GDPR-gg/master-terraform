@@ -1,0 +1,100 @@
+# Copyright 2021 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# This is an expanded yaml file for installing fortio in a K8S cluster for this sample and testing.
+# Based on the normal fortio, with few annotations and comments used for debugging and tunning.
+
+# Istio configs are setting it to strict mode - which is required for SNI routing and recommended for prod.
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fortio-mcp
+spec:
+  ports:
+    - port: 8080
+      name: http-echo
+  selector:
+    app: fortio-mcp
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fortio-mcp
+spec:
+  selector:
+    matchLabels:
+      app: fortio-mcp
+  replicas: 1
+  template:
+    metadata:
+      annotations:
+        #sidecar.istio.io/logLevel: "TRACE"
+        #sidecar.istio.io/enableCoreDump: "true"
+        # For debugging
+        sidecar.istio.io/privileged: "true"
+        #sidecar.istio.io/debug: "true"
+        #sidecar.istio.io/componentLogLevel: "config:trace,http2:trace,init:trace,grpc:trace,upstream:trace"
+        #sidecar.istio.io/proxyImage: gcr.io/wlhe-cr/proxyv2:main
+
+        # Override container ports
+        #traffic.sidecar.istio.io/includeInboundPorts: "*"
+        sidecar.istio.io/proxyCPU: 10m
+      labels:
+        app: fortio-mcp
+        version: v1
+        # This selects the default cluster injection - if the cluster is MCP, it is best to make it default.
+        #sidecar.istio.io/inject: "true"
+        istio.io/rev: "asm-managed"
+    spec:
+      containers:
+        - name: fortio
+          image: costinm/fortio:latest
+          ports:
+            - containerPort: 8080
+              name: http
+            - containerPort: 8081
+              name: grpc
+            - containerPort: 8079
+          args:
+            - server
+          resources:
+            requests:
+              cpu: 10m
+              memory: "512Mi"
+            limits:
+              cpu: "2"
+              memory: "1G"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: fortio-mcp
+spec:
+  host: fortio-mcp
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL
+---
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: fortio-mcp
+spec:
+  selector:
+    matchLabels:
+      app: fortio-mcp
+  mtls:
+    mode: STRICT

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="4510" systemVersion="13A603" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <deployment defaultVersion="1552" identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3742"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="GriddlerLobbyViewController">
+            <connections>
+                <outlet property="countdownLabel" destination="19" id="22"/>
+                <outlet property="loadingImage" destination="27" id="32"/>
+                <outlet property="statusLabel" destination="90" id="99"/>
+                <outlet property="view" destination="1" id="11"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="1">
+            <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Interactive-Backgound.png" translatesAutoresizingMaskIntoConstraints="NO" id="CJw-cJ-H9k">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="504"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                </imageView>
+                <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="3" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="19">
+                    <rect key="frame" x="120" y="98" width="80" height="133"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="80" id="73"/>
+                        <constraint firstAttribute="height" constant="133" id="225"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="140"/>
+                    <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="27">
+                    <rect key="frame" x="60" y="115" width="200" height="100"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="200" id="176"/>
+                        <constraint firstAttribute="height" constant="100" id="178"/>
+                    </constraints>
+                </imageView>
+                <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="121">
+                    <rect key="frame" x="0.0" y="460" width="320" height="44"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <subviews>
+                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="90">
+                            <rect key="frame" x="0.0" y="13" width="320" height="21"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="44" id="171"/>
+                        <constraint firstAttribute="bottom" secondItem="90" secondAttribute="bottom" constant="10" id="fnz-Ac-KAi"/>
+                        <constraint firstItem="90" firstAttribute="leading" secondItem="121" secondAttribute="leading" id="gmK-b1-dNw"/>
+                        <constraint firstItem="90" firstAttribute="top" secondItem="121" secondAttribute="top" constant="13" id="hMb-UC-lXi"/>
+                        <constraint firstAttribute="trailing" secondItem="90" secondAttribute="trailing" id="tCI-ib-SiT"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="121" firstAttribute="trailing" secondItem="1" secondAttribute="trailing" id="142"/>
+                <constraint firstItem="121" firstAttribute="leading" secondItem="1" secondAttribute="leading" id="152"/>
+                <constraint firstAttribute="bottom" secondItem="121" secondAttribute="bottom" id="166"/>
+                <constraint firstItem="27" firstAttribute="centerX" secondItem="121" secondAttribute="centerX" id="182"/>
+                <constraint firstItem="27" firstAttribute="top" secondItem="1" secondAttribute="top" constant="115" id="190"/>
+                <constraint firstItem="19" firstAttribute="centerX" secondItem="27" secondAttribute="centerX" id="194"/>
+                <constraint firstItem="19" firstAttribute="top" secondItem="1" secondAttribute="top" constant="98" id="227"/>
+                <constraint firstAttribute="bottom" secondItem="CJw-cJ-H9k" secondAttribute="bottom" id="7Mr-o2-Ag9"/>
+                <constraint firstAttribute="trailing" secondItem="CJw-cJ-H9k" secondAttribute="trailing" id="9b3-58-Ycs"/>
+                <constraint firstItem="CJw-cJ-H9k" firstAttribute="leading" secondItem="1" secondAttribute="leading" id="p3r-Bc-d0P"/>
+                <constraint firstItem="CJw-cJ-H9k" firstAttribute="top" secondItem="1" secondAttribute="top" id="sQn-Ut-yql"/>
+            </constraints>
+            <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
+            <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" translucent="NO" prompted="NO"/>
+            <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="Interactive-Backgound.png" width="320" height="460"/>
+    </resources>
+</document>

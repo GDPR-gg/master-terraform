@@ -1,0 +1,262 @@
+nav:
+  builds: 'Builds'
+  deployments: 'Deployments'
+  releases: 'Releases'
+  workspace_detail: 'Workspace detail page'
+  project_index: 'Projects index page'
+  application_index: 'Applications index page'
+  builds_index: 'Builds index page'
+  deployments_index: 'Deployments index page'
+  releases_index: 'Releases index page'
+  exec: 'Exec'
+  settings: 'Settings'
+  logs: 'Logs'
+  auth: 'Authenticate'
+
+product:
+  name: 'Waypoint'
+
+page:
+  app:
+    switching-workspace: Loading…
+  artifact:
+    overview:
+      image: 'Image'
+      health-check: 'Health'
+      re-run-health-check: 'Re-run'
+      unavailable: 'Currently unavailable'
+      commit: 'Commit'
+  builds:
+    title: 'Builds'
+  build:
+    title: 'Build'
+    overview:
+      heading: 'Overview'
+      status: 'Status'
+  deployments:
+    title: 'Deployments'
+    destroyed_label: 'Destroyed'
+    replaced_label: 'Replaced by '
+    destroyed_and_hidden_state: 'Some deployments have been destroyed and are hidden'
+    display_destroyed: 'Display destroyed deployments'
+    status_prefix:
+      0: 'Deploying by ' # UNKNOWN
+      1: 'Deploying by ' # RUNNING
+      2: 'Deployed by ' # SUCCESS
+      3: 'Failed to deploy by ' # ERROR
+  deployment:
+    title: 'Deployment'
+    resources:
+      heading: Resources
+      deployment-table-caption: Resources created by <b>this deployment</b>
+      release-table-caption-prefix: Resources created by <b>Release</b>
+    overview:
+      heading: 'Overview'
+      status: 'Status'
+    logs:
+      heading: Deployment Logs
+  releases:
+    title: 'Releases'
+  release:
+    title: 'Release'
+    resources:
+      heading: Resources
+      table-caption: Resources created by <b>this release</b>
+    overview:
+      heading: 'Overview'
+      status: 'Status'
+    logs:
+      heading: Release Logs
+  unavailable:
+    title: ''
+
+form:
+  project_new:
+    title: 'New Project'
+    project_name_label: 'Project name'
+    create_git_label: 'Connect a Git repository'
+    create_git_helptext: 'If you skip this, you can always configure this later in Project settings.'
+    create_git_checkbox_label: 'Connect a repository to this Project'
+    button: 'Create Project'
+  project_git_settings:
+    git_title: 'Git settings'
+    git_source_url_label: 'Git source URL'
+    git_source_ref_label: 'Git ref'
+    git_source_ref_helptext: 'This can be a branch name, a tag name, or a fully qualified Git ref such as'
+    git_source_ref_example: 'refs/pull/1014'
+    git_source_path_label: 'Git source path (optional)'
+    git_auth_type_label: 'Authentication'
+    git_auth_type_basic_label: 'Username & password'
+    git_auth_type_not_set_label: 'No authentication'
+    git_auth_type_ssh_label: 'SSH'
+    git_source_ssh_user_label: 'Git User (optional)'
+    git_source_ssh_password_label: 'Passphrase (optional)'
+    git_source_ssh_key_label: 'SSH Private Key'
+    git_source_basic_username_label: 'Username'
+    git_source_basic_password_label: 'Password'
+    git_sync_label: 'Automated sync'
+    git_sync_description_label: 'Enable automated deployment on changes'
+    hcl_title: 'Waypoint.hcl settings'
+    hcl_location: 'waypoint.hcl config location'
+    hcl_location_repo_label: 'Project repository'
+    hcl_location_server_label: 'Waypoint server'
+    hcl_content_helptext: 'Paste or edit your Waypoint configuration here to store it on the server'
+    hcl_content_label: 'waypoint.hcl file'
+    button: 'Apply'
+  project_variables_settings:
+    empty_state_heading: 'No input variables configured'
+    empty_state_content: 'Variables defined in your waypoint.hcl file can be assigned a server value here.'
+    title: 'Input variable'
+    button_apply: 'Add variable'
+    variable_name: 'Key'
+    variable_name_placeholder: 'var_key'
+    variable_value: 'Value'
+    variable_value_placeholder: 'var_value'
+    button_submit: 'Save variable'
+    button_cancel: 'Cancel'
+  config_variables_settings:
+    empty_state_heading: 'No configuration variables'
+    empty_state_content: 'Configuration variables can be modified here as well as in the CLI.'
+    title: 'Config variable'
+    button_apply: 'Add variable'
+    variable_name: 'Key'
+    variable_name_placeholder: 'var_key'
+    variable_value: 'Value'
+    variable_internal: 'Internal'
+    variable_nameIsPath: 'Name as path'
+    variable_value_placeholder: 'var_value'
+    variable_dropdown:
+      trigger: 'Actions'
+      edit: 'Edit'
+      delete: 'Delete'
+    nameIsPath:
+      label: 'Use variable name as file path'
+    internal:
+      label: 'Internal value'
+    button_submit: 'Save variable'
+    button_cancel: 'Cancel'
+
+auth:
+  title: 'Welcome to Waypoint'
+  subtitle: 'To get started, please authenticate'
+  button: 'Authenticate'
+  token_link: 'Authenticate with Token'
+  loading: 'Authenticating...'
+  oidc_docs_link: 'Set up OIDC'
+
+login:
+  title: 'Authenticate Waypoint'
+  subtitle: 'To get started, authenticate with a token'
+  instruction: 'Run this command in the CLI to generate a token'
+  input:
+    label: 'Then enter the token below'
+    placeholder: 'Enter your token from the CLI'
+  button: 'Authenticate with token'
+  oidc_link: 'Authenticate with OIDC'
+
+invite_login:
+  title: 'Welcome to Waypoint'
+  subtitle: 'You’ve been invited to join an existing Waypoint instance'
+  cli_subtitle: 'Authenticating via CLI token'
+  input:
+    label: 'Enter your invite token'
+    cli_label: 'Your token'
+    placeholder: 'Get your invite token from your teammate'
+    cli_placeholder: 'Your token'
+  button: 'Redeem invite and authenticate'
+  cli_button: 'Authenticate with token'
+
+state:
+  deployment:
+    success: 'Deployed successfully'
+    error: 'Deployment encountered an error'
+    pending: 'Deploy pending'
+  release:
+    success: 'Released successfully'
+    error: 'Release encountered an error'
+    pending: 'Release pending'
+
+status_badge:
+  partial:
+    text: 'Partial'
+    tooltip: 'Application is partially available'
+  down:
+    text: 'Down'
+    tooltip: 'Application is down'
+  ready:
+    text: 'Up'
+    tooltip: 'Application is ready'
+  alive:
+    text: 'Starting…'
+    tooltip: 'Application is starting'
+  unknown:
+    text: 'Unknown'
+    tooltip: 'Unknown Application state'
+
+status_report_indicator:
+  label:
+    prefix: 'Health:'
+    unknown: Unknown
+    alive: Starting…
+    ready: Available
+    down: Down
+    partial: Degraded
+    missing: Missing
+  tooltip:
+    checking_now: Checking now…
+    last_checked: Last checked
+    unknown: Status unknown
+
+app_item_build:
+  built_in: Built in {duration}
+
+build_status:
+  type-1: # BUILDER
+    state-0: Building with # UNKNOWN
+    state-1: Building with # RUNNING
+    state-2: Built with # SUCCESS
+    state-3: Failed to build with # ERROR
+  type-2: # REGISTRY
+    state-0: Pushing to # UNKNOWN
+    state-1: Pushing to # RUNNING
+    state-2: Pushed to # SUCCESS
+    state-3: Failed to push to # ERROR
+
+project-init-running:
+  title:
+    prefix: Initializing project from
+  cli:
+    prefix: Initialization taking a long time? Try running
+    suffix: from the CLI
+  more-help:
+    prefix: For more help getting started, refer to the
+    link-label: Waypoint documentation
+
+project-init-error:
+  title:
+    prefix: Failed to initialize project from
+  error-message:
+    title: Error
+  more-help:
+    prefix: For more help getting started, refer to the
+    link-label: Waypoint documentation
+
+resource-detail:
+  overview:
+    heading: Overview
+    health: Health
+    created: Created
+    labels: Labels
+    image: Image
+  state-json:
+    heading: State JSON
+
+section:
+  expand: Expand section
+  collapse: Collapse section
+
+image-ref:
+  copy-button-title: Copy full digest
+
+workspace-switcher:
+  error: Failed to load workspaces

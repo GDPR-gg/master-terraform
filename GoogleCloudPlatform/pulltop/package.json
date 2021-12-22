@@ -1,0 +1,25 @@
+{
+    "name": "pulltop",
+    "version": "0.0.4",
+    "files": [
+        "pulltop.js"
+    ],
+    "description": "CLI Google Cloud Pub/Sub subscriber and console logger",
+    "license": "Apache-2.0",
+    "author": "Google Inc.",
+    "engines": {
+        "node": ">=14"
+    },
+    "repository": "https://github.com/GoogleCloudPlatform/pulltop",
+    "dependencies": {
+        "@google-cloud/pubsub": "^1.7.2",
+        "uuid": "^3.1.0",
+        "minimist": "^1.2.5"
+    },
+    "bin": {
+        "pulltop": "./pulltop.js"
+    },
+    "publishConfig": {
+        "registry": "https://wombat-dressing-room.appspot.com"
+    }
+}

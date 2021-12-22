@@ -1,0 +1,9 @@
+.*
+!.gitignore
+!.gcloud
+.idea
+*.iml
+/site/public/*
+/site/*.json
+/public
+__pycache__/

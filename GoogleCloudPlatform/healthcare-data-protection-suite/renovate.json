@@ -1,0 +1,23 @@
+{
+  "extends": [
+    "config:base"
+  ],
+  "ignorePaths": [],
+  "packageRules": [
+    {
+      "managers": ["regex", "terraform"],
+      "groupName": "terraform",
+      "schedule": ["every 3 months on the first day of the month"]
+    }
+  ],
+  "regexManagers": [
+    {
+      "fileMatch": ["\\.tf$"],
+      "matchStrings": [
+        "source\\s+=\\s+\"(?<depName>.+?)(//.+|\")\\s+version\\s+=\\s+\"(?<currentValue>.+?)\""
+      ],
+      "datasourceTemplate": "terraform-module",
+      "versioningTemplate": "hashicorp"
+    }
+  ]
+}

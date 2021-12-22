@@ -1,0 +1,66 @@
+{
+  "pathwayTitle": "Learn HashiCorp Vault",
+  "title": "Vault Encryption as a Service",
+  "description": "Learn how to leverage Vault's Transit secrets engine to encrypt your secrets.",
+  "difficulty": "beginner",
+  "time": "5 minutes",
+  "icon": "fa-vault",
+  "details": {
+    "steps": [
+      {
+        "title": "Configure Transit Secrets Engine",
+        "text": "step1.md",
+        "code": "terminal.sh",
+        "courseData": "courseBase.sh"
+      },
+      {
+        "title": "Encrypt Secret",
+        "text": "step2.md"
+      },
+      {
+        "title": "Rotate the Encryption Key",
+        "text": "step3.md"
+      },
+      {
+        "title": "Rewrap Data",
+        "text": "step4.md"
+      },
+      {
+        "title": "Update Key Configuration",
+        "text": "step5.md"
+      },
+      {
+        "title": "Explore the Vault UI",
+        "text": "step6.md"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "credits": "https://learn.hashicorp.com/vault"
+    },
+    "assets": {
+      "host01": [
+        {
+          "file": "apps-policy.hcl",
+          "target": "~/"
+        }
+      ]
+    },
+    "finish": {
+      "text": "finish.md",
+      "credits": "https://learn.hashicorp.com/vault"
+    }
+  },
+  "environment": {
+    "showdashboard": true,
+    "uilayout": "terminal",
+    "dashboards": [
+      { "name": "Vault UI", "port": 8200 }
+    ],
+    "uimessage1": "\u001b[32mYour Interactive Bash Terminal. A safe place to learn and execute commands.\u001b[m\r\n"
+  },
+  "backend": {
+    "imageid": "hashicorp-hashistack"
+  },
+  "private": true
+}

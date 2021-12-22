@@ -1,0 +1,140 @@
+<!-- 
+Copyright 2020 Google LLC
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    https://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>App Engine to Cloud Run</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Helper tool to migrate an App Engine service to a Cloud Run service.">
+  <meta name="theme-color" content="#1c74e9">
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/svg+xml" href="images/cloud-run.svg">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="App Engine to Cloud Run">
+  <meta name="twitter:description" content="Helper tool to migrate an App Engine service to a Cloud Run service.">
+  <meta name="twitter:image" content="https://googlecloudplatform.github.io/app-engine-cloud-run-converter/images/app-engine-to-cloud-run.png">
+
+  <meta property="og:type" content="profile">
+  <meta property="og:title" content="App Engine to Cloud Run">
+  <meta property="og:description" content="Helper tool to migrate an App Engine service to a Cloud Run service.">
+  <meta property="og:url" content="https://googlecloudplatform.github.io/app-engine-cloud-run-converter/">
+  <meta property="og:image" content="https://googlecloudplatform.github.io/app-engine-cloud-run-converter/images/app-engine-to-cloud-run.png">
+
+  <script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "SoftwareApplication",
+    "url": "https://googlecloudplatform.github.io/app-engine-cloud-run-converter",
+    "name": "App Engine to Cloud Run",
+    "abstract": "Helper tool to migrate an App Engine service to a Cloud Run service.",
+    "image": "https://googlecloudplatform.github.io/app-engine-cloud-run-converter/images/app-engine-to-cloud-run.png"
+  }
+  </script>
+</head>
+
+<body>
+<header>
+  <h1>App Engine to Cloud Run</h1>
+  <p>Helper tool to migrate an App Engine service to a Cloud Run service.</p>
+  <p>Data is never uploaded. All processing is happening client side in your browser. This tool is <a href="https://github.com/GoogleCloudPlatform/app-engine-cloud-run-converter">on GitHub</a>, feel free to <a href="https://github.com/GoogleCloudPlatform/app-engine-cloud-run-converter/issues">report issues</a>.</p>
+  <p class="disclaimer">This is not an officially supported Google product.</p>
+</header>
+
+<main>
+  <div class="group">
+    <h2 class="gae">Your App Engine service</h2>
+    <p>Provide details of your App Engine configuration:</p>
+    <form id="gae">
+        <label for="appyaml"><code>app.yaml</code>:</label>
+        <textarea id="appyaml" class="file yaml input" spellcheck="false">
+runtime: nodejs10
+service: my-service
+
+instance_class: F2
+
+handlers:
+- url: /.*
+  script: auto
+  secure: always
+  redirect_http_response_code: 301
+
+env_variables:
+  LIMIT: 100
+  QUEUE_ID: 'emails'
+
+automatic_scaling:
+  max_concurrent_requests: 80
+  max_instances: 10
+        </textarea>
+
+        <label for="project-id">GCP Project ID:</label>
+        <input type="text" id="project-id" name="project-id" class="input">
+
+        <label for="region">App Engine region:</label>
+        <input type="text" id="region" name="region" class="input">
+
+        <label for="gae-cloudsql-use">
+        <input type="checkbox" id="gae-cloudsql-use" name="gae-cloudsql-use" class="input">
+        I use Cloud SQL
+        </label>
+
+        <div id="gae-cloudsql-instance-container" style="display: none;">
+        <label for="gae-cloudsql-instance">Cloud SQL instance name:</label>
+        <input type="text" id="gae-cloudsql-instance" name="gae-cloudsql-instance" class="input">
+        </div>
+    </form>
+  </div>
+
+  <div class="group">
+    <h2 class="run">Migrating to Cloud Run</h2>
+
+    <ul id="warnings" style="display: none;">
+    </ul>
+
+    <div id="to-run">
+
+        <div id="dockerfile-container" style="display: none;">
+            <p>Create a file named <code>Dockerfile</code> at the root of your source tree, with the following content:</p>
+            <label for="dockerfile"><code>Dockerfile</code>:</label>
+            <textarea id="dockerfile" class="file"></textarea>
+        </div>
+
+        <div id="procfile-container" style="display: none;">
+          <p>Create a file named <code>Procfile</code> at the root of your source tree, with the following content:</p>
+          <label for="procfile"><code>Procfile</code>:</label>
+          <textarea id="procfile" class="file"></textarea>
+        </div>
+
+        <p>Create a file named <code>service.yaml</code> with the following content:</p>
+        <label for="serviceyaml"><code>service.yaml</code>:</label>
+        <textarea id="serviceyaml" class="yaml file" spellcheck="false"></textarea>
+
+        <p>To build and deploy to Cloud Run, run the following command:</p>
+        <pre><code id="gcloud"></code></pre>
+
+        <p>Contrary to App Engine, Cloud Run services are private by default. To make your new service public, you need to run the following command once:</p>
+        <pre><code id="make-public"></code></pre>
+
+    </div>
+  </div>
+
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/3.13.1/js-yaml.min.js"></script>
+<script type="module" src="index.js"></script>
+</body></html>

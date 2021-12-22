@@ -1,0 +1,13 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['pull', '$_ASDF_BASE_IMAGE:$_TAG']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['tag', '$_ASDF_BASE_IMAGE:$_TAG', 'elixir-asdf']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', '$_IMAGE:$_TAG',
+           '--build-arg', 'erlang_version=$_ERLANG_VERSION',
+           '--build-arg', 'elixir_version=$_ELIXIR_VERSION',
+           '.']
+
+images:
+  - '$_IMAGE:$_TAG'

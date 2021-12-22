@@ -1,0 +1,21 @@
+{
+  "name": "@hashicorp/react-tabs",
+  "description": "Display content in a tabbed interface",
+  "version": "7.1.1",
+  "author": "HashiCorp",
+  "contributors": ["Zach Shilton"],
+  "dependencies": {
+    "@hashicorp/react-inline-svg": "^6.0.1",
+    "@reach/portal": "^0.16.0",
+    "@reach/tooltip": "^0.16.0",
+    "classnames": "^2.3.1"
+  },
+  "peerDependencies": {
+    "@hashicorp/mktg-global-styles": ">=3.x",
+    "react": ">=16.x"
+  },
+  "license": "MPL-2.0",
+  "publishConfig": {
+    "access": "public"
+  }
+}

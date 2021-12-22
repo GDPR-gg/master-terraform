@@ -1,0 +1,82 @@
+# Copyright 2020 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: "common"
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  markdown-lint:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
+
+    - name: Set up Ruby 2.7
+      uses: actions/setup-ruby@v1
+      with:
+        ruby-version: 2.7
+
+    - name: Install markdown lint
+      run: gem install mdl
+
+    - name: Run markdown lint
+      run: mdl -v $GITHUB_WORKSPACE
+
+  license-check:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
+    - uses: actions/setup-go@v2
+      with:
+        go-version: '1.13'
+    - run: go get -u github.com/google/addlicense
+    - run: addlicense -check .
+      
+  backend-lint:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
+    - uses: actions/setup-go@v2
+      with:
+        go-version: '1.13'
+    - id: gofmt
+      run: |
+        GOFMT_OUT=$(gofmt -l ./backend)
+        if [ -z "${GOFMT_OUT}" ]
+        then
+          echo "All files formatted correctly!"
+        else
+          gofmt -d ./backend
+          exit 1
+        fi
+
+  backend-unittest:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
+    - uses: actions/setup-go@v2
+      with:
+        go-version: '1.13'
+    - run: touch env.mk
+    - run: make test-backend-local

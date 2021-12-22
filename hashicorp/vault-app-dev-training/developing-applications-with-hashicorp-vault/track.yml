@@ -1,0 +1,18 @@
+slug: developing-applications-with-hashicorp-vault
+id: dnax3rlfjgbs
+type: track
+title: Developing Applications with HashiCorp Vault
+teaser: A short description of the track.
+description: |-
+  A long description of the track.
+
+  You can use any GitHub flavoured markdown.
+icon: https://storage.googleapis.com/instruqt-frontend/assets/hashicorp/tracks/vault.png
+tags: []
+owner: hashicorp
+developers:
+- jackson.nic@gmail.com
+private: false
+published: false
+challenges: []
+checksum: "15792584221957691051"

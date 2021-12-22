@@ -1,0 +1,63 @@
+{
+  "name": "@google-cloud/debug-proxy-common",
+  "version": "0.2.1",
+  "author": "Google LLC",
+  "description": "Common module for Stackdriver Debugger proxies",
+  "main": "./build/src/index.js",
+  "types": "./build/src/index.d.ts",
+  "repository": "github:GoogleCloudPlatform/cloud-debug-proxy-common",
+  "keywords": [
+    "google",
+    "cloud",
+    "google cloud",
+    "google cloud platform",
+    "debugger",
+    "debug",
+    "stackdriver debug",
+    "stackdriver",
+    "common",
+    "proxy",
+    "library",
+    "module"
+  ],
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=6"
+  },
+  "devDependencies": {
+    "@types/mocha": "^5.2.5",
+    "@types/nock": "^9.3.0",
+    "@types/node": "^10.7.1",
+    "@types/p-limit": "^2.0.0",
+    "assert-rejects": "^1.0.0",
+    "codecov": "^3.0.4",
+    "gts": "^0.9.0",
+    "hard-rejection": "^1.0.0",
+    "js-green-licenses": "^0.5.0",
+    "mocha": "^6.0.0",
+    "nock": "^10.0.0",
+    "nyc": "^13.0.0",
+    "source-map-support": "^0.5.8",
+    "typescript": "3.3.x"
+  },
+  "dependencies": {
+    "google-auth-library": "^2.0.0",
+    "googleapis": "^36.0.0",
+    "p-limit": "^2.0.0"
+  },
+  "scripts": {
+    "check": "gts check",
+    "clean": "gts clean",
+    "fix": "gts fix",
+    "license-check": "jsgl --local .",
+    "compile": "tsc -p .",
+    "codecov": "nyc report --reporter=json && codecov -f coverage/*.json",
+    "prepack": "npm run compile",
+    "pretest": "npm run compile",
+    "test": "nyc mocha ./build/test/",
+    "posttest": "npm run check && npm run license-check"
+  },
+  "files": [
+    "build/src"
+  ]
+}

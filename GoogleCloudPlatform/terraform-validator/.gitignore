@@ -1,0 +1,20 @@
+# Builds
+bin/
+release/
+
+# Sensitive
+credentials.json
+
+# Terraform (possibly sensitive)
+.terraform/
+*.tfplan
+examples/*.tfstate*
+
+# Visual Studio Code
+.vscode/
+# Intellij Golang
+.idea/
+
+# Mac OSX
+.DS_Store
+

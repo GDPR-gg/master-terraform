@@ -1,0 +1,89 @@
+name: Tests
+on: [ push ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - uses: DeLaGuardo/setup-clj-kondo@master
+        with:
+          version: '2021.03.31'
+
+      - name: Run clj-kondo
+        run: |
+          clj-kondo --lint src --config '{:output {:pattern "::{{level}} file={{filename}},line={{row}},col={{col}}::{{message}}"}}'
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install babashka
+        run: sudo ./bin/install_babashka.sh --version 0.3.5
+
+      - name: Unit Tests
+        run: make test
+
+      - name: Integration Tests
+        id: integration-tests
+        run: make integration-test
+        env:
+          BABASHKA_CLASSPATH: src
+          INPUT_BUMP_VERSION_SCHEME: minor
+          INPUT_TAG_PREFIX: v
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check Output Parameters
+        run: |
+          echo "Got tag version ${{ steps.integration-tests.outputs.tag_name }}"
+          echo "Got version ${{ steps.integration-tests.outputs.version }}"
+          echo "Got body ${{ steps.integration-tests.outputs.body }}"
+
+      - name: Container Builds
+        run: docker build . -t rymndhng/release-on-push-action
+
+      - name: Container Test
+        run: docker run -e INPUT_BUMP_VERSION_SCHEME -e INPUT_TAG_PREFIX -e GITHUB_SHA -e GITHUB_REPOSITORY -e GITHUB_TOKEN rymndhng/release-on-push-action --dry-run
+        env:
+          INPUT_BUMP_VERSION_SCHEME: minor
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          INPUT_TAG_PREFIX: v
+
+      - name: Container Test with Release Notes
+        run: docker run -e INPUT_BUMP_VERSION_SCHEME -e INPUT_TAG_PREFIX -e GITHUB_SHA -e GITHUB_REPOSITORY -e GITHUB_TOKEN -e INPUT_RELEASE_BODY rymndhng/release-on-push-action --dry-run
+        env:
+          INPUT_RELEASE_BODY: |
+            This is a test
+            with multi-line input
+
+            Does it work?
+          INPUT_BUMP_VERSION_SCHEME: minor
+          INPUT_TAG_PREFIX: v
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Container Test with no prefix
+        run: docker run -e INPUT_BUMP_VERSION_SCHEME -e INPUT_TAG_PREFIX -e GITHUB_SHA -e GITHUB_REPOSITORY -e GITHUB_TOKEN -e INPUT_RELEASE_BODY rymndhng/release-on-push-action --dry-run
+        env:
+          INPUT_RELEASE_BODY: |
+            This is a test
+            with multi-line input
+
+            Does it work?
+          INPUT_BUMP_VERSION_SCHEME: minor
+          INPUT_TAG_PREFIX:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Disable me if needed to debug curl/post action
+  # create-prerelease:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: rymndhng/release-on-push-action@debug-npe
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #         CREATE_DRAFT: true
+  #       with:
+  #         bump_version_scheme: patch

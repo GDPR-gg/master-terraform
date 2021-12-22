@@ -1,0 +1,55 @@
+{
+  "pathwayTitle": "Learn HashiCorp Vault",
+  "title": "[Enterprise] Codify Management of Vault",
+  "description": "Learn how to codify the basic Vault setup operations.",
+  "difficulty": "beginner",
+  "time": "5 minutes",
+  "icon": "fa-vault",
+  "details": {
+    "intro": {
+      "text": "intro.md",
+      "credits": "https://learn.hashicorp.com/vault"
+    },
+    "steps": [
+      {
+        "title": "Configure Vault Enterprise server with namespaces",
+        "text": "step1.md",
+        "courseData": "courseBase.sh"
+      },
+      {
+        "title": "Verification",
+        "text": "step2.md"
+      },
+      {
+        "title": "Clean up",
+        "text": "step3.md"
+      }
+    ],
+    "finish": {
+      "text": "finish.md",
+      "credits": "https://learn.hashicorp.com/vault"
+    },
+    "assets": {
+      "host01": [
+        { "file": "main.tf", "target": "~/" },
+        { "file": "auth.tf", "target": "~/" },
+        { "file": "policies.tf", "target": "~/" },
+        { "file": "secrets.tf", "target": "~/" },
+        { "file": "/policies/admin-policy.hcl", "target": "~/policies" },
+        { "file": "/policies/fpe-client-policy.hcl", "target": "~/policies" }
+      ]
+    }
+  },
+  "environment": {
+    "uilayout": "editor-terminal",
+    "hideHiddenFiles": true,
+    "showdashboard": true,
+    "dashboards": [{ "name": "Vault UI", "port": 8200 }],
+    "uimessage1": "\u001b[32mYour Interactive Bash Terminal. A safe place to learn and execute commands.\u001b[m\r\n"
+  },
+  "backend": {
+    "imageid": "hashicorp-hashistack-ent",
+    "lifetime": 30
+  },
+  "private": true
+}

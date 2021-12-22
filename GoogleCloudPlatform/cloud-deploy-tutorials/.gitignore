@@ -1,0 +1,17 @@
+# Ignore common Terraform files
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+crash.log
+*.tfvars
+*tfplan*
+
+# Ignore generated files
+main.tf
+
+# Ignore app code directories
+web/
+web-profiles/
+
+# Ignore generated files
+clouddeploy-config/*.yaml

@@ -1,0 +1,34 @@
+# These owners will be the default owners for everything in
+# the repo. Unless a later match takes precedence,
+# @global-owner1 and @global-owner2 will be requested for
+# review when someone opens a pull request.
+# Our Global Owners: @dizcology @sirtorry @andrewferlitsch @lucaswadedavis @vinnysenthil @telpirion @aribray @ivanmkc @morgandu
+*       @GoogleCloudPlatform/cloudml-samples-owners
+
+# Datasets Subfolder
+/datasets @aribray @sirtorry
+
+# Notebooks Subfolder
+/notebooks @sirtorry @thedriftofwords
+/notebooks/official/model-monitoring @mco-gh
+
+# Prediction Subfolder
+# /prediction/pytorch @
+# /prediction/sklearn @
+# /prediction/tensorflow @
+# /predition/xgboost @
+
+# Quickstart Subfolder
+# /quickstart @
+
+# Setup Subfolder
+# /setup @
+
+# Training Subfolder
+# /training/pytorch @
+# /training/sklearn @
+# /training/tensorflow @
+# /training/xgboost @
+
+# READMEs
+# *.md @

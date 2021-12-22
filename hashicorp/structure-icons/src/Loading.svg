@@ -1,0 +1,6 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="structure-icon-loading">
+  <g stroke="black" stroke-width="3">
+    <path class="structure-icon-loading-progress" d="M12 5L18 8V16L12 19L6 16V8L12 5Z"/>
+    <path class="structure-icon-loading-base" d="M12 5L18 8V16L12 19L6 16V8L12 5Z"/>
+  </g>
+</svg>

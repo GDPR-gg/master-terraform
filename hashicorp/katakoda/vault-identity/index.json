@@ -1,0 +1,65 @@
+{
+  "pathwayTitle": "Learn HashiCorp Vault",
+  "title": "Vault Identity - Entities & Groups",
+  "description": "Learn how to create entities and groups in Vault.",
+  "difficulty": "beginner",
+  "time": "10 minutes",
+  "icon": "fa-vault",
+  "details": {
+    "steps": [
+      {
+        "title": "Create Users",
+        "text": "step1.md",
+        "code": "terminal.sh",
+        "courseData": "courseBase.sh"
+      },
+      {
+        "title": "Create an Entity",
+        "text": "step2.md"
+      },
+      {
+        "title": "Test the Entity",
+        "text": "step3.md"
+      },
+      {
+        "title": "Create an Internal Group",
+        "text": "step4.md"
+      },
+      {
+        "title": "Test the Internal Group",
+        "text": "step5.md"
+      },
+      {
+        "title": "Challenge: Create an External Group",
+        "text": "step6.md"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "credits": "https://learn.hashicorp.com/vault"
+    },
+    "assets": {
+      "host01": [
+        { "file": "base.hcl", "target": "~/" },
+        { "file": "test.hcl", "target": "~/" },
+        { "file": "team-eng.hcl", "target": "~/" },
+        { "file": "team-qa.hcl", "target": "~/" }
+      ]
+    },
+    "finish": {
+      "text": "finish.md",
+      "credits": "https://learn.hashicorp.com/vault"
+    }
+  },
+  "environment": {
+    "showdashboard": true,
+    "uilayout": "editor-terminal",
+    "hideHiddenFiles": true,
+    "uimessage1": "\u001b[32mYour Interactive Bash Terminal. A safe place to learn and execute commands.\u001b[m\r\n"
+  },
+  "backend": {
+    "imageid": "hashicorp-hashistack",
+    "lifetime": 30
+  },
+  "private": true
+}

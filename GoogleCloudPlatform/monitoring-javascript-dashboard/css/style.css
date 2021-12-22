@@ -1,0 +1,59 @@
+body {
+  padding-top: 60px;
+}
+
+label {
+  display: inline;
+}
+
+input {
+  width: 150px;
+  margin: 0 5px;
+}
+
+#project-id:hover {
+  background-color: yellow;
+}
+
+#project-info {
+  margin-bottom: 20px;
+}
+
+#slider {
+  width: 400px;
+  margin-top: 5px;
+}
+
+.chartContainer {
+  clear: both;
+  margin: 40px 0 25px 0;
+  height: 500px;
+  width: 1350px;
+}
+
+.error {
+  width: 1350px;
+}
+
+.chart {
+  float: left;
+  margin-right: 15px;
+}
+
+.legend {
+  float: left;
+}
+
+.search {
+  background-image: url('../images/search.png');
+  width: 12px;
+  height: 12px;
+  float: left;
+  margin-left: 15px;
+}
+
+.chartLabelForm {
+  display: none;
+  margin-left: 15px;
+  float: left;
+}

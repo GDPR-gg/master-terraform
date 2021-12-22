@@ -1,0 +1,47 @@
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args: ['build', '-t', 'gcr.io/${_GOOGLE_PROJECT_ID}/ubuntu-package-builder', '.']
+    waitFor: ['-']
+    id: ubuntu-package-builder
+
+  # create local directories for the rsync
+  - name: gcr.io/google-appengine/debian8
+    args: ['mkdir', '-p', '/workspace/pkg/libraries', '/workspace/pkg/${_PHP_VERSION}']
+    waitFor: ['-']
+    id: artifact-dirs
+
+  # create gs folders if necessary or rsync fails
+  - name: google/cloud-sdk:251.0.0-slim
+    args: ['gsutil', 'cp', '/workspace/pkg/.gitkeep', 'gs://${_BUCKET}/ubuntu-packages/libraries/']
+    waitFor: ['-']
+    id: ensure-libraries-folder
+  - name: google/cloud-sdk:251.0.0-slim
+    args: ['gsutil', 'cp', '/workspace/pkg/.gitkeep', 'gs://${_BUCKET}/ubuntu-packages/${_PHP_VERSION}/']
+    waitFor: ['-']
+    id: ensure-packages-folder
+
+  # rsync already created packages so we don't rebuild
+  - name: google/cloud-sdk:251.0.0-slim
+    args: ['gsutil', '-m', 'rsync', 'gs://${_BUCKET}/ubuntu-packages/libraries', '/workspace/pkg/libraries']
+    waitFor: ['artifact-dirs', 'ensure-libraries-folder']
+    id: import-libraries
+  - name: google/cloud-sdk:251.0.0-slim
+    args: ['gsutil', '-m', 'rsync', 'gs://${_BUCKET}/ubuntu-packages/${_PHP_VERSION}', '/workspace/pkg/${_PHP_VERSION}']
+    waitFor: ['artifact-dirs', 'ensure-packages-folder']
+    id: import-packages
+
+  # build the packages
+  - name: gcr.io/${_GOOGLE_PROJECT_ID}/ubuntu-package-builder
+    args: ['${_PHP_VERSION}']
+    waitFor: ['ubuntu-package-builder', 'import-libraries', 'import-packages']
+    id: package-build
+
+  # export artifacts to gs
+  - name: google/cloud-sdk:251.0.0-slim
+    args: ['gsutil', '-m', 'rsync', '/workspace/pkg/libraries/', 'gs://${_BUCKET}/ubuntu-packages/libraries/']
+    waitFor: ['package-build']
+    id: 'export-libraries'
+  - name: google/cloud-sdk:251.0.0-slim
+    args: ['gsutil', '-m', 'rsync', '/workspace/pkg/${_PHP_VERSION}/', 'gs://${_BUCKET}/ubuntu-packages/${_PHP_VERSION}/']
+    waitFor: ['package-build']
+    id: 'export-packages'

@@ -1,0 +1,109 @@
+# Copyright 2020 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+stages:
+- vet
+- prepare
+- read
+- validate
+
+Vet staging-us-west2:
+  stage: vet
+  image: gcr.io/config-management-release/nomos:v1.2.0-rc.60
+  tags:
+  - app:acm-tests
+  - cluster:staging-us-west2
+  variables:
+    USER: root
+    KUBECONFIG: kubeconfig
+  script:
+  - sh generate_config.sh
+  - nomos version
+  - nomos status
+  - nomos vet
+
+Vet prod-us-central1:
+  stage: vet
+  image: gcr.io/config-management-release/nomos:v1.2.0-rc.60
+  tags:
+  - app:acm-tests
+  - cluster:prod-us-central1
+  variables:
+    USER: root
+    KUBECONFIG: kubeconfig
+  script:
+  - sh generate_config.sh
+  - nomos version
+  - nomos status
+  - nomos vet
+
+Vet prod-us-east1:
+  stage: vet
+  image: gcr.io/config-management-release/nomos:v1.2.0-rc.60
+  tags:
+  - app:acm-tests
+  - cluster:prod-us-east1
+  variables:
+    USER: root
+    KUBECONFIG: kubeconfig
+  script:
+  - sh generate_config.sh
+  - nomos version
+  - nomos status
+  - nomos vet
+
+Prepare:
+  stage: prepare
+  image: gcr.io/config-management-release/nomos:v1.2.0-rc.60
+  tags:
+  - app:acm-tests
+  variables:
+    USER: root
+    KUBECONFIG: kubeconfig
+  script:
+  - sh generate_config.sh
+  - nomos hydrate --path . --output ./hydrated-configs
+  artifacts:
+    paths:
+    - hydrated-configs/
+    expire_in: 1 hour
+
+Read YAML:
+  stage: read
+  image: gcr.io/kpt-functions/read-yaml
+  tags:
+  - app:acm-tests
+  script:
+  - |
+    cat <<EOF >./kpt.yaml
+    apiVersion: v1
+    kind: ConfigMap
+    data:
+      source_dir: $(pwd)/hydrated-configs
+    metadata:
+      name: my-config
+    EOF
+  - node /home/node/app/dist/read_yaml_run.js -f kpt.yaml --output source.yaml
+  artifacts:
+    paths:
+    - source.yaml
+    expire_in: 1 hour
+
+Validate:
+  stage: validate
+  image: gcr.io/kpt-functions/gatekeeper-validate
+  tags:
+  - app:acm-tests
+  script:
+  - /app/gatekeeper_validate --input source.yaml

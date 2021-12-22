@@ -1,0 +1,80 @@
+#!/bin/bash
+
+set -CeEu
+set -o pipefail
+
+SPATH="$(readlink -f "$0")"
+SDIR="$(dirname "${SPATH}")"
+# shellcheck source=common.sh
+. "${SDIR}/common.sh"
+cd "${SDIR}"
+
+setup_cluster() {
+  local cluster; cluster="$1"
+
+  RESULT="$(gcloud container clusters list \
+    --project="${LT_PROJECT_ID}" \
+    --filter="name = ${cluster} and location = ${LT_CLUSTER_LOCATION}" \
+    --format="value(name)" || true)"
+
+  OUTPUT_DIR=$(mktemp -d)
+  if [[ -n "${RESULT}" ]]; then
+    echo "Long term test cluster ${cluster} exists already."
+
+    ../asmcli \
+      print-config \
+      -l "${LT_CLUSTER_LOCATION}" \
+      -n "${cluster}" \
+      -p "${LT_PROJECT_ID}" \
+      -D "${OUTPUT_DIR}" > /dev/null
+
+    configure_kubectl "${cluster}" "${LT_PROJECT_ID}" "${LT_CLUSTER_LOCATION}"
+    kubectl delete validatingwebhookconfiguration istiod-istio-system || true
+    cleanup_old_test_namespaces "${OUTPUT_DIR}"
+  else
+    echo "Creating long term test cluster ${cluster}"
+    gcloud beta container \
+      --project "${LT_PROJECT_ID}" \
+      clusters create "${cluster}" \
+      \
+      --zone "${LT_CLUSTER_LOCATION}" \
+      --no-enable-basic-auth \
+      --release-channel "regular" \
+      --machine-type "e2-standard-4" \
+      --image-type "COS" \
+      --disk-type "pd-standard" \
+      --disk-size "100" \
+      --metadata disable-legacy-endpoints=true \
+      --scopes "https://www.googleapis.com/auth/devstorage.read_only","https://www.googleapis.com/auth/logging.write","https://www.googleapis.com/auth/monitoring","https://www.googleapis.com/auth/servicecontrol","https://www.googleapis.com/auth/service.management.readonly","https://www.googleapis.com/auth/trace.append" \
+      --num-nodes "4" \
+      --enable-stackdriver-kubernetes \
+      --enable-ip-alias \
+      --network "projects/${LT_PROJECT_ID}/global/networks/default" \
+      --subnetwork "projects/${LT_PROJECT_ID}/regions/us-central1/subnetworks/default" \
+      --default-max-pods-per-node "110" \
+      --enable-autoscaling \
+      --min-nodes "4" \
+      --max-nodes "100" \
+      --no-enable-master-authorized-networks \
+      --addons HorizontalPodAutoscaling,HttpLoadBalancing \
+      --enable-autoupgrade \
+      --enable-autorepair \
+      --max-surge-upgrade 1 \
+      --max-unavailable-upgrade 0 \
+      --workload-pool "${LT_PROJECT_ID}.svc.id.goog" \
+      --enable-shielded-nodes
+  fi
+
+  echo "Performing necessary cluster setup on ${cluster}"
+
+  _CI_I_AM_A_TEST_ROBOT=1 \
+  ../asmcli \
+    install \
+    -l "${LT_CLUSTER_LOCATION}" \
+    -n "${cluster}" \
+    -p "${LT_PROJECT_ID}" \
+    --only-enable -e -v
+}
+
+setup_cluster "${LT_CLUSTER_NAME}"
+setup_cluster "long-term-test-cluster-environ"

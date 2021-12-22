@@ -1,0 +1,116 @@
+<% wrap_layout :inner do %>
+  <% content_for :sidebar do %>
+    <div class="docs-sidebar hidden-print affix-top" role="complementary">
+      <ul class="nav docs-sidenav">
+        <li<%= sidebar_current("docs-home") %>>
+          <a href="/docs/providers/index.html">All Providers</a>
+        </li>
+
+        <li<%= sidebar_current("docs-linode-index") %>>
+          <a href="/docs/providers/linode/index.html">Linode Provider</a>
+        </li>
+
+        <li<%= sidebar_current("docs-linode-datasource") %>>
+          <a href="#">Data Sources</a>
+          <ul class="nav nav-visible">
+            <li<%= sidebar_current("docs-linode-datasource-account") %>>
+              <a href="/docs/providers/linode/d/account.html">linode_account</a>
+            </li>
+            <li<%= sidebar_current("docs-linode-datasource-domain") %>>
+              <a href="/docs/providers/linode/d/domain.html">linode_domain</a>
+            </li>
+            <li<%= sidebar_current("docs-linode-datasource-domain_record") %>>
+              <a href="/docs/providers/linode/d/domain_record.html">linode_domain_record</a>
+            </li>
+            <li<%= sidebar_current("docs-linode-datasource-image") %>>
+              <a href="/docs/providers/linode/d/image.html">linode_image</a>
+            </li>
+            <li<%= sidebar_current("docs-linode-datasource-instance-type") %>>
+              <a href="/docs/providers/linode/d/instance_type.html">linode_instance_type</a>
+            </li>
+            <li<%= sidebar_current("docs-linode-datasource-networking-ip") %>>
+              <a href="/docs/providers/linode/d/networking_ip.html">linode_networking_ip</a>
+            </li>
+            <li<%= sidebar_current("docs-linode-datasource-object-storage-cluster") %>>
+              <a href="/docs/providers/linode/d/object_storage_cluster.html">linode_object_storage_cluster</a>
+            </li>
+            <li<%= sidebar_current("docs-linode-datasource-profile") %>>
+              <a href="/docs/providers/linode/d/profile.html">linode_profile</a>
+            </li>
+            <li<%= sidebar_current("docs-linode-datasource-region") %>>
+              <a href="/docs/providers/linode/d/region.html">linode_region</a>
+            </li>
+            <li<%= sidebar_current("docs-linode-datasource-sshkey") %>>
+              <a href="/docs/providers/linode/d/sshkey.html">linode_sshkey</a>
+            </li>
+            <li<%= sidebar_current("docs-linode-resource-stackscript") %>>
+              <a href="/docs/providers/linode/d/stackscript.html">linode_stackscript</a>
+            </li>
+            <li<%= sidebar_current("docs-linode-datasource-user") %>>
+              <a href="/docs/providers/linode/d/user.html">linode_user</a>
+            </li>
+            <li<%= sidebar_current("docs-linode-datasource-volume") %>>
+              <a href="/docs/providers/linode/d/volume.html">linode_volume</a>
+            </li>
+          </ul>
+        </li>
+
+        <li<%= sidebar_current("docs-linode-resource") %>>
+          <a href="#">Resources</a>
+          <ul class="nav nav-visible">
+            <li<%= sidebar_current("docs-linode-resource-domain") %>>
+              <a href="/docs/providers/linode/r/domain.html">linode_domain</a>
+            </li>
+            <li<%= sidebar_current("docs-linode-resource-domain_record") %>>
+              <a href="/docs/providers/linode/r/domain_record.html">linode_domain_record</a>
+            </li>
+            <li<%= sidebar_current("docs-linode-resource-firewall") %>>
+              <a href="/docs/providers/linode/r/firewall.html">linode_firewall</a>
+            </li>
+            <li<%= sidebar_current("docs-linode-resource-image") %>>
+              <a href="/docs/providers/linode/r/image.html">linode_image</a>
+            </li>
+            <li<%= sidebar_current("docs-linode-resource-instance") %>>
+              <a href="/docs/providers/linode/r/instance.html">linode_instance</a>
+            </li>
+            <li<%= sidebar_current("docs-linode-resource-lke-cluster") %>>
+              <a href="/docs/providers/linode/r/lke_cluster.html">linode_lke_cluster</a>
+            </li>
+            <li<%= sidebar_current("docs-linode-resource-nodebalancer") %>>
+              <a href="/docs/providers/linode/r/nodebalancer.html">linode_nodebalancer</a>
+            </li>
+            <li<%= sidebar_current("docs-linode-resource-nodebalancer_config") %>>
+              <a href="/docs/providers/linode/r/nodebalancer_config.html">linode_nodebalancer_config</a>
+            </li>
+            <li<%= sidebar_current("docs-linode-resource-nodebalancer_node") %>>
+              <a href="/docs/providers/linode/r/nodebalancer_node.html">linode_nodebalancer_node</a>
+            </li>
+            <li<%= sidebar_current("docs-linode-resource-object-storage-bucket") %>>
+              <a href="/docs/providers/linode/r/object_storage_bucket.html">linode_object_storage_bucket</a>
+            </li>
+            <li<%= sidebar_current("docs-linode-resource-object-storage-key") %>>
+              <a href="/docs/providers/linode/r/object_storage_key.html">linode_object_storage_key</a>
+            </li>
+            <li<%= sidebar_current("docs-linode-resource-rdns") %>>
+              <a href="/docs/providers/linode/r/rdns.html">linode_rdns</a>
+            </li>
+            <li<%= sidebar_current("docs-linode-resource-sshkey") %>>
+              <a href="/docs/providers/linode/r/sshkey.html">linode_sshkey</a>
+            </li>
+            <li<%= sidebar_current("docs-linode-resource-stackscript") %>>
+              <a href="/docs/providers/linode/r/stackscript.html">linode_stackscript</a>
+            </li>
+            <li<%= sidebar_current("docs-linode-resource-token") %>>
+              <a href="/docs/providers/linode/r/token.html">linode_token</a>
+            </li>
+            <li<%= sidebar_current("docs-linode-resource-volume") %>>
+              <a href="/docs/providers/linode/r/volume.html">linode_volume</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  <% end %>
+
+  <%= yield %>
+<% end %>

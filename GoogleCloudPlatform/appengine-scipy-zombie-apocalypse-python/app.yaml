@@ -1,0 +1,18 @@
+runtime: python27
+api_version: 1
+threadsafe: true
+vm: true
+
+vm_settings:
+  apt_get_install: python-numpy python-scipy python-matplotlib
+
+handlers:
+
+# Favicon.  Without this, the browser hits this once per page view.
+- url: /favicon.ico
+  static_files: favicon.ico
+  upload: favicon.ico
+
+# Main app.  All the real work is here.
+- url: /.*
+  script: main.APPLICATION

@@ -1,0 +1,11 @@
+language: cpp
+
+before_install:
+  - sudo contrib/travis-install-env.sh
+
+compiler:
+  - gcc
+  - clang
+
+script:
+  - ./configure --with-grpc=/opt/libgrpc && make -j6

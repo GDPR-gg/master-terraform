@@ -1,0 +1,151 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: emojify-cache-configmap
+data:
+  envoy-bootstrap: |
+  consul-config: |
+    services {
+      id   = "${POD_NAME}-emojify-cache"
+      name = "emojify-cache"
+      address = "${POD_IP}"
+      port = 9090
+    
+      connect {
+        sidecar_service {
+          port = 20000
+
+          proxy {
+            local_service_address = "127.0.0.1"
+            local_service_port = 9090
+
+            config {
+              protocol = "http"
+              envoy_statsd_url = "udp://127.0.0.1:9125"
+            }
+          }
+        }
+      }                                          
+                                                       
+      checks {                                         
+        name = "Proxy Public Listener"                 
+        tcp = "${POD_IP}:20000"                        
+        interval = "10s"                               
+        deregister_critical_service_after = "1m"       
+      }                                                
+                                                       
+      checks {                                         
+        name = "Destination Alias"                     
+        alias_service = "emojify-cache"              
+      }                                                
+    }                                                  
+                                                       
+---                                                    
+apiVersion: apps/v1                                    
+kind: Deployment
+metadata:
+  name: emojify-cache
+  labels:
+    app: emojify-cache
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: emojify-cache
+  template:
+    metadata:
+      labels:
+        app: emojify-cache
+      annotations:
+        "prometheus_io_scrape": "true"
+    spec:
+      volumes:
+      - name: envoy-init
+        configMap:
+          name: emojify-cache-configmap
+          items:
+          - key: envoy-bootstrap
+            path: envoy_bootstrap.yaml
+          - key: consul-config
+            path: envoy_consul_config.hcl
+      - name: envoy-config
+        emptyDir: {}
+      containers:
+
+      - name: emojify-cache
+        image: "nicholasjackson/emojify-cache:v0.4.2"
+        env:
+        - name: STATSD_ADDRESS
+          value: localhost:9125
+      
+      - name: envoy-sidecar
+        image: "envoyproxy/envoy-alpine:v1.9.0"
+        command: ["envoy"]
+        ports:
+          - containerPort: 20000
+        volumeMounts:
+        - name: envoy-config
+          mountPath: /consul-init
+          readOnly: true
+        lifecycle:
+          preStop:
+            exec:
+              command: [
+               "sh",
+               "-c",
+               "/consul-init/consul services deregister -http-addr=http://${HOST_IP}:8500 -id=${POD_NAME}-emojify-cache"
+               ]
+        env:
+        - name: HOST_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        resources:
+          limits:
+            memory: 100Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        
+      - name: prometheus-statsd
+        image: prom/statsd-exporter:latest
+        ports:
+          - name: metrics
+            containerPort: 9102
+        resources:
+          limits:
+            memory: 100Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+      
+      initContainers:
+      - name: envoy-init
+        image: "nicholasjackson/envoy-init:latest"
+        imagePullPolicy: Always
+        env:
+        - name: HOST_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        volumeMounts:
+        - name: envoy-config
+          mountPath: /consul-init
+          readOnly: false
+        - name: envoy-init
+          mountPath: /init
+          readOnly: false
+

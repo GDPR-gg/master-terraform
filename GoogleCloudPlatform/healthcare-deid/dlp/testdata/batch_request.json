@@ -1,0 +1,48 @@
+{
+  "deidentifyConfig": {
+    "recordTransformations": {
+      "fieldTransformations": [
+        {
+          "fields": [{"name": "note"}],
+          "infoTypeTransformations": {
+            "transformations": [{
+                "infoTypes": [{"name": "PHONE_NUMBER"},
+                              {"name": "US_CENSUS_NAME"},
+                              {"name": "US_FEMALE_NAME"},
+                              {"name": "US_MALE_NAME"},
+                              {"name": "KnownFirstName"},
+                              {"name": "KnownLastName"},
+                              {"name": "DatasetFirstName"}],
+                "primitiveTransformation": {"replaceWithInfoTypeConfig": {}}
+            }]
+          }
+        }
+      ]
+    }
+  },
+
+  "inspectConfig": {
+    "infoTypes": [{"name": "PHONE_NUMBER"},
+                  {"name": "US_CENSUS_NAME"},
+                  {"name": "US_FEMALE_NAME"},
+                  {"name": "US_MALE_NAME"}],
+    "customInfoTypes": [
+      {"dictionary":
+       {"wordList": {"words": ["Boaty", "Zephod"]}},
+       "infoType": {"name": "DatasetFirstName"}},
+      {"dictionary":
+       {"wordList": {"words": ["Boaty", "Zephod"]}},
+       "infoType": {"name": "KnownFirstName"}},
+      {"dictionary":
+       {"wordList": {"words": ["McBoatface", "Beeblebrox"]}},
+       "infoType": {"name": "KnownLastName"}}]},
+
+  "item": {"table": {
+    "rows": [{"values": [{"stringValue": "text and PID and MORE PID"},
+                         {"stringValue": "111"}, {"integerValue": "1"}]},
+             {"values": [{"stringValue": "note2 text"},
+                         {"stringValue": "222"}, {"integerValue": "2"}]}],
+    "headers": [
+      {"name": "note"}, {"name": "patient_id"}, {"name": "record_number"}]
+  }}
+}

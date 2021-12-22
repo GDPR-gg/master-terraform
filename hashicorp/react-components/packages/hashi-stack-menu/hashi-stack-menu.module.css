@@ -1,0 +1,41 @@
+.hashiStackMenu {
+  width: 100%;
+  background: var(--white);
+  height: 56px;
+}
+
+.nav {
+  composes: g-grid-container from global;
+  height: 100%;
+  display: flex;
+  position: relative;
+  list-style: none;
+}
+
+.logoLink {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  padding: 0.5rem 0.5rem 0.5rem 0; /* no padding on left side to allow for grid container on consumer's end */
+  margin-right: 32px;
+
+  & svg {
+    height: 100%;
+    width: 100%;
+    max-width: 101px;
+  }
+}
+
+.menu {
+  display: none;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: auto;
+
+  @media (min-width: 960px) {
+    display: flex;
+    justify-content: space-between;
+  }
+}

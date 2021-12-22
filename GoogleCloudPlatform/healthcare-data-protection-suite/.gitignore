@@ -1,0 +1,25 @@
+# Binaries for the DPT tools, but not similarly-named directories.
+**/policygen*
+!**/policygen/
+
+**/tfengine*
+!**/tfengine/
+
+**/tfimport*
+!**/tfimport/
+
+# Default engine cache dir.
+.tfengine/
+
+# Bundled templates.
+*.tar.gz
+
+# Local .terraform directories
+**/.terraform/*
+
+# Dependency Lock File
+.terraform.lock.hcl
+
+# Terraform state
+*.tfstate
+*.tfstate.*

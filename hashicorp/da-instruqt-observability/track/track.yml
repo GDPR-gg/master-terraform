@@ -1,0 +1,63 @@
+slug: service-mesh-observability
+id: njadnirvzrcr
+type: track
+title: Observability with Consul Connect on Kubernetes
+teaser: Learn how to add observability to your applications on Kubernetes using Consul
+  Connect.
+description: This track will show you how to enable the Observability features to
+  gain additional insights in the state and performance of your applications.
+icon: https://storage.googleapis.com/instruqt-frontend/assets/hashicorp/tracks/consul.png
+tags:
+- consul
+- connect
+- hashicorp
+owner: hashicorp
+developers:
+- jackson.nic@gmail.com
+- christie@hashicorp.com
+- anubhav9mishra@gmail.com
+- eveld@hashicorp.com
+private: true
+published: true
+challenges:
+- slug: register-service
+  id: 84xtosecbfvb
+  type: challenge
+  title: Setup
+  teaser: This challenge is only here for setup. Move the scripts of this challenge
+    to the actual first challenge, when the setup is stable.
+  assignment: This challenge is only here for setup. Move the scripts of this challenge
+    to the actual first challenge, when the setup is stable.
+  tabs:
+  - title: Prometheus
+    type: service
+    hostname: kubernetes
+    port: 30001
+  - title: Emojify
+    type: service
+    hostname: kubernetes
+    port: 30000
+  - title: Kubernetes
+    type: service
+    hostname: kubernetes
+    path: /api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/#!/deployment?namespace=default
+    port: 8001
+  - title: Shell
+    type: terminal
+    hostname: kubernetes
+  - title: Grafana
+    type: service
+    hostname: kubernetes
+    port: 30002
+  - title: Consul
+    type: service
+    hostname: kubernetes
+    path: /ui/
+    port: 30010
+  - title: Editor
+    type: code
+    hostname: kubernetes
+    path: /tmp/observability/setup
+  difficulty: basic
+  timelimit: 3600
+checksum: "5520302921024706465"

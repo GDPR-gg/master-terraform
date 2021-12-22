@@ -1,0 +1,676 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`csharp + different entrypoint 1`] = `
+Object {
+  "Hello.World/AssemblyInfo.cs": "using Amazon.JSII.Runtime.Deputy;
+
+[assembly: JsiiAssembly(\\"csharppackage\\", \\"0.0.0\\", \\"csharppackage-0.0.0.tgz\\")]
+",
+  "Hello.World/Hello.World.csproj": "<Project Sdk=\\"Microsoft.NET.Sdk\\">
+  <PropertyGroup>
+    <!-- Package Identification -->
+    <Description>csharppackage</Description>
+    <PackageId>Hello.World</PackageId>
+    <PackageLicenseExpression>UNLICENSED</PackageLicenseExpression>
+    <PackageVersion>0.0.0</PackageVersion>
+    <!-- Additional Metadata -->
+    <Authors>generated@generated.com</Authors>
+    <Language>en-US</Language>
+    <ProjectUrl>http://generated</ProjectUrl>
+    <RepositoryUrl>http://generated</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <!-- Build Configuration -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <IncludeSymbols>true</IncludeSymbols>
+    <IncludeSource>true</IncludeSource>
+    <Nullable>enable</Nullable>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <EmbeddedResource Include=\\"csharppackage-0.0.0.tgz\\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include=\\"Amazon.JSII.Runtime\\" Version=\\"[1.39.0,2.0.0)\\" />
+  </ItemGroup>
+  <PropertyGroup>
+    <!-- Silence [Obsolete] warnings -->
+    <NoWarn>0612,0618</NoWarn>
+    <!-- Treat warnings symptomatic of code generation bugs as errors -->
+    <WarningsAsErrors>0108,0109</WarningsAsErrors>
+  </PropertyGroup>
+</Project>
+
+",
+  "Hello.World/Hello/World/Hello.cs": "using Amazon.JSII.Runtime.Deputy;
+
+#pragma warning disable CS0672,CS0809,CS1591
+
+namespace Hello.World
+{
+    [JsiiClass(nativeType: typeof(Hello.World.Hello), fullyQualifiedName: \\"csharppackage.Hello\\")]
+    public class Hello : DeputyBase
+    {
+        public Hello(): base(new DeputyProps(System.Array.Empty<object?>()))
+        {
+        }
+
+        /// <summary>Used by jsii to construct an instance of this class from a Javascript-owned object reference</summary>
+        /// <param name=\\"reference\\">The Javascript-owned object reference</param>
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        protected Hello(ByRefValue reference): base(reference)
+        {
+        }
+
+        /// <summary>Used by jsii to construct an instance of this class from DeputyProps</summary>
+        /// <param name=\\"props\\">The deputy props</param>
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        protected Hello(DeputyProps props): base(props)
+        {
+        }
+
+        [JsiiMethod(name: \\"add\\", returnsJson: \\"{\\\\\\"type\\\\\\":{\\\\\\"primitive\\\\\\":\\\\\\"number\\\\\\"}}\\", parametersJson: \\"[{\\\\\\"name\\\\\\":\\\\\\"ops\\\\\\",\\\\\\"type\\\\\\":{\\\\\\"fqn\\\\\\":\\\\\\"csharppackage.Operands\\\\\\"}}]\\")]
+        public virtual double Add(Hello.World.IOperands ops)
+        {
+            return InvokeInstanceMethod<double>(new System.Type[]{typeof(Hello.World.IOperands)}, new object[]{ops})!;
+        }
+    }
+}
+",
+  "Hello.World/Hello/World/IOperands.cs": "using Amazon.JSII.Runtime.Deputy;
+
+#pragma warning disable CS0672,CS0809,CS1591
+
+namespace Hello.World
+{
+    [JsiiInterface(nativeType: typeof(IOperands), fullyQualifiedName: \\"csharppackage.Operands\\")]
+    public interface IOperands
+    {
+        [JsiiProperty(name: \\"lhs\\", typeJson: \\"{\\\\\\"primitive\\\\\\":\\\\\\"number\\\\\\"}\\")]
+        double Lhs
+        {
+            get;
+        }
+
+        [JsiiProperty(name: \\"rhs\\", typeJson: \\"{\\\\\\"primitive\\\\\\":\\\\\\"number\\\\\\"}\\")]
+        double Rhs
+        {
+            get;
+        }
+
+        [JsiiTypeProxy(nativeType: typeof(IOperands), fullyQualifiedName: \\"csharppackage.Operands\\")]
+        internal sealed class _Proxy : DeputyBase, Hello.World.IOperands
+        {
+            private _Proxy(ByRefValue reference): base(reference)
+            {
+            }
+
+            [JsiiProperty(name: \\"lhs\\", typeJson: \\"{\\\\\\"primitive\\\\\\":\\\\\\"number\\\\\\"}\\")]
+            public double Lhs
+            {
+                get => GetInstanceProperty<double>()!;
+            }
+
+            [JsiiProperty(name: \\"rhs\\", typeJson: \\"{\\\\\\"primitive\\\\\\":\\\\\\"number\\\\\\"}\\")]
+            public double Rhs
+            {
+                get => GetInstanceProperty<double>()!;
+            }
+        }
+    }
+}
+",
+  "Hello.World/Hello/World/Internal/DependencyResolution/Anchor.cs": "#pragma warning disable CS0672,CS0809,CS1591
+
+namespace Hello.World.Internal.DependencyResolution
+{
+    public sealed class Anchor
+    {
+        public Anchor()
+        {
+        }
+    }
+}
+",
+  "Hello.World/Hello/World/Operands.cs": "using Amazon.JSII.Runtime.Deputy;
+
+#pragma warning disable CS0672,CS0809,CS1591
+
+namespace Hello.World
+{
+    #pragma warning disable CS8618
+
+    [JsiiByValue(fqn: \\"csharppackage.Operands\\")]
+    public class Operands : Hello.World.IOperands
+    {
+        [JsiiProperty(name: \\"lhs\\", typeJson: \\"{\\\\\\"primitive\\\\\\":\\\\\\"number\\\\\\"}\\", isOverride: true)]
+        public double Lhs
+        {
+            get;
+            set;
+        }
+
+        [JsiiProperty(name: \\"rhs\\", typeJson: \\"{\\\\\\"primitive\\\\\\":\\\\\\"number\\\\\\"}\\", isOverride: true)]
+        public double Rhs
+        {
+            get;
+            set;
+        }
+    }
+}
+",
+}
+`;
+
+exports[`golang + different entrypoint 1`] = `
+Object {
+  "hello/hello.go": "// gopackage
+package hello
+
+import (
+	_jsii_ \\"github.com/aws/jsii-runtime-go/runtime\\"
+	_init_ \\"github.com/org/repo/hello/jsii\\"
+)
+
+type Hello interface {
+	Add(ops *Operands) *float64
+}
+
+// The jsii proxy struct for Hello
+type jsiiProxy_Hello struct {
+	_ byte // padding
+}
+
+func NewHello() Hello {
+	_init_.Initialize()
+
+	j := jsiiProxy_Hello{}
+
+	_jsii_.Create(
+		\\"gopackage.Hello\\",
+		nil, // no parameters
+		&j,
+	)
+
+	return &j
+}
+
+func NewHello_Override(h Hello) {
+	_init_.Initialize()
+
+	_jsii_.Create(
+		\\"gopackage.Hello\\",
+		nil, // no parameters
+		h,
+	)
+}
+
+func (h *jsiiProxy_Hello) Add(ops *Operands) *float64 {
+	var returns *float64
+
+	_jsii_.Invoke(
+		h,
+		\\"add\\",
+		[]interface{}{ops},
+		&returns,
+	)
+
+	return returns
+}
+
+type Operands struct {
+	Lhs *float64 \`json:\\"lhs\\"\`
+	Rhs *float64 \`json:\\"rhs\\"\`
+}
+
+",
+  "hello/hello.init.go": "package hello
+
+import (
+	\\"reflect\\"
+
+	_jsii_ \\"github.com/aws/jsii-runtime-go/runtime\\"
+)
+
+func init() {
+	_jsii_.RegisterClass(
+		\\"gopackage.Hello\\",
+		reflect.TypeOf((*Hello)(nil)).Elem(),
+		[]_jsii_.Member{
+			_jsii_.MemberMethod{JsiiMethod: \\"add\\", GoMethod: \\"Add\\"},
+		},
+		func() interface{} {
+			return &jsiiProxy_Hello{}
+		},
+	)
+	_jsii_.RegisterStruct(
+		\\"gopackage.Operands\\",
+		reflect.TypeOf((*Operands)(nil)).Elem(),
+	)
+}
+",
+  "hello/jsii/jsii.go": "// Package jsii contains the functionaility needed for jsii packages to
+// initialize their dependencies and themselves. Users should never need to use this package
+// directly. If you find you need to - please report a bug at
+// https://github.com/aws/jsii/issues/new/choose
+package jsii
+
+import (
+	_      \\"embed\\"
+
+	_jsii_ \\"github.com/aws/jsii-runtime-go/runtime\\"
+)
+
+//go:embed gopackage-0.0.0.tgz
+var tarball []byte
+
+// Initialize loads the necessary packages in the @jsii/kernel to support the enclosing module.
+// The implementation is idempotent (and hence safe to be called over and over).
+func Initialize() {
+	// Load this library into the kernel
+	_jsii_.Load(\\"gopackage\\", \\"0.0.0\\", tarball)
+}
+",
+  "hello/version": "0.0.0
+",
+}
+`;
+
+exports[`java + different entrypoint 1`] = `
+Object {
+  "src/main/java/hello/world/$Module.java": "package hello.world;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.UncheckedIOException;
+
+import java.nio.charset.StandardCharsets;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import software.amazon.jsii.JsiiModule;
+
+@software.amazon.jsii.Internal
+public final class $Module extends JsiiModule {
+    private static final Map<String, String> MODULE_TYPES = load();
+
+    private static Map<String, String> load() {
+        final Map<String, String> result = new HashMap<>();
+        final ClassLoader cl = $Module.class.getClassLoader();
+        try (final InputStream is = cl.getResourceAsStream(\\"hello/world/$Module.txt\\");
+             final Reader rd = new InputStreamReader(is, StandardCharsets.UTF_8);
+             final BufferedReader br = new BufferedReader(rd)) {
+            br.lines()
+              .filter(line -> !line.trim().isEmpty())
+              .forEach(line ->  {
+                final String[] parts = line.split(\\"=\\", 2);
+                final String fqn = parts[0];
+                final String className = parts[1];
+                result.put(fqn, className);
+            });
+        }
+        catch (final IOException exception) {
+            throw new UncheckedIOException(exception);
+        }
+        return result;
+    }
+
+    private final Map<String, Class<?>> cache = new HashMap<>();
+
+    public $Module() {
+        super(\\"javapackage\\", \\"0.0.0\\", $Module.class, \\"javapackage@0.0.0.jsii.tgz\\");
+    }
+
+    @Override
+    protected Class<?> resolveClass(final String fqn) throws ClassNotFoundException {
+        if (!MODULE_TYPES.containsKey(fqn)) {
+            throw new ClassNotFoundException(\\"Unknown JSII type: \\" + fqn);
+        }
+        String className = MODULE_TYPES.get(fqn);
+        if (!this.cache.containsKey(className)) {
+            this.cache.put(className, this.findClass(className));
+        }
+        return this.cache.get(className);
+    }
+
+    private Class<?> findClass(final String binaryName) {
+        try {
+            return Class.forName(binaryName);
+        }
+        catch (final ClassNotFoundException exception) {
+            throw new RuntimeException(exception);
+        }
+    }
+}
+",
+  "src/main/java/hello/world/Hello.java": "package hello.world;
+
+
+@software.amazon.jsii.Jsii(module = hello.world.$Module.class, fqn = \\"javapackage.Hello\\")
+public class Hello extends software.amazon.jsii.JsiiObject {
+
+    protected Hello(final software.amazon.jsii.JsiiObjectRef objRef) {
+        super(objRef);
+    }
+
+    protected Hello(final software.amazon.jsii.JsiiObject.InitializationMode initializationMode) {
+        super(initializationMode);
+    }
+
+    public Hello() {
+        super(software.amazon.jsii.JsiiObject.InitializationMode.JSII);
+        software.amazon.jsii.JsiiEngine.getInstance().createNewObject(this);
+    }
+
+    public @org.jetbrains.annotations.NotNull java.lang.Number add(final @org.jetbrains.annotations.NotNull hello.world.Operands ops) {
+        return software.amazon.jsii.Kernel.call(this, \\"add\\", software.amazon.jsii.NativeType.forClass(java.lang.Number.class), new Object[] { java.util.Objects.requireNonNull(ops, \\"ops is required\\") });
+    }
+}
+",
+  "src/main/java/hello/world/Operands.java": "package hello.world;
+
+
+@software.amazon.jsii.Jsii(module = hello.world.$Module.class, fqn = \\"javapackage.Operands\\")
+@software.amazon.jsii.Jsii.Proxy(Operands.Jsii$Proxy.class)
+public interface Operands extends software.amazon.jsii.JsiiSerializable {
+
+    @org.jetbrains.annotations.NotNull java.lang.Number getLhs();
+
+    @org.jetbrains.annotations.NotNull java.lang.Number getRhs();
+
+    /**
+     * @return a {@link Builder} of {@link Operands}
+     */
+    static Builder builder() {
+        return new Builder();
+    }
+    /**
+     * A builder for {@link Operands}
+     */
+    public static final class Builder implements software.amazon.jsii.Builder<Operands> {
+        private java.lang.Number lhs;
+        private java.lang.Number rhs;
+
+        /**
+         * Sets the value of {@link Operands#getLhs}
+         * @param lhs the value to be set. This parameter is required.
+         * @return {@code this}
+         */
+        public Builder lhs(java.lang.Number lhs) {
+            this.lhs = lhs;
+            return this;
+        }
+
+        /**
+         * Sets the value of {@link Operands#getRhs}
+         * @param rhs the value to be set. This parameter is required.
+         * @return {@code this}
+         */
+        public Builder rhs(java.lang.Number rhs) {
+            this.rhs = rhs;
+            return this;
+        }
+
+        /**
+         * Builds the configured instance.
+         * @return a new instance of {@link Operands}
+         * @throws NullPointerException if any required attribute was not provided
+         */
+        @Override
+        public Operands build() {
+            return new Jsii$Proxy(lhs, rhs);
+        }
+    }
+
+    /**
+     * An implementation for {@link Operands}
+     */
+    @software.amazon.jsii.Internal
+    final class Jsii$Proxy extends software.amazon.jsii.JsiiObject implements Operands {
+        private final java.lang.Number lhs;
+        private final java.lang.Number rhs;
+
+        /**
+         * Constructor that initializes the object based on values retrieved from the JsiiObject.
+         * @param objRef Reference to the JSII managed object.
+         */
+        protected Jsii$Proxy(final software.amazon.jsii.JsiiObjectRef objRef) {
+            super(objRef);
+            this.lhs = software.amazon.jsii.Kernel.get(this, \\"lhs\\", software.amazon.jsii.NativeType.forClass(java.lang.Number.class));
+            this.rhs = software.amazon.jsii.Kernel.get(this, \\"rhs\\", software.amazon.jsii.NativeType.forClass(java.lang.Number.class));
+        }
+
+        /**
+         * Constructor that initializes the object based on literal property values passed by the {@link Builder}.
+         */
+        protected Jsii$Proxy(final java.lang.Number lhs, final java.lang.Number rhs) {
+            super(software.amazon.jsii.JsiiObject.InitializationMode.JSII);
+            this.lhs = java.util.Objects.requireNonNull(lhs, \\"lhs is required\\");
+            this.rhs = java.util.Objects.requireNonNull(rhs, \\"rhs is required\\");
+        }
+
+        @Override
+        public final java.lang.Number getLhs() {
+            return this.lhs;
+        }
+
+        @Override
+        public final java.lang.Number getRhs() {
+            return this.rhs;
+        }
+
+        @Override
+        @software.amazon.jsii.Internal
+        public com.fasterxml.jackson.databind.JsonNode $jsii$toJson() {
+            final com.fasterxml.jackson.databind.ObjectMapper om = software.amazon.jsii.JsiiObjectMapper.INSTANCE;
+            final com.fasterxml.jackson.databind.node.ObjectNode data = com.fasterxml.jackson.databind.node.JsonNodeFactory.instance.objectNode();
+
+            data.set(\\"lhs\\", om.valueToTree(this.getLhs()));
+            data.set(\\"rhs\\", om.valueToTree(this.getRhs()));
+
+            final com.fasterxml.jackson.databind.node.ObjectNode struct = com.fasterxml.jackson.databind.node.JsonNodeFactory.instance.objectNode();
+            struct.set(\\"fqn\\", om.valueToTree(\\"javapackage.Operands\\"));
+            struct.set(\\"data\\", data);
+
+            final com.fasterxml.jackson.databind.node.ObjectNode obj = com.fasterxml.jackson.databind.node.JsonNodeFactory.instance.objectNode();
+            obj.set(\\"$jsii.struct\\", struct);
+
+            return obj;
+        }
+
+        @Override
+        public final boolean equals(final Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Operands.Jsii$Proxy that = (Operands.Jsii$Proxy) o;
+
+            if (!lhs.equals(that.lhs)) return false;
+            return this.rhs.equals(that.rhs);
+        }
+
+        @Override
+        public final int hashCode() {
+            int result = this.lhs.hashCode();
+            result = 31 * result + (this.rhs.hashCode());
+            return result;
+        }
+    }
+}
+",
+  "src/main/resources/hello/world/$Module.txt": "javapackage.Hello=hello.world.Hello
+javapackage.Operands=hello.world.Operands
+",
+}
+`;
+
+exports[`outputJsii can be used to look at the jsii file 1`] = `
+Object {
+  "author": Object {
+    "name": "generated@generated.com",
+    "roles": Array [
+      "author",
+    ],
+  },
+  "description": "1bc04b5291c26a46d918139138b992d2de976d6851d0893b0476b85bfbdfc6e6",
+  "fingerprint": "PFaE0njcprnNahKZ75VD4FJnesRnzJy0041NRYFYaGI=",
+  "homepage": "http://generated",
+  "jsiiVersion": "1.39.0 (build 8af72c2)",
+  "license": "UNLICENSED",
+  "metadata": Object {
+    "jsii": Object {
+      "pacmak": Object {
+        "hasDefaultInterfaces": true,
+      },
+    },
+  },
+  "name": "1bc04b5291c26a46d918139138b992d2de976d6851d0893b0476b85bfbdfc6e6",
+  "repository": Object {
+    "type": "git",
+    "url": "http://generated",
+  },
+  "schema": "jsii/0.10.0",
+  "targets": Object {
+    "js": Object {
+      "npm": "1bc04b5291c26a46d918139138b992d2de976d6851d0893b0476b85bfbdfc6e6",
+    },
+  },
+  "types": Object {
+    "1bc04b5291c26a46d918139138b992d2de976d6851d0893b0476b85bfbdfc6e6.Foo": Object {
+      "assembly": "1bc04b5291c26a46d918139138b992d2de976d6851d0893b0476b85bfbdfc6e6",
+      "fqn": "1bc04b5291c26a46d918139138b992d2de976d6851d0893b0476b85bfbdfc6e6.Foo",
+      "initializer": Object {},
+      "kind": "class",
+      "locationInModule": Object {
+        "filename": "index.ts",
+        "line": 2,
+      },
+      "methods": Array [
+        Object {
+          "locationInModule": Object {
+            "filename": "index.ts",
+            "line": 3,
+          },
+          "name": "hello",
+          "returns": Object {
+            "type": Object {
+              "primitive": "string",
+            },
+          },
+          "static": true,
+        },
+      ],
+      "name": "Foo",
+      "symbolId": "index:Foo",
+    },
+  },
+  "version": "0.0.0",
+}
+`;
+
+exports[`python + different entrypoint + submodule 1`] = `
+Object {
+  "my_python_module/submodule/__init__.py": "import abc
+import builtins
+import datetime
+import enum
+import typing
+
+import jsii
+import publication
+import typing_extensions
+
+from ._jsii import *
+
+
+class Hello(metaclass=jsii.JSIIMeta, jsii_type=\\"pythonpackage.Hello\\"):
+    def __init__(self) -> None:
+        jsii.create(self.__class__, self, [])
+
+    @jsii.member(jsii_name=\\"add\\")
+    def add(self, *, lhs: jsii.Number, rhs: jsii.Number) -> jsii.Number:
+        '''
+        :param lhs: -
+        :param rhs: -
+        '''
+        ops = Operands(lhs=lhs, rhs=rhs)
+
+        return typing.cast(jsii.Number, jsii.invoke(self, \\"add\\", [ops]))
+
+
+@jsii.data_type(
+    jsii_type=\\"pythonpackage.Operands\\",
+    jsii_struct_bases=[],
+    name_mapping={\\"lhs\\": \\"lhs\\", \\"rhs\\": \\"rhs\\"},
+)
+class Operands:
+    def __init__(self, *, lhs: jsii.Number, rhs: jsii.Number) -> None:
+        '''
+        :param lhs: -
+        :param rhs: -
+        '''
+        self._values: typing.Dict[str, typing.Any] = {
+            \\"lhs\\": lhs,
+            \\"rhs\\": rhs,
+        }
+
+    @builtins.property
+    def lhs(self) -> jsii.Number:
+        result = self._values.get(\\"lhs\\")
+        assert result is not None, \\"Required property 'lhs' is missing\\"
+        return typing.cast(jsii.Number, result)
+
+    @builtins.property
+    def rhs(self) -> jsii.Number:
+        result = self._values.get(\\"rhs\\")
+        assert result is not None, \\"Required property 'rhs' is missing\\"
+        return typing.cast(jsii.Number, result)
+
+    def __eq__(self, rhs: typing.Any) -> builtins.bool:
+        return isinstance(rhs, self.__class__) and rhs._values == self._values
+
+    def __ne__(self, rhs: typing.Any) -> builtins.bool:
+        return not (rhs == self)
+
+    def __repr__(self) -> str:
+        return \\"Operands(%s)\\" % \\", \\".join(
+            k + \\"=\\" + repr(v) for k, v in self._values.items()
+        )
+
+
+__all__ = [
+    \\"Hello\\",
+    \\"Operands\\",
+]
+
+publication.publish()
+",
+  "my_python_module/submodule/_jsii/__init__.py": "import abc
+import builtins
+import datetime
+import enum
+import typing
+
+import jsii
+import publication
+import typing_extensions
+
+__jsii_assembly__ = jsii.JSIIAssembly.load(
+    \\"pythonpackage\\", \\"0.0.0\\", __name__[0:-6], \\"pythonpackage@0.0.0.jsii.tgz\\"
+)
+
+__all__ = [
+    \\"__jsii_assembly__\\",
+]
+
+publication.publish()
+",
+  "my_python_module/submodule/py.typed": "
+",
+}
+`;

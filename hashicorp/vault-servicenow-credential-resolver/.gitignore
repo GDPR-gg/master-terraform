@@ -1,0 +1,23 @@
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+### Gradle ###
+.gradle
+build
+
+### OS ###
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+/.metadata/
+
+# Release pipeline
+/pkg/

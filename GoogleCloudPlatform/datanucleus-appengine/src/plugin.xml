@@ -1,0 +1,510 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--**********************************************************************
+Copyright (c) 2009 Google Inc.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+**********************************************************************-->
+<plugin id="com.google.appengine.datanucleus" name="DataNucleus App Engine" provider-name="Google">
+    <!-- STORE MANAGER -->
+    <extension point="org.datanucleus.store_manager">
+        <store-manager class-name="com.google.appengine.datanucleus.DatastoreManager" key="appengine" url-key="appengine"/>
+    </extension>
+
+    <!-- QUERY LANGUAGES -->
+    <extension point="org.datanucleus.store_query_query">
+        <query name="JDOQL" class-name="com.google.appengine.datanucleus.query.JDOQLQuery" datastore="appengine"/>
+        <query name="JPQL" class-name="com.google.appengine.datanucleus.query.JPQLQuery" datastore="appengine"/>
+    </extension>
+
+    <!-- CONNECTION FACTORY -->
+    <extension point="org.datanucleus.store_connectionfactory">
+        <connectionfactory name="appengine" class-name="com.google.appengine.datanucleus.DatastoreConnectionFactoryImpl"
+			transactional="true" datastore="appengine"/>
+        <connectionfactory name="appengine-nontx" class-name="com.google.appengine.datanucleus.DatastoreConnectionFactoryImpl"
+			transactional="false" datastore="appengine"/>
+    </extension>
+
+	<!-- VALUE GENERATOR -->
+    <extension point="org.datanucleus.store_valuegenerator">
+        <valuegenerator name="sequence" class-name="com.google.appengine.datanucleus.valuegenerator.SequenceGenerator" 
+			datastore="appengine"/>
+    </extension>
+
+    <!-- IDENTITY KEY TRANSLATOR -->
+    <extension point="org.datanucleus.identity_key_translator">
+        <identitykeytranslator name="appengine" class-name="com.google.appengine.datanucleus.DatastoreIdentityKeyTranslator"/>
+    </extension>
+
+    <!-- IDENTIFIER FACTORIES -->
+    <extension point="org.datanucleus.store_identifierfactory">
+        <identifierfactory name="datanucleus2" class-name="org.datanucleus.store.mapped.identifier.DN2IdentifierFactory"/>
+        <identifierfactory name="jpa" class-name="org.datanucleus.store.mapped.identifier.JPAIdentifierFactory"/>
+        <identifierfactory name="datanucleus1" class-name="org.datanucleus.store.mapped.identifier.DNIdentifierFactory"/>
+		<identifierfactory name="jpox" class-name="org.datanucleus.store.mapped.identifier.JPOXIdentifierFactory"/>        
+    </extension>
+
+    <!-- Java Type handling -->
+    <extension point="org.datanucleus.java_type">
+        <!-- Put Google types in DFG --> 
+        <java-type name="com.google.appengine.api.datastore.Blob" persistent="true" dfg="true" embedded="true"/>
+        <java-type name="com.google.appengine.api.datastore.Category" persistent="true" dfg="true" embedded="true"/>
+        <java-type name="com.google.appengine.api.datastore.Email" persistent="true" dfg="true" embedded="true"/>
+        <java-type name="com.google.appengine.api.datastore.GeoPt" persistent="true" dfg="true" embedded="true"/>
+        <java-type name="com.google.appengine.api.datastore.IMHandle" persistent="true" dfg="true" embedded="true"/>
+        <java-type name="com.google.appengine.api.datastore.Key" persistent="true" dfg="true" embedded="true"/>
+        <java-type name="com.google.appengine.api.datastore.Link" persistent="true" dfg="true" embedded="true"/>
+        <java-type name="com.google.appengine.api.datastore.PhoneNumber" persistent="true" dfg="true" embedded="true"/>
+        <java-type name="com.google.appengine.api.datastore.PostalAddress" persistent="true" dfg="true" embedded="true"/>
+        <java-type name="com.google.appengine.api.datastore.Rating" persistent="true" dfg="true" embedded="true"/>
+        <java-type name="com.google.appengine.api.datastore.ShortBlob" persistent="true" dfg="true" embedded="true"/>
+        <java-type name="com.google.appengine.api.datastore.Text" persistent="true" dfg="true" embedded="true"/>
+        <java-type name="com.google.appengine.api.blobstore.BlobKey" persistent="true" dfg="true" embedded="true"/>
+        <java-type name="com.google.appengine.api.users.User" persistent="true" dfg="true" embedded="true"/>
+
+        <!-- Override arrays of simple types and Google types so they are in DFG -->
+        <java-type name="[B" persistent="true" dfg="true" embedded="true" priority="10"/>
+        <java-type name="[C" persistent="true" dfg="true" embedded="true" priority="10"/>
+        <java-type name="[D" persistent="true" dfg="true" embedded="true" priority="10"/>
+        <java-type name="[F" persistent="true" dfg="true" embedded="true" priority="10"/>
+        <java-type name="[I" persistent="true" dfg="true" embedded="true" priority="10"/>
+        <java-type name="[J" persistent="true" dfg="true" embedded="true" priority="10"/>
+        <java-type name="[S" persistent="true" dfg="true" embedded="true" priority="10"/>
+        <java-type name="[Z" persistent="true" dfg="true" embedded="true" priority="10"/>
+        <java-type name="[Ljava.lang.Boolean;" persistent="true" dfg="true" embedded="true" priority="10"/>
+        <java-type name="[Ljava.lang.Byte;" persistent="true" dfg="true" embedded="true" priority="10"/>
+        <java-type name="[Ljava.lang.Character;" persistent="true" dfg="true" embedded="true" priority="10"/>
+        <java-type name="[Ljava.lang.Double;" persistent="true" dfg="true" embedded="true" priority="10"/>
+        <java-type name="[Ljava.lang.Float;" persistent="true" dfg="true" embedded="true" priority="10"/>
+        <java-type name="[Ljava.lang.Integer;" persistent="true" dfg="true" embedded="true" priority="10"/>
+        <java-type name="[Ljava.lang.Long;" persistent="true" dfg="true" embedded="true" priority="10"/>
+        <java-type name="[Ljava.lang.Short;" persistent="true" dfg="true" embedded="true" priority="10"/>
+        <java-type name="[Ljava.lang.Number;" persistent="true" dfg="true" embedded="true" priority="10"/>
+        <java-type name="[Ljava.lang.String;" persistent="true" dfg="true" embedded="true" priority="10"/>
+        <java-type name="[Ljava.math.BigInteger;" persistent="true" dfg="true" embedded="true" priority="10"/>
+        <java-type name="[Ljava.math.BigDecimal;" persistent="true" dfg="true" embedded="true" priority="10"/>
+        <java-type name="[Ljava.util.Date;" persistent="true" dfg="true" embedded="true" priority="10"/>
+        <java-type name="[Ljava.util.Locale;" persistent="true" dfg="true" embedded="true" priority="10"/>
+        <java-type name="[Ljava.lang.Enum;" persistent="true" dfg="true" embedded="true" priority="10"/>
+
+        <java-type name="[Lcom.google.appengine.api.datastore.Blob;" persistent="true" dfg="true" embedded="true"/>
+        <java-type name="[Lcom.google.appengine.api.datastore.Category;" persistent="true" dfg="true" embedded="true"/>
+        <java-type name="[Lcom.google.appengine.api.datastore.Email;" persistent="true" dfg="true" embedded="true"/>
+        <java-type name="[Lcom.google.appengine.api.datastore.GeoPt;" persistent="true" dfg="true" embedded="true"/>
+        <java-type name="[Lcom.google.appengine.api.datastore.IMHandle;" persistent="true" dfg="true" embedded="true"/>
+        <java-type name="[Lcom.google.appengine.api.datastore.Key;" persistent="true" dfg="true" embedded="true"/>
+        <java-type name="[Lcom.google.appengine.api.datastore.Link;" persistent="true" dfg="true" embedded="true"/>
+        <java-type name="[Lcom.google.appengine.api.datastore.PhoneNumber;" persistent="true" dfg="true" embedded="true"/>
+        <java-type name="[Lcom.google.appengine.api.datastore.PostalAddress;" persistent="true" dfg="true" embedded="true"/>
+        <java-type name="[Lcom.google.appengine.api.datastore.Rating;" persistent="true" dfg="true" embedded="true"/>
+        <java-type name="[Lcom.google.appengine.api.datastore.ShortBlob;" persistent="true" dfg="true" embedded="true"/>
+        <java-type name="[Lcom.google.appengine.api.datastore.Text;" persistent="true" dfg="true" embedded="true"/>
+        <java-type name="[Lcom.google.appengine.api.blobstore.BlobKey;" persistent="true" dfg="true" embedded="true"/>
+        <java-type name="[Lcom.google.appengine.api.users.User;" persistent="true" dfg="true" embedded="true"/>
+
+        <!-- Override Collection/List/Set for generic simple types and generic Google types so they are in DFG -->
+        <java-type name="java.util.Collection" generic-type="java.lang.Boolean" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Collection"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Collection"/>
+        <java-type name="java.util.Collection" generic-type="java.lang.Byte" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Collection"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Collection"/>
+        <java-type name="java.util.Collection" generic-type="java.lang.Character" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Collection"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Collection"/>
+        <java-type name="java.util.Collection" generic-type="java.lang.Double" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Collection"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Collection"/>
+        <java-type name="java.util.Collection" generic-type="java.lang.Float" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Collection"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Collection"/>
+        <java-type name="java.util.Collection" generic-type="java.lang.Integer" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Collection"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Collection"/>
+        <java-type name="java.util.Collection" generic-type="java.lang.Long" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Collection"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Collection"/>
+        <java-type name="java.util.Collection" generic-type="java.lang.Short" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Collection"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Collection"/>
+        <java-type name="java.util.Collection" generic-type="java.lang.String" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Collection"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Collection"/>
+        <java-type name="java.util.Collection" generic-type="java.lang.Enum" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Collection"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Collection"/>
+        <java-type name="java.util.Collection" generic-type="java.util.Date" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Collection"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Collection"/>
+        <java-type name="java.util.Collection" generic-type="com.google.appengine.api.datastore.Blob" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Collection"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Collection"/>
+        <java-type name="java.util.Collection" generic-type="com.google.appengine.api.datastore.Category" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Collection"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Collection"/>
+        <java-type name="java.util.Collection" generic-type="com.google.appengine.api.datastore.Email" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Collection"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Collection"/>
+        <java-type name="java.util.Collection" generic-type="com.google.appengine.api.datastore.GeoPt" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Collection"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Collection"/>
+        <java-type name="java.util.Collection" generic-type="com.google.appengine.api.datastore.IMHandle" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Collection"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Collection"/>
+        <java-type name="java.util.Collection" generic-type="com.google.appengine.api.datastore.Key" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Collection"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Collection"/>
+        <java-type name="java.util.Collection" generic-type="com.google.appengine.api.datastore.Link" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Collection"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Collection"/>
+        <java-type name="java.util.Collection" generic-type="com.google.appengine.api.datastore.PhoneNumber" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Collection"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Collection"/>
+        <java-type name="java.util.Collection" generic-type="com.google.appengine.api.datastore.PostalAddress" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Collection"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Collection"/>
+        <java-type name="java.util.Collection" generic-type="com.google.appengine.api.datastore.Rating" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Collection"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Collection"/>
+        <java-type name="java.util.Collection" generic-type="com.google.appengine.api.datastore.ShortBlob" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Collection"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Collection"/>
+        <java-type name="java.util.Collection" generic-type="com.google.appengine.api.datastore.Text" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Collection"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Collection"/>
+        <java-type name="java.util.Collection" generic-type="com.google.appengine.api.blobstore.BlobKey" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Collection"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Collection"/>
+        <java-type name="java.util.Collection" generic-type="com.google.appengine.api.users.User" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Collection"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Collection"/>
+
+        <java-type name="java.util.List" generic-type="java.lang.Boolean" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.List"
+            wrapper-type-backed="org.datanucleus.store.types.backed.List"/>
+        <java-type name="java.util.List" generic-type="java.lang.Byte" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.List"
+            wrapper-type-backed="org.datanucleus.store.types.backed.List"/>
+        <java-type name="java.util.List" generic-type="java.lang.Character" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.List"
+            wrapper-type-backed="org.datanucleus.store.types.backed.List"/>
+        <java-type name="java.util.List" generic-type="java.lang.Double" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.List"
+            wrapper-type-backed="org.datanucleus.store.types.backed.List"/>
+        <java-type name="java.util.List" generic-type="java.lang.Float" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.List"
+            wrapper-type-backed="org.datanucleus.store.types.backed.List"/>
+        <java-type name="java.util.List" generic-type="java.lang.Integer" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.List"
+            wrapper-type-backed="org.datanucleus.store.types.backed.List"/>
+        <java-type name="java.util.List" generic-type="java.lang.Long" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.List"
+            wrapper-type-backed="org.datanucleus.store.types.backed.List"/>
+        <java-type name="java.util.List" generic-type="java.lang.Short" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.List"
+            wrapper-type-backed="org.datanucleus.store.types.backed.List"/>
+        <java-type name="java.util.List" generic-type="java.lang.String" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.List"
+            wrapper-type-backed="org.datanucleus.store.types.backed.List"/>
+        <java-type name="java.util.List" generic-type="java.lang.Enum" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.List"
+            wrapper-type-backed="org.datanucleus.store.types.backed.List"/>
+        <java-type name="java.util.List" generic-type="java.util.Date" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.List"
+            wrapper-type-backed="org.datanucleus.store.types.backed.List"/>
+        <java-type name="java.util.List" generic-type="com.google.appengine.api.datastore.Blob" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.List"
+            wrapper-type-backed="org.datanucleus.store.types.backed.List"/>
+        <java-type name="java.util.List" generic-type="com.google.appengine.api.datastore.Category" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.List"
+            wrapper-type-backed="org.datanucleus.store.types.backed.List"/>
+        <java-type name="java.util.List" generic-type="com.google.appengine.api.datastore.Email" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.List"
+            wrapper-type-backed="org.datanucleus.store.types.backed.List"/>
+        <java-type name="java.util.List" generic-type="com.google.appengine.api.datastore.GeoPt" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.List"
+            wrapper-type-backed="org.datanucleus.store.types.backed.List"/>
+        <java-type name="java.util.List" generic-type="com.google.appengine.api.datastore.IMHandle" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.List"
+            wrapper-type-backed="org.datanucleus.store.types.backed.List"/>
+        <java-type name="java.util.List" generic-type="com.google.appengine.api.datastore.Key" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.List"
+            wrapper-type-backed="org.datanucleus.store.types.backed.List"/>
+        <java-type name="java.util.List" generic-type="com.google.appengine.api.datastore.Link" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.List"
+            wrapper-type-backed="org.datanucleus.store.types.backed.List"/>
+        <java-type name="java.util.List" generic-type="com.google.appengine.api.datastore.PhoneNumber" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.List"
+            wrapper-type-backed="org.datanucleus.store.types.backed.List"/>
+        <java-type name="java.util.List" generic-type="com.google.appengine.api.datastore.PostalAddress" persistent="true" dfg="true"
+            wrapper-type="org.datanucleus.store.types.simple.List"
+            wrapper-type-backed="org.datanucleus.store.types.backed.List"/>
+        <java-type name="java.util.List" generic-type="com.google.appengine.api.datastore.Rating" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.List"
+            wrapper-type-backed="org.datanucleus.store.types.backed.List"/>
+        <java-type name="java.util.List" generic-type="com.google.appengine.api.datastore.ShortBlob" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.List"
+            wrapper-type-backed="org.datanucleus.store.types.backed.List"/>
+        <java-type name="java.util.List" generic-type="com.google.appengine.api.datastore.Text" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.List"
+            wrapper-type-backed="org.datanucleus.store.types.backed.List"/>
+        <java-type name="java.util.List" generic-type="com.google.appengine.api.blobstore.BlobKey" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.List"
+            wrapper-type-backed="org.datanucleus.store.types.backed.List"/>
+        <java-type name="java.util.List" generic-type="com.google.appengine.api.users.User" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.List"
+            wrapper-type-backed="org.datanucleus.store.types.backed.List"/>
+
+        <java-type name="java.util.Set" generic-type="java.lang.Boolean" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Set"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Set"/>
+        <java-type name="java.util.Set" generic-type="java.lang.Byte" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Set"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Set"/>
+        <java-type name="java.util.Set" generic-type="java.lang.Character" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Set"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Set"/>
+        <java-type name="java.util.Set" generic-type="java.lang.Double" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Set"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Set"/>
+        <java-type name="java.util.Set" generic-type="java.lang.Float" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Set"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Set"/>
+        <java-type name="java.util.Set" generic-type="java.lang.Integer" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Set"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Set"/>
+        <java-type name="java.util.Set" generic-type="java.lang.Long" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Set"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Set"/>
+        <java-type name="java.util.Set" generic-type="java.lang.Short" persistent="true" dfg="true"
+            wrapper-type="org.datanucleus.store.types.simple.Set"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Set"/>
+        <java-type name="java.util.Set" generic-type="java.lang.String" persistent="true" dfg="true"
+            wrapper-type="org.datanucleus.store.types.simple.Set"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Set"/>
+        <java-type name="java.util.Set" generic-type="java.lang.Enum" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Set"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Set"/>
+        <java-type name="java.util.Set" generic-type="java.util.Date" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Set"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Set"/>
+        <java-type name="java.util.Set" generic-type="com.google.appengine.api.datastore.Blob" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Set"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Set"/>
+        <java-type name="java.util.Set" generic-type="com.google.appengine.api.datastore.Category" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Set"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Set"/>
+        <java-type name="java.util.Set" generic-type="com.google.appengine.api.datastore.Email" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Set"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Set"/>
+        <java-type name="java.util.Set" generic-type="com.google.appengine.api.datastore.GeoPt" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Set"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Set"/>
+        <java-type name="java.util.Set" generic-type="com.google.appengine.api.datastore.IMHandle" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Set"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Set"/>
+        <java-type name="java.util.Set" generic-type="com.google.appengine.api.datastore.Key" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Set"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Set"/>
+        <java-type name="java.util.Set" generic-type="com.google.appengine.api.datastore.Link" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Set"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Set"/>
+        <java-type name="java.util.Set" generic-type="com.google.appengine.api.datastore.PhoneNumber" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Set"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Set"/>
+        <java-type name="java.util.Set" generic-type="com.google.appengine.api.datastore.PostalAddress" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Set"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Set"/>
+        <java-type name="java.util.Set" generic-type="com.google.appengine.api.datastore.Rating" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Set"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Set"/>
+        <java-type name="java.util.Set" generic-type="com.google.appengine.api.datastore.ShortBlob" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Set"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Set"/>
+        <java-type name="java.util.Set" generic-type="com.google.appengine.api.datastore.Text" persistent="true" dfg="true"
+            wrapper-type="org.datanucleus.store.types.simple.Set"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Set"/>
+        <java-type name="java.util.Set" generic-type="com.google.appengine.api.blobstore.BlobKey" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Set"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Set"/>
+        <java-type name="java.util.Set" generic-type="com.google.appengine.api.users.User" persistent="true" dfg="true" 
+            wrapper-type="org.datanucleus.store.types.simple.Set"
+            wrapper-type-backed="org.datanucleus.store.types.backed.Set"/>
+    </extension>
+
+    <!-- JAVA TYPES MAPPING, for "mapped" datastores -->
+    <extension point="org.datanucleus.store_mapping">
+        <!-- "primitive" types -->
+        <mapping java-type="boolean" mapping-class="org.datanucleus.store.mapped.mapping.BooleanMapping"/>
+        <mapping java-type="byte" mapping-class="org.datanucleus.store.mapped.mapping.ByteMapping"/>
+        <mapping java-type="char" mapping-class="org.datanucleus.store.mapped.mapping.CharacterMapping"/>
+        <mapping java-type="double" mapping-class="org.datanucleus.store.mapped.mapping.DoubleMapping"/>
+        <mapping java-type="float" mapping-class="org.datanucleus.store.mapped.mapping.FloatMapping" />
+        <mapping java-type="int" mapping-class="org.datanucleus.store.mapped.mapping.IntegerMapping"/>
+        <mapping java-type="long" mapping-class="org.datanucleus.store.mapped.mapping.LongMapping"/>
+        <mapping java-type="short" mapping-class="org.datanucleus.store.mapped.mapping.ShortMapping"/>
+
+        <!-- "java.lang" types -->
+        <mapping java-type="java.lang.Boolean" mapping-class="org.datanucleus.store.mapped.mapping.BooleanMapping"/>
+        <mapping java-type="java.lang.Byte" mapping-class="org.datanucleus.store.mapped.mapping.ByteMapping" />
+        <mapping java-type="java.lang.Character" mapping-class="org.datanucleus.store.mapped.mapping.CharacterMapping" />
+        <mapping java-type="java.lang.Double" mapping-class="org.datanucleus.store.mapped.mapping.DoubleMapping" />
+        <mapping java-type="java.lang.Float" mapping-class="org.datanucleus.store.mapped.mapping.FloatMapping" />
+        <mapping java-type="java.lang.Integer" mapping-class="org.datanucleus.store.mapped.mapping.IntegerMapping" />
+        <mapping java-type="java.lang.Long" mapping-class="org.datanucleus.store.mapped.mapping.LongMapping" />
+        <mapping java-type="java.lang.Short" mapping-class="org.datanucleus.store.mapped.mapping.ShortMapping" />
+
+        <mapping java-type="java.lang.Class" mapping-class="org.datanucleus.store.mapped.mapping.ClassMapping"/>
+        <mapping java-type="java.lang.Number" mapping-class="org.datanucleus.store.mapped.mapping.NumberMapping"/>
+        <mapping java-type="java.lang.Object" mapping-class="org.datanucleus.store.mapped.mapping.SerialisedMapping"/>
+        <mapping java-type="java.lang.String" mapping-class="org.datanucleus.store.mapped.mapping.StringMapping"/>
+        <mapping java-type="java.lang.StringBuffer" mapping-class="org.datanucleus.store.mapped.mapping.StringBufferMapping"/>
+        <mapping java-type="java.lang.Enum" mapping-class="org.datanucleus.store.mapped.mapping.EnumMapping"/>
+
+        <!-- "java.awt" types -->
+        <mapping java-type="java.awt.Color" mapping-class="org.datanucleus.store.mapped.mapping.ColorMapping"/>
+        <mapping java-type="java.awt.image.BufferedImage" mapping-class="org.datanucleus.store.mapped.mapping.BufferedImageMapping"/>
+
+        <!-- "java.io" types -->
+        <mapping java-type="java.io.Serializable" mapping-class="org.datanucleus.store.mapped.mapping.SerialisedMapping"/>
+
+        <!-- "java.math" types -->
+        <mapping java-type="java.math.BigDecimal" mapping-class="org.datanucleus.store.mapped.mapping.BigDecimalMapping"/>
+        <mapping java-type="java.math.BigInteger" mapping-class="org.datanucleus.store.mapped.mapping.BigIntegerMapping"/>
+
+        <!-- "java.net" types -->
+        <mapping java-type="java.net.URL" mapping-class="org.datanucleus.store.mapped.mapping.URLMapping"/>
+        <mapping java-type="java.net.URI" mapping-class="org.datanucleus.store.mapped.mapping.URIMapping"/>
+
+        <!-- "java.util" types -->
+        <mapping java-type="java.util.Calendar" mapping-class="org.datanucleus.store.mapped.mapping.GregorianCalendarMapping"/>
+        <mapping java-type="java.util.Date" mapping-class="org.datanucleus.store.mapped.mapping.DateMapping"/>
+        <mapping java-type="java.util.Locale" mapping-class="org.datanucleus.store.mapped.mapping.LocaleMapping" />
+        <mapping java-type="java.util.TimeZone" mapping-class="org.datanucleus.store.mapped.mapping.TimeZoneMapping"/>
+
+        <!-- "javax.time" types -->
+        <mapping java-type="javax.time.calendar.LocalDate"
+            mapping-class="org.datanucleus.store.mapped.mapping.LocalDateMapping"/>
+        <mapping java-type="javax.time.calendar.LocalDateTime"
+            mapping-class="org.datanucleus.store.mapped.mapping.LocalDateTimeMapping"/>
+        <mapping java-type="javax.time.calendar.LocalTime"
+            mapping-class="org.datanucleus.store.mapped.mapping.LocalTimeMapping"/>
+
+        <!-- "java.sql" types -->
+        <mapping java-type="java.sql.Date" mapping-class="org.datanucleus.store.mapped.mapping.SqlDateMapping"/>
+        <mapping java-type="java.sql.Time" mapping-class="org.datanucleus.store.mapped.mapping.SqlTimeMapping"/>
+        <mapping java-type="java.sql.Timestamp" mapping-class="org.datanucleus.store.mapped.mapping.SqlTimestampMapping"/>
+
+        <!-- array types -->
+        <mapping java-type="[B" mapping-class="org.datanucleus.store.mapped.mapping.ArrayMapping"/>
+        <mapping java-type="[C" mapping-class="org.datanucleus.store.mapped.mapping.ArrayMapping"/>
+        <mapping java-type="[D" mapping-class="org.datanucleus.store.mapped.mapping.ArrayMapping"/>
+        <mapping java-type="[F" mapping-class="org.datanucleus.store.mapped.mapping.ArrayMapping"/>
+        <mapping java-type="[I" mapping-class="org.datanucleus.store.mapped.mapping.ArrayMapping"/>
+        <mapping java-type="[J" mapping-class="org.datanucleus.store.mapped.mapping.ArrayMapping"/>
+        <mapping java-type="[S" mapping-class="org.datanucleus.store.mapped.mapping.ArrayMapping"/>
+        <mapping java-type="[Z" mapping-class="org.datanucleus.store.mapped.mapping.ArrayMapping"/>
+    
+        <mapping java-type="[Ljava.lang.Boolean;" mapping-class="org.datanucleus.store.mapped.mapping.ArrayMapping"/>
+        <mapping java-type="[Ljava.lang.Byte;" mapping-class="org.datanucleus.store.mapped.mapping.ArrayMapping"/>
+        <mapping java-type="[Ljava.lang.Character;" mapping-class="org.datanucleus.store.mapped.mapping.ArrayMapping"/>
+        <mapping java-type="[Ljava.lang.Double;" mapping-class="org.datanucleus.store.mapped.mapping.ArrayMapping"/>
+        <mapping java-type="[Ljava.lang.Float;" mapping-class="org.datanucleus.store.mapped.mapping.ArrayMapping"/>
+        <mapping java-type="[Ljava.lang.Integer;" mapping-class="org.datanucleus.store.mapped.mapping.ArrayMapping"/>
+        <mapping java-type="[Ljava.lang.Long;" mapping-class="org.datanucleus.store.mapped.mapping.ArrayMapping"/>
+        <mapping java-type="[Ljava.lang.Short;" mapping-class="org.datanucleus.store.mapped.mapping.ArrayMapping"/>
+    
+        <mapping java-type="[Ljava.lang.Number;" mapping-class="org.datanucleus.store.mapped.mapping.ArrayMapping"/>
+        <mapping java-type="[Ljava.lang.String;" mapping-class="org.datanucleus.store.mapped.mapping.ArrayMapping"/>
+        <mapping java-type="[Ljava.lang.Enum;" mapping-class="org.datanucleus.store.mapped.mapping.ArrayMapping"/>
+        <mapping java-type="[Ljava.math.BigInteger;" mapping-class="org.datanucleus.store.mapped.mapping.ArrayMapping"/>
+        <mapping java-type="[Ljava.math.BigDecimal;" mapping-class="org.datanucleus.store.mapped.mapping.ArrayMapping"/>
+        <mapping java-type="[Ljava.util.Date;" mapping-class="org.datanucleus.store.mapped.mapping.ArrayMapping"/>
+        <mapping java-type="[Ljava.util.Locale;" mapping-class="org.datanucleus.store.mapped.mapping.ArrayMapping"/>
+    
+        <!-- container types -->
+        <mapping java-type="java.util.ArrayList" mapping-class="org.datanucleus.store.mapped.mapping.CollectionMapping"/>
+        <mapping java-type="java.util.BitSet" mapping-class="org.datanucleus.store.mapped.mapping.BitSetMapping"/>
+        <mapping java-type="java.util.Collection" mapping-class="org.datanucleus.store.mapped.mapping.CollectionMapping"/>
+        <mapping java-type="java.util.Currency" mapping-class="org.datanucleus.store.mapped.mapping.CurrencyMapping"/>
+        <mapping java-type="java.util.GregorianCalendar" mapping-class="org.datanucleus.store.mapped.mapping.GregorianCalendarMapping"/>
+        <mapping java-type="java.util.HashMap" mapping-class="org.datanucleus.store.mapped.mapping.MapMapping"/>
+        <mapping java-type="java.util.HashSet" mapping-class="org.datanucleus.store.mapped.mapping.CollectionMapping"/>
+        <mapping java-type="java.util.Hashtable" mapping-class="org.datanucleus.store.mapped.mapping.MapMapping"/>
+        <mapping java-type="java.util.LinkedList" mapping-class="org.datanucleus.store.mapped.mapping.CollectionMapping"/>
+        <mapping java-type="java.util.List" mapping-class="org.datanucleus.store.mapped.mapping.CollectionMapping"/>
+        <mapping java-type="java.util.LinkedHashMap" mapping-class="org.datanucleus.store.mapped.mapping.MapMapping"/>
+        <mapping java-type="java.util.LinkedHashSet" mapping-class="org.datanucleus.store.mapped.mapping.CollectionMapping"/>
+        <mapping java-type="java.util.Map" mapping-class="org.datanucleus.store.mapped.mapping.MapMapping"/>
+        <mapping java-type="java.util.PriorityQueue" mapping-class="org.datanucleus.store.mapped.mapping.CollectionMapping"/>
+        <mapping java-type="java.util.Properties" mapping-class="org.datanucleus.store.mapped.mapping.MapMapping"/>
+        <mapping java-type="java.util.Queue" mapping-class="org.datanucleus.store.mapped.mapping.CollectionMapping"/>
+        <mapping java-type="java.util.Set" mapping-class="org.datanucleus.store.mapped.mapping.CollectionMapping"/>
+        <mapping java-type="java.util.SortedMap" mapping-class="org.datanucleus.store.mapped.mapping.MapMapping"/>
+        <mapping java-type="java.util.SortedSet" mapping-class="org.datanucleus.store.mapped.mapping.CollectionMapping"/>
+        <mapping java-type="java.util.Stack" mapping-class="org.datanucleus.store.mapped.mapping.CollectionMapping"/>
+        <mapping java-type="java.util.TreeMap" mapping-class="org.datanucleus.store.mapped.mapping.MapMapping"/>
+        <mapping java-type="java.util.TreeSet" mapping-class="org.datanucleus.store.mapped.mapping.CollectionMapping"/>
+        <mapping java-type="java.util.UUID" mapping-class="org.datanucleus.store.mapped.mapping.UUIDMapping"/>
+        <mapping java-type="java.util.Vector" mapping-class="org.datanucleus.store.mapped.mapping.CollectionMapping"/>
+
+        <!-- DataNucleus types -->
+        <mapping java-type="org.datanucleus.identity.OID" mapping-class="org.datanucleus.store.mapped.mapping.OIDMapping"/>
+        <mapping java-type="org.datanucleus.store.types.backed.ArrayList" mapping-class="org.datanucleus.store.mapped.mapping.CollectionMapping"/>
+        <mapping java-type="org.datanucleus.store.types.backed.Collection" mapping-class="org.datanucleus.store.mapped.mapping.CollectionMapping"/>
+        <mapping java-type="org.datanucleus.store.types.backed.HashMap" mapping-class="org.datanucleus.store.mapped.mapping.MapMapping"/>
+        <mapping java-type="org.datanucleus.store.types.backed.HashSet" mapping-class="org.datanucleus.store.mapped.mapping.CollectionMapping"/>
+        <mapping java-type="org.datanucleus.store.types.backed.Hashtable" mapping-class="org.datanucleus.store.mapped.mapping.MapMapping"/>
+        <mapping java-type="org.datanucleus.store.types.backed.LinkedList" mapping-class="org.datanucleus.store.mapped.mapping.CollectionMapping"/>
+        <mapping java-type="org.datanucleus.store.types.backed.List" mapping-class="org.datanucleus.store.mapped.mapping.CollectionMapping"/>
+        <mapping java-type="org.datanucleus.store.types.backed.LinkedHashSet" mapping-class="org.datanucleus.store.mapped.mapping.CollectionMapping"/>
+        <mapping java-type="org.datanucleus.store.types.backed.LinkedHashMap" mapping-class="org.datanucleus.store.mapped.mapping.MapMapping"/>
+        <mapping java-type="org.datanucleus.store.types.backed.Map" mapping-class="org.datanucleus.store.mapped.mapping.MapMapping"/>
+        <mapping java-type="org.datanucleus.store.types.backed.PriorityQueue" mapping-class="org.datanucleus.store.mapped.mapping.CollectionMapping"/>
+        <mapping java-type="org.datanucleus.store.types.backed.Properties" mapping-class="org.datanucleus.store.mapped.mapping.MapMapping"/>
+        <mapping java-type="org.datanucleus.store.types.backed.Queue" mapping-class="org.datanucleus.store.mapped.mapping.CollectionMapping"/>
+        <mapping java-type="org.datanucleus.store.types.backed.Set" mapping-class="org.datanucleus.store.mapped.mapping.CollectionMapping"/>
+        <mapping java-type="org.datanucleus.store.types.backed.SortedMap" mapping-class="org.datanucleus.store.mapped.mapping.MapMapping"/>
+        <mapping java-type="org.datanucleus.store.types.backed.SortedSet" mapping-class="org.datanucleus.store.mapped.mapping.CollectionMapping"/>
+        <mapping java-type="org.datanucleus.store.types.backed.Stack" mapping-class="org.datanucleus.store.mapped.mapping.CollectionMapping"/>
+        <mapping java-type="org.datanucleus.store.types.backed.TreeMap" mapping-class="org.datanucleus.store.mapped.mapping.MapMapping"/>
+        <mapping java-type="org.datanucleus.store.types.backed.TreeSet" mapping-class="org.datanucleus.store.mapped.mapping.CollectionMapping"/>
+        <mapping java-type="org.datanucleus.store.types.backed.Vector" mapping-class="org.datanucleus.store.mapped.mapping.CollectionMapping"/>
+    </extension>
+
+    <!-- PERSISTENCE PROPERTIES -->
+    <extension point="org.datanucleus.persistence_properties">
+        <persistence-property name="datanucleus.appengine.autoCreateDatastoreTxns" value="true"
+            validator="org.datanucleus.properties.BooleanPropertyValidator"/>
+        <persistence-property name="datanucleus.appengine.datastoreEnableXGTransactions"
+            validator="org.datanucleus.properties.BooleanPropertyValidator"/>
+        <persistence-property name="datanucleus.appengine.storageversion" datastore="true"/>
+        <persistence-property name="datanucleus.appengine.relationDefault" datastore="true" value="owned"
+            validator="com.google.appengine.datanucleus.DatastorePropertyValidator"/>
+        <persistence-property name="datanucleus.appengine.ignorablemetadatabehavior"/> <!-- Make this datastore="true"-->
+		<persistence-property name="datanucleus.appengine.getExtentCanReturnSubclasses" datastore="true" value="false"
+            validator="org.datanucleus.properties.BooleanPropertyValidator"/>
+		<persistence-property name="datanucleus.appengine.query.inMemoryWhenUnsupported" datastore="true" value="false"
+            validator="org.datanucleus.properties.BooleanPropertyValidator"/>
+        <persistence-property name="datanucleus.appengine.throwExceptionOnUnexpectedPolymorphism" datastore="true" value="true"
+            validator="org.datanucleus.properties.BooleanPropertyValidator"/>
+    </extension>
+
+    <!-- CUSTOM ANNOTATIONS -->
+    <extension point="org.datanucleus.member_annotation_handler">
+        <member-annotation-handler annotation-class="com.google.appengine.datanucleus.annotations.Unindexed" 
+            handler="com.google.appengine.datanucleus.annotations.UnindexedHandler"/>
+        <member-annotation-handler annotation-class="com.google.appengine.datanucleus.annotations.Unowned" 
+            handler="com.google.appengine.datanucleus.annotations.UnownedHandler"/>
+        <member-annotation-handler annotation-class="com.google.appengine.datanucleus.annotations.Owned" 
+            handler="com.google.appengine.datanucleus.annotations.OwnedHandler"/>
+    </extension>
+</plugin>

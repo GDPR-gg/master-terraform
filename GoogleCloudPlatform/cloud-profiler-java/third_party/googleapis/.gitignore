@@ -1,0 +1,6 @@
+OWNERS
+google/internal
+google/protobuf
+.project
+artman-genfiles/
+bazel-*

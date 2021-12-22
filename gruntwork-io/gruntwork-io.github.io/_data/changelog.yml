@@ -1,0 +1,34 @@
+- date: February 10, 2020
+  title: "Add terms for new services: CIS compliance and Professional services. Add various legal clean up."
+  description: "We've added terms for two new services: CIS compliance and professional services. We've also removed Houston for now since we are not currently accepting new Houston customers. Finally, we've cleaned up a few minor legal positions around our billing practices, termination, and handling your feedback."
+  commit: b01207ceb2712983400ee3eff7e07db1a21e22dc
+
+- date: October 15, 2019
+  title: "Update all termination periods to 30 days"
+  description: "For consistency, update the termination period for all parts of the subscription to 30 days."
+  commit: 9dd9abccbd20e4097fda14387e460cbafac12917
+
+- date: May 9, 2019
+  title: "Add support for Google Cloud Provider"
+  description: "Gruntwork now offers support for Google Cloud Provider!"
+  commit: c35744304c34495ac2a9a7dd1361563cdf83c20d
+
+- date: May 8, 2019
+  title: "Introduce Professional Support, Enterprise Support, and Houston Pro"
+  description: "We now offer three support tiers: Community, Professional, and Enterprise. In addition, the Terms of Service now offer terms for using Houston Pro and annual payment is now allowed. Plain language summaries and various sections were also updated for accuracy and clarity."
+  commit: 9ef90212e22bf408028ca5d73bffd3aaaedd187a
+
+- date: March 5, 2019
+  title: "Introduce Community Support"
+  description: "All customers now receive access to our Community Support Tier at no additional cost."
+  commit: 8eb59e4033829db0a7df7c1b59c3b690349c0b5f
+
+- date: February 25, 2019
+  title: "Update SLA on Dedicated Support to 2 Business Days"
+  description: "We now commit to a Service Level Agreement (SLA) where we will respond to Dedicated Support requests within 2 business days."
+  commit: ff51aa6fcc5a5661a658a82aa5e819cbcf0b7d61
+
+- date: January 23, 2019
+  title: "Added 30-day trial period"
+  description: "Customers can now receive 100% of their money back if they choose to cancel within the first 30 days of subscribing."
+  commit: fb34e07043e0ea7ecb7e5ebdf1b047f7c1dd7ff5

@@ -1,0 +1,6 @@
+*~
+.dockercfg
+**/project.lock.json
+.DS_Store
+/dotnet/examples/*/bin/**
+/dotnet/examples/*/obj/**

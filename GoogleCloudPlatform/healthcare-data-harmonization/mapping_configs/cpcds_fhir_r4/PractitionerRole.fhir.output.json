@@ -1,0 +1,89 @@
+{
+  "entry": [
+    {
+      "request": {
+        "method": "PUT",
+        "url": "Practitioner/d41187ed45024518fb323012695c6b91"
+      },
+      "resource": {
+        "id": "d41187ed45024518fb323012695c6b91",
+        "identifier": [
+          {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "998592645930"
+          }
+        ],
+        "meta": {
+          "lastUpdated": "2020-01-01T01:01:01.1111Z",
+          "profile": [
+            "http://hl7.org/fhir/us/core/StructureDefinition/us-core-practitioner"
+          ],
+          "source": "Xyz Organization"
+        },
+        "name": [
+          {
+            "family": "Veum823",
+            "given": [
+              "Dr. Tia76"
+            ],
+            "text": "Dr. Tia76 Veum823"
+          }
+        ],
+        "resourceType": "Practitioner"
+      }
+    },
+    {
+      "request": {
+        "method": "PUT",
+        "url": "PractitionerRole/0dc611ff817199534dbfa16a6b1437ef"
+      },
+      "resource": {
+        "code": [
+          {
+            "coding": [
+              {
+                "code": "207R00000X",
+                "display": "Internal Medicine",
+                "system": "http://nucc.org/provider-taxonomy"
+              }
+            ]
+          }
+        ],
+        "id": "0dc611ff817199534dbfa16a6b1437ef",
+        "identifier": [
+          {
+            "system": "http://www.bcbs.com/fhir/ns/NamingSystem/practitionerrole-identifier-inpatient",
+            "value": "998592645930375398774584"
+          }
+        ],
+        "meta": {
+          "lastUpdated": "2020-01-01T01:01:01.1111Z",
+          "profile": [
+            "http://hl7.org/fhir/us/carin/StructureDefinition/carin-bb-practitionerrole"
+          ],
+          "source": "Xyz Organization"
+        },
+        "organization": {
+          "reference": "Organization/37ce68f1a1ac2e3c6b9ca2bd31e3b5ec"
+        },
+        "practitioner": {
+          "reference": "Practitioner/d41187ed45024518fb323012695c6b91"
+        },
+        "resourceType": "PractitionerRole",
+        "specialty": [
+          {
+            "coding": [
+              {
+                "code": "163WG0000X",
+                "display": "General Practice",
+                "system": "http://nucc.org/provider-taxonomy"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "resourceType": "Bundle",
+  "type": "transaction"
+}

@@ -1,0 +1,24 @@
+#  Local .terraform directories
+**/.terraform/*
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+*.lock.hcl
+
+# .tfvars files
+*.tfvars
+
+# Key files
+*.pem
+
+.DS_Store
+
+# Environment files
+*.env
+
+# Visual Studio Code
+.vscode
+
+# Work directories
+work

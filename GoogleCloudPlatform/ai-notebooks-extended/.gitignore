@@ -1,0 +1,15 @@
+.DS_Store
+dataproc-hub-example/build/infrastructure-builder/mig/terraform.tfvars
+cluster-standard-cpu.yaml
+cluster-standard-pvm.yaml
+cluster-standard-v100.yaml
+dataproc-hub-example/deploy/ain
+dataproc-hub-example/deploy/local
+patch_*
+dataproc-hub-example/build/infrastructure-builder/local
+.terraform
+darwin_amd64
+terraform.tfstate
+terraform.tfstate.backup
+dataproc-hub-example/build/infrastructure-builder/ain/files/gcs_working_folder/env-hub.list
+minikube

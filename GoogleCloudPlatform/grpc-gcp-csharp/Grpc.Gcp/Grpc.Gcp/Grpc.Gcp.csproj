@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\Common.csproj.include" />
+
+  <PropertyGroup>
+    <TargetFrameworks>net45;netstandard1.5</TargetFrameworks>
+    <Company>Google Inc.</Company>
+    <Authors>Google Inc.</Authors>
+    <Description>Extension supporting Google Cloud Platform specific features for gRPC.</Description>
+    <Copyright>Copyright 2018, Google Inc.</Copyright>
+    <PackageLicenseUrl>https://www.apache.org/licenses/LICENSE-2.0</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/GoogleCloudPlatform/grpc-gcp-csharp</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/GoogleCloudPlatform/grpc-gcp-csharp</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>Google;Cloud;Grpc;GCP</PackageTags>
+    <Version>2.0.0</Version>
+    <PackageReleaseNotes>Grpc.Gcp v2.0.0
+- Upgrade gRPC version to v2.25.0</PackageReleaseNotes>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>../keys/Grpc.Gcp.snk</AssemblyOriginatorKeyFile>
+    <DelaySign></DelaySign>
+  </PropertyGroup>
+
+  <!--
+    - Override target frameworks on non-Windows to just .NET Standard
+    -->
+  <PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
+    <TargetFrameworks>netstandard1.5</TargetFrameworks>
+    <PublicSign>true</PublicSign>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Google.Protobuf" Version="3.8.0" />
+    <PackageReference Include="Grpc" Version="2.25.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.25.0" />
+  </ItemGroup>
+
+</Project>

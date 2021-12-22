@@ -1,0 +1,1176 @@
+# Copyright 2018 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+title: Project Deployment Schema
+description: The specification for one or more deployed projects.
+additionalProperties: false
+
+definitions:
+  email_address:
+    type: string
+    pattern: ^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-.]+$
+  additional_permission_members:
+    type: string
+    pattern: ^(allAuthenticatedUsers|allUsers|(user|group|domain|serviceAccount):.+)$
+  add_members_without_alluser:
+    type: string
+    pattern: ^(allAuthenticatedUsers|(user|group|domain|serviceAccount):.+)$
+
+  gcp_project:
+    type: object
+    additionalProperties: false
+    required:
+    - project_id
+    - owners_group
+    - auditors_group
+    properties:
+      project_id:
+        type: string
+        description: |
+          The ID of this project. Must be unique. This cannot be changed after
+          the project has been deployed.
+        pattern: ^[a-z][-a-z0-9]{4,28}[a-z0-9]$
+
+      billing_account:
+        type: string
+        description: |
+          The ID of the billing account to attach to this project.
+          If set, this will override the billing_account set in the overall
+          config.
+        pattern: ^[a-zA-Z0-9]{6}-[a-zA-Z0-9]{6}-[a-zA-Z0-9]{6}$
+
+      folder_id:
+        type: string
+        description: |
+          Optional ID of the folder that the projects will be created
+          under. Typically a base-10 string representation of an integer.
+          If set, this will override the folder_id set in the overall config.
+        pattern: ^[0-9]{8,25}$
+
+      owners_group:
+        #$ref: '#/definitions/email_address'
+        type: string
+        pattern: ^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-.]+$
+        description: Owners group for this project.
+
+      auditors_group:
+        $ref: '#/definitions/email_address'
+        description: |
+          Group to be granted access to audit logs and securityReviewer role in
+          this project.
+
+      labels:
+        type: object
+        descroption: Labels to set on the project.
+
+      devops:
+        type: object
+        description: Configuration for devops related components like Terraform.
+        additionalProperties: false
+        required:
+        - state_storage_bucket
+        properties:
+          state_storage_bucket:
+            type: object
+            description: |
+              Bucket for Teraform to store its remote state
+              (https://www.terraform.io/docs/state/remote.html).
+              Wraps https://www.terraform.io/docs/providers/google/r/storage_bucket.html.
+
+      audit:
+        type: object
+        description: |
+          Configuration of the (local or remote) audit logs for this project.
+          This cannot be changed after the project has been deployed.
+        additionalProperties: false
+        required:
+        - logs_bigquery_dataset
+        properties:
+          logs_bigquery_dataset:
+            type: object
+            description: |
+              BigQuery dataset to hold audit logs.
+              Supports google_bigquery_dataset (https://www.terraform.io/docs/providers/google/r/bigquery_dataset.html).
+          logs_storage_bucket:
+            type: object
+            description: |
+              GCS bucket to hold GCS logs. Required only if the project contains
+              storage_buckets.
+
+      bigquery_datasets:
+        type: array
+        description: |
+          Supports google_bigquery_dataset (https://www.terraform.io/docs/providers/google/r/bigquery_dataset.html).
+        items:
+          type: object
+
+      # To set up triggers for GitHub, manual steps in the UI to connect GitHub repositories are still required.
+      cloudbuild_triggers:
+        type: array
+        description: |
+          Supports google_cloudbuild_trigger (https://www.terraform.io/docs/providers/google/r/cloudbuild_trigger.html).
+        items:
+          type: object
+          required:
+          - name
+          - github
+          properties:
+            name:
+              type: string
+              description: The name of the Cloudbuild Trigger. Must be unique within the project.
+            github:
+              type: object
+              description: The configuration of a trigger that creates a build whenever a GitHub event is received.
+
+      compute_firewalls:
+        type: array
+        description: |
+          Supports google_compute_firewall (https://www.terraform.io/docs/providers/google/r/compute_firewall.html).
+        items:
+          type: object
+
+      compute_images:
+        type: array
+        description: |
+          Supports google_compute_image (https://www.terraform.io/docs/providers/google/r/compute_image.html).
+        items:
+          type: object
+
+      compute_instances:
+        type: array
+        description: |
+          Supports google_compute_instance (https://www.terraform.io/docs/providers/google/r/compute_instance.html).
+        items:
+          type: object
+
+      data_fusion_instances:
+        type: array
+        description: |
+          Supports data_fusion_instance (https://www.terraform.io/docs/providers/google/r/data_fusion_instance.html).
+        items:
+          type: object
+          required:
+          - name
+          - type
+          - region
+          properties:
+            name:
+              type: string
+              description: The name of the Data Fusion instance.
+            type:
+              type: string
+              description: The type of the Data Fusion instance.
+            region:
+              type: string
+              description: The region of the Data Fusion instance.
+
+      healthcare_datasets:
+        type: array
+        description: |
+          Supports google_healthcare_dataset (https://www.terraform.io/docs/providers/google/r/healthcare_dataset.html).
+        items:
+          type: object
+          properties:
+            name:
+              type: string
+              description: The resource name for the Dataset.
+            _iam_members:
+              type: array
+              description: |
+                Supports google_healthcare_dataset_iam_member (https://www.terraform.io/docs/providers/google/r/healthcare_dataset_iam.html).
+                Only the fields below are allowed.
+              items:
+                type: object
+                additionalProperties: false
+                required:
+                - role
+                - member
+                properties:
+                  role:
+                    type: string
+                    description: The role that should be applied.
+                  member:
+                    type: string
+                    description: |
+                      Identities that will be granted the privilege in role.
+            _dicom_stores:
+              type: array
+              description: Supports google_healthcare_dicom_store (https://www.terraform.io/docs/providers/google/r/healthcare_dicom_store.html).
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: |
+                      The resource name for the DicomStore.
+                      ** Changing this property may recreate the Dicom store
+                      (removing all data) **
+                  _iam_members:
+                    type: array
+                    description: |
+                      Supports google_healthcare_dicom_store_iam_member (https://www.terraform.io/docs/providers/google/r/healthcare_dicom_store_iam.html).
+                      Only the fields below are allowed.
+                    items:
+                      type: object
+                      additionalProperties: false
+                      required:
+                      - role
+                      - member
+                      properties:
+                        role:
+                          type: string
+                          description: The role that should be applied.
+                        member:
+                          type: string
+                          description: |
+                            Identities that will be granted the privilege in role.
+            _fhir_stores:
+              type: array
+              description: Supports google_healthcare_fhir_store (https://www.terraform.io/docs/providers/google/r/healthcare_fhir_store.html).
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: |
+                      The resource name for the FhirStore.
+                      ** Changing this property may recreate the Dicom store
+                      (removing all data) **
+                  _iam_members:
+                    type: array
+                    description: |
+                      Supports google_healthcare_fhir_store_iam_member (https://www.terraform.io/docs/providers/google/r/healthcare_fhir_store_iam.html).
+                      Only the fields below are allowed.
+                    items:
+                      type: object
+                      additionalProperties: false
+                      required:
+                      - role
+                      - member
+                      properties:
+                        role:
+                          type: string
+                          description: The role that should be applied.
+                        member:
+                          type: string
+                          description: |
+                            Identities that will be granted the privilege in role.
+            _hl7_v2_stores:
+              type: array
+              description: Supports google_healthcare_hl7_v2_store (https://www.terraform.io/docs/providers/google/r/healthcare_hl7_v2_store.html).
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: |
+                      The resource name for the FhirStore.
+                      ** Changing this property may recreate the Dicom store
+                      (removing all data) **
+                  _iam_members:
+                    type: array
+                    description: |
+                      Supports google_healthcare_hl7_v2_store_iam_member (https://www.terraform.io/docs/providers/google/r/healthcare_hl7_v2_store_iam.html).
+                      Only the fields below are allowed.
+                    items:
+                      type: object
+                      additionalProperties: false
+                      required:
+                      - role
+                      - member
+                      properties:
+                        role:
+                          type: string
+                          description: The role that should be applied.
+                        member:
+                          type: string
+                          description: |
+                            Identities that will be granted the privilege in role.
+
+      monitoring_notification_channels:
+        type: array
+        description: |
+          Supports google_monitoring_notification_channel (https://www.terraform.io/docs/providers/google/r/monitoring_notification_channel.html).
+        items:
+          type: object
+          properties:
+            _email:
+              type: string
+              description: |
+                Helper to create an email notification channel.
+                Will set the `type` and `labels` fields (thus these fields must
+                not be set in conjunction with `_email`).
+
+      project_iam_custom_roles:
+        type: array
+        description: |
+          Supports google_project_iam_custom_role (https://www.terraform.io/docs/providers/google/r/google_project_iam_custom_role.html).
+
+      project_iam_members:
+        type: array
+        description: |
+          Project level IAM members.
+          Supports google_project_iam_member (https://www.terraform.io/docs/providers/google/r/google_project_iam.html).
+          Only the fields below are allowed.
+        items:
+          type: object
+          additionalProperties: false
+          required:
+          - role
+          - member
+          properties:
+            role:
+              type: string
+              description: The role that should be applied.
+            member:
+              type: string
+              description: |
+                Identities that will be granted the privilege in role.
+
+      project_services:
+        type: array
+        description: |
+          Supports google_project_service
+          (https://www.terraform.io/docs/providers/google/r/google_project_service.html).
+          Only the fields below can be set.
+        items:
+          type: object
+          additionalProperties: false
+          required:
+          - service
+          properties:
+            service:
+              type: string
+              descrpition: The service to enable.
+
+      pubsub_topics:
+        type: array
+        description: |
+          Supports google_pubsub_topic (https://www.terraform.io/docs/providers/google/r/pubsub_topic.html).
+        items:
+          type: object
+          properties:
+            _iam_members:
+               type: array
+               description: |
+                 Supports google_pubsub_topic_iam_member (https://www.terraform.io/docs/providers/google/r/pubsub_topic_iam.html).
+                 Only the fields below are allowed.
+               items:
+                 type: object
+                 additionalProperties: false
+                 required:
+                 - role
+                 - member
+                 properties:
+                   role:
+                     type: string
+                     description: The role that should be applied.
+                   member:
+                    type: string
+                    description:
+                      Identities that will be granted the privilege in role.
+            _subscriptions:
+              type: array
+              description: |
+                Supports google_pubsub_subscription (https://www.terraform.io/docs/providers/google/r/pubsub_subscription.html).
+              items:
+                type: object
+                properties:
+                  _iam_members:
+                   type: array
+                   description: |
+                     Supports google_pubsub_subscription_iam_member (https://www.terraform.io/docs/providers/google/r/pubsub_subscription_iam.html).
+                     Only the fields below are allowed.
+                   items:
+                     type: object
+                     additionalProperties: false
+                     required:
+                     - role
+                     - member
+                     properties:
+                       role:
+                         type: string
+                         description: The role that should be applied.
+                       member:
+                        type: string
+                        description:
+                          Identities that will be granted the privilege in role.
+
+      terraform_deployments:
+        type: object
+        description: |
+          Configure the terraform deployments in this project.
+          Useful for customizing the deployment to output values or add
+          unsupported resources/modules.
+          Currently, only the 'resources' deployment can be configured.
+          Any Terraform JSON syntax is supported:
+          https://www.terraform.io/docs/configuration/syntax-json.html.
+          NOTE: This is an advanced feature and should be avoided if possible.
+          If the custom config can be supported natively, please reach out to
+          the team and prefer to use that.
+        additionalProperties: false
+        properties:
+          resources:
+            type: object
+            description: Customization for the resources deployment.
+            additionalProperties: false
+            properties:
+              config:
+                type: object
+                description: Additional config to attach to this deployment.
+
+      resource_manager_liens:
+        type: array
+        description: |
+          Supports google_resource_manager_lien (https://www.terraform.io/docs/providers/google/r/resource_manager_lien.html).
+          Only the fields below can be set.
+        items:
+          type: object
+          additionalProperties: false
+          properties:
+            _project_deletion:
+              type: boolean
+              description: |
+                Helper to create a project deletion lien. Set this to get a
+                default managed lien. Do not set any other fields.
+            reason:
+              type: string
+              description: |
+                Concise user-visible strings indicating why an action cannot be
+                performed on a resource. Maximum length of 200 characters.
+            origin:
+              type: string
+              description: |
+                A stable, user-visible/meaningful string identifying the origin
+                of the Lien, intended to be inspected programmatically. Maximum
+                length of 200 characters.
+            parent:
+              type: string
+              description: |
+                A reference to the resource this Lien is attached to. The server
+                will validate the parent against those for which Liens are
+                supported. Since a variety of objects can have Liens against
+                them, you must provide the type prefix
+                (e.g. "projects/my-project-name").
+            restrictions:
+              type: array
+              description: |
+                The types of operations which should be blocked as a result of this
+                Lien. Each value should correspond to an IAM permission. The
+                server will validate the permissions against those for which
+                Liens are supported. An empty list is meaningless and will be
+                rejected. e.g. ['resourcemanager.projects.delete']
+              items:
+                type: string
+
+      service_accounts:
+        type: array
+        description: |
+          Supports google_service_account (https://www.terraform.io/docs/providers/google/r/google_service_account.html).
+          Only the fields below are allowed.
+        items:
+          type: object
+          additionalProperties: false
+          required:
+          - account_id
+          properties:
+            account_id:
+              type: string
+              description: |
+                The account id that is used to generate the service account
+                email address and a stable unique id.
+                It is unique within a project, must be 6-30 characters long,
+                and match the regular expression [a-z]([-a-z0-9]*[a-z0-9]) to
+                comply with RFC1035.
+            display_name:
+              type: string
+              description: |
+                The display name for the service account. Can be updated
+                without creating a new resource.
+            description:
+              type: string
+              description: Description of the service account.
+            _iam_members:
+              type: array
+              description: |
+                Supports google_spanner_instance_iam_member (https://www.terraform.io/docs/providers/google/r/service_account_iam.html).
+                Only the fields below are allowed.
+              items:
+                type: object
+                additionalProperties: false
+                required:
+                - role
+                - member
+                properties:
+                  role:
+                    type: string
+                    description: The role that should be applied.
+                  member:
+                    type: string
+                    description: |
+                      Identities that will be granted the privilege in role.
+      spanner_instances:
+        type: array
+        description: |
+          Supports google_spanner_instance (https://www.terraform.io/docs/providers/google/r/spanner_instance.html).
+        items:
+          type: object
+          required:
+          - name
+          properties:
+            name:
+              type: string
+              description: The resource name for the Dataset.
+            _iam_members:
+              type: array
+              description: |
+                Supports google_spanner_instance_iam_member (https://www.terraform.io/docs/providers/google/r/spanner_instance_iam.html).
+                Only the fields below are allowed.
+              items:
+                type: object
+                additionalProperties: false
+                required:
+                - role
+                - member
+                properties:
+                  role:
+                    type: string
+                    description: The role that should be applied.
+                  member:
+                    type: string
+                    description: |
+                      Identities that will be granted the privilege in role.
+            _databases:
+              type: array
+              description: Supports google_spanner_database (https://www.terraform.io/docs/providers/google/r/spanner_database.html).
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: |
+                      The resource name for the DicomStore.
+                      ** Changing this property may recreate the Dicom store
+                      (removing all data) **
+                  _iam_members:
+                    type: array
+                    description: |
+                      Supports google_spanner_database_iam_member (https://www.terraform.io/docs/providers/google/r/spanner_database_iam.html).
+                      Only the fields below are allowed.
+                    items:
+                      type: object
+                      additionalProperties: false
+                      required:
+                      - role
+                      - member
+                      properties:
+                        role:
+                          type: string
+                          description: The role that should be applied.
+                        member:
+                          type: string
+                          description: |
+                            Identities that will be granted the privilege in role.
+
+      storage_buckets:
+        type: array
+        description: |
+          Supports google_storage_bucket (https://www.terraform.io/docs/providers/google/r/storage_bucket.html).
+        items:
+          type: object
+          properties:
+            _iam_members:
+             type: array
+             description: |
+               Supports google_storage_iam_member (https://www.terraform.io/docs/providers/google/r/storage_bucket_iam.html).
+               Only the fields below are allowed.
+             items:
+               type: object
+               additionalProperties: false
+               required:
+               - role
+               - member
+               properties:
+                 role:
+                   type: string
+                   description: The role that should be applied.
+                 member:
+                  type: string
+                  description:
+                    Identities that will be granted the privilege in role.
+
+      # -----------------------------------------
+      # ------------- LEGACY FIELDS -------------
+      # -----------------------------------------
+      data_readwrite_groups:
+        type: array
+        description: |
+          Optional list of groups to be granted Read/Write access to non-logging
+          GCS buckets, BigQuery datasets and Pubsub subscriptions in this
+          project.
+          DEPRECATED if using Terraform. Instead, set `project_iam_members`
+          or per-resource permissions directly.
+        uniqueItems: true
+        items:
+          $ref: '#/definitions/email_address'
+
+      data_readonly_groups:
+        type: array
+        description: |
+          Optional list of groups to be granted Read-only access to non-logging
+          GCS buckets and BigQuery datasets in this project.
+          DEPRECATED if using Terraform. Instead, set `project_iam_members`
+          or per-resource permissions directly.
+        items:
+          $ref: '#/definitions/email_address'
+      create_deletion_lien:
+        type: boolean
+        description: |
+          Optional. Whether to create project deletion lien or not.
+          This can be set to true after the project has been deployed.
+          However, setting it to false if it was previously true will not remove
+          the lien.
+
+      audit_logs:
+        type: object
+        description: |
+          Configuration of the (local or remote) audit logs for this project.
+          This cannot be changed after the project has been deployed.
+        additionalProperties: false
+        required:
+        - logs_bq_dataset
+        properties:
+          logs_bq_dataset:
+            type: object
+            description: |
+              NOT READY FOR GENERAL USE. BigQuery dataset to hold audit logs.
+            additionalProperties: false
+            required:
+            - properties
+            properties:
+              properties:
+                type: object
+                description: |
+                  Wraps the CFT template bigquery_dataset.py.
+                  See https://github.com/GoogleCloudPlatform/cloud-foundation-toolkit/tree/master/dm/templates/bigquery for details.
+                  additionalProperties: false
+                  required:
+                  - name
+                  - location
+                  properties:
+                    name:
+                      type: string
+                      description: |
+                        Name of the BiqQuery dataset. For local audit logs,
+                        the recommended name is "audit-logs". For remote audit
+                        logs, the recommended name is the project-id with
+                        hyphens substituted with underscores.
+                      pattern: ^[_a-zA-Z0-9]{1,}$
+                    location:
+                      type: string
+                      description: |
+                        Location of the dataset. See BigQuery documenation for
+                        available locations.
+          logs_gcs_bucket:
+            type: object
+            description: |
+              GCS bucket to hold GCS logs. Required only if the project contains
+              data_buckets.
+            additionalProperties: false
+            properties:
+              ttl_days:
+                type: integer
+                description: |
+                  TTL (in days) on objects in this bucket.
+                  This is a helper that creates a lifecycle rule.
+                minimum: 1
+              properties:
+                type: object
+                description: |
+                  Wraps the CFT template gcs_bucket.py.
+                  See https://github.com/GoogleCloudPlatform/cloud-foundation-toolkit/tree/master/dm/templates/gcs_bucket for details.
+                additionalProperties: false
+                required:
+                - name
+                - location
+                - storageClass
+                properties:
+                  name:
+                    type: string
+                    description: |
+                      Globally unique name of the GCS bucket.
+                      See https://cloud.google.com/storage/docs/best-practices
+                      for recommendations on setting names here.
+                    pattern: ^[a-zA-Z0-9][-_.a-zA-Z0-9]{0,221}$
+                  location:
+                    type: string
+                    description: Regional or multi-regional location of the bucket.
+                    minLength: 2
+                  storageClass:
+                    type: string
+                    description: Storage class of the bucket.
+
+      stackdriver_alert_email:
+        $ref: '#/definitions/email_address'
+        description: |
+          If set, the email address to send alerts for IAM changes and
+          unexpected GCS bucket access. If not set, a Stackdriver account will
+          not be created for this project. While this field can be set after the
+          project has been deployed, it cannot be changed afterwards.
+      violation_exceptions:
+        type: object
+        patternProperties:
+          "^[\\w_\\-.,+!*'()%][\\w_\\-.,+!*'()%\\/]{0,99}$":
+            type: array
+            description: |
+              The service account(s) listed here are "privileged" or "trusted" in
+              the project. The DPT set the service accounts as exceptions when
+              setting up logs-based metrics.
+            items:
+              $ref: '#/definitions/email_address'
+
+      enabled_apis:
+        type: array
+        description: List of APIs to enable in the new project.
+        items:
+          type: string
+          minLength: 2
+
+      binauthz:
+        type: object
+        description: Binary authorization on the project.
+        required:
+        - properties
+        properties:
+          properties:
+            type: object
+            description: Binary authorization policy.
+
+      resources:
+        type: object
+        description: |
+          Resources to deploy. See README.md for links to resource specific documentation and schemas.
+        additionalProperties: false
+        properties:
+          bq_datasets:
+            type: array
+            description: Provides support for BigQuery Datasets.
+            items:
+              type: object
+              additionalProperties: false
+              required:
+              - properties
+              properties:
+                properties:
+                  type: object
+                  description: |
+                    Wraps the CFT template bigquery_dataset.py.
+                    In addition, location must be set and setDefaultOwner must
+                    not be set to true.
+          chc_datasets:
+            type: array
+            description: Provides support for CHC datasets (alpha).
+            items:
+              type: object
+              description: |
+                Wraps the parameters for a CHC dataset.
+              required:
+              - properties
+              properties:
+                properties:
+                  type: object
+                  description: |
+                    Wraps the template chc_dataset.py.
+          cloud_routers:
+            type: array
+            description: Provides support for cloud router.
+            additionalProperties: false
+            items:
+              type: object
+              required:
+              - properties
+              properties:
+                properties:
+                  type: object
+                  description: |
+                    Wraps the CFT template cloud_router.py.
+          gce_firewalls:
+            type: array
+            description: Provides support for firewalls.
+            additionalProperties: false
+            items:
+              type: object
+              required:
+              - name
+              - properties
+              properties:
+                name:
+                  type: string
+                  description: |
+                    Name of this firewall. Only used forthe  deployment manager
+                    resource name (i.e. does not affect the actual firewall
+                    resource).
+                properties:
+                  type: object
+                  description: |
+                    Wraps the CFT template firewall.py.
+          gce_instances:
+            type: array
+            description: Provides support for GCE instances.
+            items:
+              type: object
+              additionalProperties: false
+              required:
+              - properties
+              properties:
+                properties:
+                  type: object
+                  description: |
+                    Wraps the CFT template instance.py.
+                custom_boot_image:
+                  type: object
+                  description: |
+                    A custom disk image to create from a GCS path to use as the boot
+                    disk for this VM. Once deployed, this field cannot be changed.
+                  additionalProperties: false
+                  required:
+                  - image_name
+                  - gcs_path
+                  properties:
+                    image_name:
+                      type: string
+                      description: Name of the new disk image to create.
+                      pattern: ^[a-z]([-a-z0-9]{0,61}[a-z0-9])?$
+                    gcs_path:
+                      type: string
+                      description: |
+                        GCS path (without gs:// prefix) to the tar.gz file of the
+                        RAW image file to use for the boot image.
+                      pattern: ^[a-zA-Z0-9][-_.a-zA-Z0-9]{0,221}\/.+\.tar\.gz$
+          gcs_buckets:
+            type: array
+            description: Provides support for GCS Buckets.
+            items:
+              type: object
+              additionalProperties: false
+              required:
+              - properties
+              properties:
+                properties:
+                  type: object
+                  description: |
+                    Wraps the CFT template gcs_bucket.py.
+                    Since GCS bucket names share a global namespace, see
+                    https://cloud.google.com/storage/docs/best-practices for
+                    best pratices.
+                    In addition, location must be set and versioning.enabled
+                    must not be set to false, and predefined ACLs cannot be
+                    set.
+                ttl_days:
+                  type: number
+                  description: |
+                    A helper to set a deletion lifecycle rule to clean up
+                    objects after the specified number of days.
+                # TODO: Reenable if needed. Consider removing it after migrating to Terraform.
+                # expected_users:
+                #   type: array
+                #   description: |
+                #     Helper to create an unexpected access metric for accesses
+                #     from users outside of this list.
+                #   items:
+                #     type: string
+                #     description: User emails (e.g. foo@domain.com)
+          gke_clusters:
+            type: array
+            description: Provides support for GKE Clusters.
+            items:
+              type: object
+              additionalProperties: false
+              required:
+              - properties
+              properties:
+                properties:
+                  type: object
+                  description: |
+                    Wraps the CFT template gke.py.
+          gke_workloads:
+            type: array
+            description: Provides support for GKE workloads supported by kubectl.
+            items:
+              type: object
+              additionalProperties: false
+              required:
+              - cluster_name
+              - properties
+              properties:
+                cluster_name:
+                  type: string
+                properties:
+                  type: object
+                  description: |
+                    Must be a valid kubectl workload definition.
+          iam_custom_roles:
+            type: array
+            description: Provides support for creating IAM custom roles.
+            items:
+              type: object
+              additionalProperties: false
+              properties:
+                properties:
+                  type: object
+                  description: |
+                    Wraps the CFT template iam_custom_role.py.
+          iam_policies:
+            type: array
+            description: |
+              Provides support for adding project level IAM bindings.
+            items:
+              type: object
+              additionalProperties: false
+              required:
+              - name
+              - properties
+              properties:
+                name:
+                  type: string
+                  description: |
+                    Name of this policy. Only used by deployment manager.
+                properties:
+                  type: object
+                  description: |
+                    Wraps the CFT template iam_member.py.
+          ip_addresses:
+            type: array
+            description: Provides support for IP addresses.
+            additionalProperties: false
+            items:
+              type: object
+              required:
+              - properties
+              properties:
+                properties:
+                  type: object
+                  description: |
+                    Wraps the CFT template ip_address.py.
+          pubsubs:
+            type: array
+            description: Provides support for Pubsub channels.
+            items:
+              type: object
+              additionalProperties: false
+              required:
+              - properties
+              properties:
+                properties:
+                  type: object
+                  description: |
+                    Wraps the CFT template pubsub.py.
+          routes:
+            type: array
+            description: Provides support for routes.
+            additionalProperties: false
+            items:
+              type: object
+              required:
+              - properties
+              properties:
+                properties:
+                  type: object
+                  description: |
+                    Wraps the CFT template single_route.py.
+          service_accounts:
+            type: array
+            description: Provides support for service accounts.
+            items:
+              type: object
+              description: |
+                Wraps the parameters for a service account.
+              additionalProperties: false
+              required:
+              - properties
+              properties:
+                properties:
+                  accountId:
+                    type: string
+                    description: |
+                      The accountId is used to generate the service account
+                      email address and a stable unique id.
+                    pattern: ^[a-z]([-a-z0-9]*[a-z0-9])$
+                  serviceAccount:
+                    type: string
+                    description: |
+                      A user-specified name for the service account.
+          vpc_networks:
+            type: array
+            description: Provides support for VPC networks.
+            additionalProperties: false
+            items:
+              type: object
+              required:
+              - properties
+              properties:
+                properties:
+                  type: object
+                  description: |
+                    Wraps the CFT template network.py.
+          vpns:
+            type: array
+            description: Provides support for VPNs.
+            additionalProperties: false
+            items:
+              type: object
+              required:
+              - properties
+              properties:
+                properties:
+                  type: object
+                  description: |
+                    Wraps the CFT template vpn.py.
+
+required:
+- overall
+- generated_fields_path
+
+properties:
+  overall:
+    type: object
+    description: Set of properties that apply to all projects.
+    additionalProperties: false
+    required:
+    - billing_account
+    properties:
+      billing_account:
+        type: string
+        description: The ID of the billing account to attach to projects.
+        pattern: ^[a-zA-Z0-9]{6}-[a-zA-Z0-9]{6}-[a-zA-Z0-9]{6}$
+
+      folder_id:
+        type: string
+        description: |
+          Optional ID of the folder that the projects will be created
+          under. Typically a base-10 string representation of an integer. If
+          this is omitted, projects will not be created under a folder.
+        pattern: ^[0-9]{8,25}$
+
+      organization_id:
+        type: string
+        description: |
+          Optional ID of the organization that the projects will be created
+          under. Typically a base-10 string representation of an integer. If
+          this is omitted, projects will not be created under an organization.
+        pattern: ^[0-9]{8,25}$
+
+      domain:
+        type: string
+        description: |
+          Optional domain that users and groups should belong to. This is used
+          for monitoring.
+        minLength: 2
+
+      allowed_apis:
+        type: array
+        description: |
+          Optional list of APIs that are allowed to be enabled in any project.
+          If this is set to a non-empty list, an error will be raised if a
+          project enables an API that is not in this list. A good use case of
+          this field is to list all whitelisted HIPAA compliant APIs.
+          This will prevent projects from accidentally enabling a non-HIPAA
+          compliant API.
+          This field is also used to generate Forseti monitoring rules.
+        items:
+          type: string
+          minLength: 2
+
+  generated_fields_path:
+    type: string
+    description: |
+      The path of file to store information generated during the deployment
+      process, such as project numbers and Forseti service account. Must be
+      relative to the directory of the config file containing this field.
+
+  devops:
+    type: object
+    description: The devops configuration.
+    additionalProperties: false
+    required:
+    - project
+    properties:
+      project:
+        $ref: '#/definitions/gcp_project'
+        description: |
+          The project to hold devops related resources such as Terraform state
+          buckets. If devops is not set, all projects save Terraform state
+          locally.
+
+  audit_logs_project:
+    $ref: '#/definitions/gcp_project'
+    description: |
+      The project to hold audit logs, if using remote audit logs. All created
+      projects will save audit logs to this project. If audit_logs_project is
+      not provided, all projects save audit logs locally.
+
+  forseti:
+    type: object
+    description: The Forseti instance configuration.
+    additionalProperties: false
+    required:
+    - project
+    properties:
+      project:
+        $ref: '#/definitions/gcp_project'
+        description: The project install the Forseti instance in.
+      properties:
+        type: object
+        description: |
+          Wraps the CFT Forseti Terraform module.
+          In addition, the following fields should be unset:
+            * domain
+            * project_id
+
+  projects:
+    type: array
+    description: List of data hosting projects to deploy.
+    items:
+      $ref: '#/definitions/gcp_project'
+
+  imports:
+    type: array
+    description: |
+      NOTE: This is in ALPHA and can change in backwards incompatible ways.
+      A list of YAML files that are merged into the current file.
+      Note: lists will be appended and fields will not be overwritten.
+      For example, the list of projects can be spread over multiple files, but
+      the fields in overall block can't be overwritten in multiple places.
+    items:
+      type: object
+      description: An imported item that must contain a pattern.
+      additionalProperties: false
+      properties:
+        path:
+          type: string
+          description: |
+            The path to import. Must be absolute or relative to this file.
+            This file must be a (partial) config that can be merged
+            into the root config.
+            It can also be a template, in which case the `data` field will be
+            used to fill it.
+            See https://golang.org/pkg/text/template for syntax.
+        data:
+          type: object
+          description: |
+            Data to pass to a template file defined at path.
+        pattern:
+          type: string
+          description: |
+            Glob supported as defined in https://godoc.org/path/filepath#Glob.

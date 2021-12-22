@@ -1,0 +1,97 @@
+<project name="GriddleDeployer" default="help">
+	<property file="build.properties"/>
+	<property environment="app"/>
+	<property environment="target"/>
+	<property environment="ver"/>
+
+	<target name="checkApp" unless="app">
+		<echo>Setting default target as -Dapp=X was not specified</echo>
+		<fail message="The application was not specified in the app property."/>
+	</target> 
+
+	<target name="checkTarget" unless="target">
+		<echo>Setting default target as -Dtarget=X was not specified</echo>
+		<property name="target" value="Release"/>
+	</target> 
+
+	<target name="checkVersion" unless="ver">
+		<echo>Setting default target as -Dver=X was not specified</echo>
+		<property name="ver" value=""/>
+	</target> 
+
+	<target name="help" description="explanation of how to use">
+		<echo>
+		Instructions: 
+		=============
+		Build your application in xcode, for a given target (ie: Debug, Release)
+		There are 5 main properties that can be set either at command line, or in the build.properties file:
+		app		(the name of your iPhone app case sensitive)
+		target		(the XCode target you want to build from: ie Debug/Release)
+		ver		(an optional version to be used in filename when generating the final zip file)
+		certFile	(the path of the .mobileprovision file to allow your testers to install into iTunes)
+		logoFile	(the path of the logo for your application)
+
+		eg with command line:
+			ant build -Dapp=MyAppName -Dtarget=Release
+
+		eg with properties set in build.properties except for ver property:
+			ant build -Dver=v1.2.3
+		</echo>
+	</target>
+
+	<target name="clean" description="cleans all the necessary files/dirs">
+		<delete dir="release/" />
+	</target>
+
+	<target name="init" description="initialises the build">
+		<mkdir dir="release/" />
+		<mkdir dir="dist/" />
+	</target>
+
+	<target name="prepare" depends="checkApp,checkTarget,checkVersion,init" description="prepares directories and file for building the .ipa">
+                <echo>using build target '${target}'</echo>
+
+		<!-- Create the Payload directory, place the .app file, and zip up. -->
+		<delete dir="build/${target}-iphoneos/ipa/" />
+		<mkdir dir="build/${target}-iphoneos/ipa/Payload/" />
+
+		<!-- To give the app a logo in iTunes, we need a file called iTunesArtwork -->
+		<copy file="${logoFile}" tofile="build/${target}-iphoneos/ipa/iTunesArtwork"/>
+
+		<copy todir="build/${target}-iphoneos/ipa/Payload/${app}.app">
+			<fileset dir="build/${target}-iphoneos/${app}.app/">
+				<include name="**/*"/>
+			</fileset>
+		</copy>
+
+		<delete file="build/${target}-iphoneos/ipa/Payload/${app}.app/CodeResources"/>
+		<symlink link="build/${target}-iphoneos/ipa/Payload/${app}.app/CodeResources" resource="_CodeSignature/CodeResources" />
+		<chmod file="build/${target}-iphoneos/ipa/Payload/${app}.app/${app}" perm="755"/>
+	</target>
+
+	<target name="ipa" description="build ipa" depends="checkApp,checkTarget,checkVersion">
+		<exec executable="zip" dir="build/${target}-iphoneos/ipa/">
+    			<arg value="-r"/>
+    			<arg value="-y"/>
+    			<arg value="../../../release/${app}.zip"/>
+    			<arg value="."/>
+  		</exec>
+
+		<!-- Rename the .zip to an .ipa file -->
+		<move file="release/${app}.zip" tofile="release/${app}.ipa" />
+		<copy file="${certFile}" todir="release/"/>
+
+		<!-- Zip up all the contents -->
+		<zip destfile="dist/${app}${ver}.zip" compress="false">
+			<fileset dir="release/">
+				<include name="**"/>
+			</fileset>
+		</zip>
+
+	</target>
+
+	<target name="build" depends="prepare,ipa" description="prepares the .ipa and then packages with your logo and .mobileprovision file(s)">
+		<echo>finished building ${target} into dist/${app}${ver}.zip</echo>
+	</target>
+</project>
+

@@ -1,0 +1,40 @@
+{
+  "extends": [
+    "config:base"
+  ],
+  "ignorePaths": [
+    "example-problems/**",
+    "enforcer-rules/src/it/**",
+    "boms/convergence-check",
+    "boms/cloud-lts-bom",
+    "boms/cloud-oss-bom",
+    "verboseTree-maven-plugin/src/it/**"
+  ],
+  "separateMajorMinor": false,
+  "semanticCommits": true,
+  "packageRules": [
+    {
+      "packagePatterns": [
+        "^com.google.guava:"
+      ],
+      "versionScheme": "docker"
+    },
+    {
+      "packagePatterns": [
+        "^com.google.cloud:google-cloud-"
+      ],
+      "ignoreUnstable": false
+    },
+    {
+      "packagePatterns": [
+        "^com.google.cloud:libraries-bom",
+        "^com.google.cloud.tools:dependencies",
+        "^com.google.cloud.tools:linkage",
+        "^com.google.cloud.tools.opensource"
+      ],
+      "enabled": false
+    }
+  ],
+  "masterIssue": true,
+  "masterIssueApproval": true
+}

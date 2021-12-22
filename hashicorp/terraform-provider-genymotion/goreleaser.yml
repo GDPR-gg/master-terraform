@@ -1,0 +1,22 @@
+# Build customization
+project_name: terraform-provider-genymotion
+
+builds:
+  - binary: terraform-provider-genymotion
+    
+    env:
+      - CGO_ENABLED=0  
+    
+    goos:
+      - windows
+      - darwin
+      - linux
+    goarch:
+      - amd64
+
+
+archive:
+  format: tar.gz
+  format_overrides:
+    - goos: windows
+      format: zip

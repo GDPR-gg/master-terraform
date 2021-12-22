@@ -1,0 +1,57 @@
+{
+  "entry": [
+    {
+      "request": {
+        "method": "PUT",
+        "url": "Organization/37ce68f1a1ac2e3c6b9ca2bd31e3b5ec"
+      },
+      "resource": {
+        "active": true,
+        "address": [
+          {
+            "city": "SYLMAR",
+            "line": [
+              "12661 GLENOAKS BLVD"
+            ],
+            "postalCode": "91342-4748",
+            "state": "CA"
+          }
+        ],
+        "id": "37ce68f1a1ac2e3c6b9ca2bd31e3b5ec",
+        "identifier": [
+          {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "type": {
+              "coding": [
+                {
+                  "code": "npi",
+                  "display": "National Provider Identifier",
+                  "system": "http://hl7.org/fhir/us/carin-bb/CodeSystem/C4BBIdentifierType"
+                }
+              ]
+            },
+            "value": "375398774584"
+          }
+        ],
+        "meta": {
+          "lastUpdated": "2020-01-01T01:01:01.1111Z",
+          "profile": [
+            "http://hl7.org/fhir/us/carin-bb/StructureDefinition/C4BB-Organization"
+          ],
+          "source": "Xyz Organization"
+        },
+        "name": "PCP6875",
+        "resourceType": "Organization",
+        "telecom": [
+          {
+            "system": "phone",
+            "use": "work",
+            "value": "818-367-2171"
+          }
+        ]
+      }
+    }
+  ],
+  "resourceType": "Bundle",
+  "type": "transaction"
+}

@@ -1,0 +1,8 @@
+.env
+inclusify
+.DS_Store
+tmp-clone-*
+coverage.txt
+inclusify*
+dist/
+bin/

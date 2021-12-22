@@ -1,0 +1,88 @@
+<% wrap_layout :inner do %>
+  <% content_for :sidebar do %>
+    <div class="docs-sidebar hidden-print affix-top" role="complementary">
+      <ul class="nav docs-sidenav">
+        <li>
+          <a href="/docs/providers/index.html">All Providers</a>
+        </li>
+
+        <li>
+          <a href="/docs/providers/cloudamqp/index.html">CloudAMQP Provider</a>
+        </li>
+
+         <li>
+          <a href="/docs/providers/cloudamqp/plan.html">CloudAMQP Subscription Plans</a>
+        </li>
+
+        <li>
+          <a href="/docs/providers/cloudamqp/instance_region.html">CloudAMQP Instance Regions</a>
+        </li>
+
+        <li>
+          <a href="#">Data Sources</a>
+          <ul class="nav nav-visible">
+            <li>
+              <a href="/docs/providers/cloudamqp/d/alarm.html">cloudamqp_alarm</a>
+            </li>
+            <li>
+              <a href="/docs/providers/cloudamqp/d/credentials.html">cloudamqp_credentials</a>
+            </li>
+            <li>
+              <a href="/docs/providers/cloudamqp/d/instance.html">cloudamqp_instance</a>
+            </li>
+            <li>
+              <a href="/docs/providers/cloudamqp/d/nodes.html">cloudamqp_nodes</a>
+            </li>
+            <li>
+              <a href="/docs/providers/cloudamqp/d/notification.html">cloudamqp_notification</a>
+            </li>
+            <li>
+              <a href="/docs/providers/cloudamqp/d/plugins_community.html">cloudamqp_plugins_community</a>
+            </li>
+            <li>
+              <a href="/docs/providers/cloudamqp/d/plugins.html">cloudamqp_plugins</a>
+            </li>
+            <li>
+              <a href="/docs/providers/cloudamqp/d/vpc_info.html">cloudamqp_vpc_info</a>
+            </li>
+          </ul>
+        </li>
+
+        <li>
+          <a href="#">Resources</a>
+          <ul class="nav nav-visible">
+            <li>
+              <a href="/docs/providers/cloudamqp/r/alarm.html">cloudamqp_alarm</a>
+            </li>
+            <li>
+              <a href="/docs/providers/cloudamqp/r/instance.html">cloudamqp_instance</a>
+            </li>
+            <li>
+              <a href="/docs/providers/cloudamqp/r/integration_log.html">cloudamqp_integration_log</a>
+            </li>
+            <li>
+              <a href="/docs/providers/cloudamqp/r/integration_metric.html">cloudamqp_integration_metric</a>
+            </li>
+            <li>
+              <a href="/docs/providers/cloudamqp/r/notification.html">cloudamqp_notification</a>
+            </li>
+            <li>
+              <a href="/docs/providers/cloudamqp/r/plugin_community.html">cloudamqp_plugin_community</a>
+            </li>
+            <li>
+              <a href="/docs/providers/cloudamqp/r/plugin.html">cloudamqp_plugin</a>
+            </li>
+            <li>
+              <a href="/docs/providers/cloudamqp/r/security_firewall.html">cloudamqp_security_firewall</a>
+            </li>
+            <li>
+              <a href="/docs/providers/cloudamqp/r/vpc_peering.html">cloudamqp_vpc_peering</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  <% end %>
+
+  <%= yield %>
+  <% end %>

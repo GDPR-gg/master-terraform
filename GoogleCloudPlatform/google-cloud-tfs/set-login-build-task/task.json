@@ -1,0 +1,69 @@
+{
+  "$schema": "https://aka.ms/vsts-tasks.schema.json",
+  "id": "f621a4a9-892d-43f2-a5ee-0c4da14fc756",
+  "name": "set-login-build-task",
+  "friendlyName": "Get Google Compute VM password",
+  "author": "Google Cloud Tools",
+  "description": "Save to a variable the login password for a Google Compute Engine virtual machine running windows.",
+  "helpMarkDown": "[Compute Engine Console](http://console.cloud.google.com/compute) [Compute Engine Docs](https://cloud.google.com/compute/docs/) [Windows Passwords Docs](https://cloud.google.com/compute/docs/instances/windows/creating-passwords-for-windows-instances)",
+  "version": {
+    "Major": 1,
+    "Minor": 0,
+    "Patch": 0
+  },
+  "category": "Utility",
+  "visibility": [ "Build", "Release" ],
+  "demands": [],
+  "groups": [],
+  "inputs": [
+    {
+      "name": "serviceEndpoint",
+      "type": "connectedService:GoogleCloudServiceEndpoint",
+      "label": "GCP connection",
+      "required": true,
+      "helpMarkDown": "The Google Cloud Platform connection to use."
+    },
+    {
+      "name": "zone",
+      "type": "string",
+      "label": "Zone",
+      "required": true,
+      "helpMarkDown": "The zone of the virtual machine to get a new password for."
+    },
+    {
+      "name": "machine",
+      "type": "string",
+      "label": "Virtual Machine",
+      "required": true,
+      "helpMarkDown": "The name of the virtual machine to get a new password for."
+    },
+    {
+      "name": "userName",
+      "type": "string",
+      "label": "User Name",
+      "required": true,
+      "helpMarkDown": "The user name to create or reset the password of."
+    },
+    {
+      "name": "passwordOutput",
+      "type": "string",
+      "label": "Password Variable Name",
+      "defaultValue": "build.gcp.vm.password",
+      "required": true,
+      "helpMarkDown": "The name of the build variable to store the new password in."
+    },
+    {
+      "name": "machineIpOutput",
+      "type": "string",
+      "label": "VM IP Variable Name",
+      "defaultValue": "build.gcp.vm.ip",
+      "required": true,
+      "helpMarkDown": "The name of the build variable to store the machine ip in."
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "set-login.js"
+    }
+  }
+}

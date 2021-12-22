@@ -1,0 +1,28 @@
+{
+  "extends": [
+    "config:base",
+    ":semanticCommitTypeAll(chore)"
+  ],
+  "ignorePresets": [":semanticPrefixFixDepsChoreOthers"],
+  "packageRules": [
+    {
+      "packageNames":[ "mysql:mysql-connector-java" ],
+      "enabled": false
+    },
+    {
+      "packageNames": ["com.google.guava:guava"],
+      "allowedVersions": "/.+-android/"
+    },
+    {
+      "packageNames": ["com.microsoft.sqlserver:mssql-jdbc"],
+      "allowedVersions": "/.+jre8.?/"
+    },
+    {
+      "packageNames": ["com.google.apis:google-api-services-sqladmin"],
+      "allowedVersions": "/v1beta4-.*/"
+    }
+  ],
+  "prConcurrentLimit": 0,
+  "rebaseStalePrs": true,
+  "dependencyDashboard": true
+}

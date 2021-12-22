@@ -1,0 +1,17 @@
+run:
+    tests: false
+
+linters:
+    enable-all: true
+    disable:
+        - maligned
+        - gochecknoglobals
+
+linters-settings:
+    golint:
+        min-confidence: 0.1
+
+issues:
+    exclude:
+        - "Error return value of `r.Run` is not checked"
+        - G104

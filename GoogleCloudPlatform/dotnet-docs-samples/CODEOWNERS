@@ -1,0 +1,37 @@
+# There are two aspects that should be taken into account when reviewing samples on this repo.
+#   * That the samples are meaningful and consistent with similar samples in other languages
+#     and with what is stated in documentation. Some sample sets have specific owners that
+#     are in charge of this aspect.
+#   * The extent to which the sample is idiomatic C# and consistent with the rest of the samples in this repo.
+#     Currently @amanda-tarafa, @jskeet, in that order of availability, are in charge of this aspect.
+# Any PR will require two reviewers, one for each of the aspects mentioned above. For those sample sets
+# that don't have a specific owner, idiomatic reviewers will do their best effort to either review this
+# aspect themselves or find someone who can.
+
+*           @amanda-tarafa @jskeet
+
+bigtable/   @GoogleCloudPlatform/cloud-native-db-dpes @amanda-tarafa @jskeet
+datastore/  @GoogleCloudPlatform/cloud-native-db-dpes @amanda-tarafa @jskeet
+cloud-sql/  @GoogleCloudPlatform/infra-db-dpes @amanda-tarafa @jskeet
+firestore/  @GoogleCloudPlatform/cloud-native-db-dpes @amanda-tarafa @jskeet
+iot/        @gcseh @GoogleCloudPlatform/api-iot @amanda-tarafa @jskeet
+storage/    @GoogleCloudPlatform/storage-dpe @amanda-tarafa @jskeet
+
+bigquery/                  @jsimonweb @amanda-tarafa @jskeet
+applications/leaderboard/  @jsimonweb @amanda-tarafa @jskeet
+
+spanner/  @skuruppu @amanda-tarafa @jskeet
+
+kms/            @sethvargo @amanda-tarafa @jskeet
+secretmanager/  @sethvargo @amanda-tarafa @jskeet
+
+applications/liftAndShiftPetshop/  @simonz130 @amanda-tarafa @jskeet
+
+applications/googlehome-meets-dotnetcontainers/  @meteatamel @amanda-tarafa @jskeet
+run/                                             @meteatamel @jskeet @amanda-tarafa
+
+applications/sudokumb  @SurferJeffAtGoogle @amanda-tarafa @jskeet
+
+securitycenter/  @hsanchez94 @amanda-tarafa @jskeet
+
+dlp/ @pheonixblade9 @amanda-tarafa @jskeet

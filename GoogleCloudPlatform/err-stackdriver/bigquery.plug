@@ -1,0 +1,7 @@
+[Core]
+Name = BigQuery
+Module = bigquery
+DependsOn = GoogleCloud
+
+[Documentation]
+Description = Commands for Google BigQuery.

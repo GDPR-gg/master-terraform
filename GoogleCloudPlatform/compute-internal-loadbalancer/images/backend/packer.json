@@ -1,0 +1,78 @@
+{
+  "variables": {
+    "account_file": "",
+    "project_id": "null",
+    "consul_url": "https://releases.hashicorp.com/consul/0.6.3/consul_0.6.3_linux_amd64.zip"
+  },
+  "builders": [
+    {
+      "type": "googlecompute",
+      "account_file": "{{user `account_file`}}",
+      "project_id": "{{user `project_id`}}",
+      "source_image": "debian-8-jessie-v20150818",
+      "zone": "us-central1-f",
+      "image_name": "backend-{{timestamp}}"
+    }
+  ],
+  "provisioners": [
+      {
+        "type": "shell",
+        "inline": [
+          "# Make a dir we need",
+          "mkdir -p /etc/consul.d",
+          "mkdir -p /opt/www"
+        ]
+      },
+      {
+        "type": "file",
+        "source": "backend.json.tpl",
+        "destination": "/etc/consul.d/backend.json.tpl"
+      },
+
+      {
+        "type": "file",
+        "source": "gceme",
+        "destination": "/opt/www/gceme"
+      },
+      {
+        "type": "file",
+        "source": "consul_servers.service",
+        "destination": "/etc/systemd/system/consul_servers.service"
+      },
+      {
+        "type": "file",
+        "source": "consul_servers.sh",
+        "destination": "/usr/bin/consul_servers.sh"
+      },
+
+      {
+        "type": "file",
+        "source": "backend.service",
+        "destination": "/etc/systemd/system/backend.service"
+      },
+      {
+        "type": "file",
+        "source": "backend-start.sh",
+        "destination": "/usr/bin/backend-start.sh"
+      },
+      {
+      "type": "shell",
+      "inline": [
+            "#! /bin/bash",
+            "apt-get update -y",
+            "apt-get install -y unzip",
+
+            "# Get and install consul and consul-template",
+            "wget -O consul.zip {{user `consul_url`}}",
+            "unzip consul.zip -d /usr/local/bin/",
+
+            "chmod +x /opt/www/gceme",
+            "chmod +x /usr/bin/consul_servers.sh",
+            "chmod +x /usr/bin/backend-start.sh",
+
+            "systemctl enable consul_servers.service",
+            "systemctl enable backend.service"
+      ]
+    }
+  ]
+}

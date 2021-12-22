@@ -1,0 +1,845 @@
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# Copyright 2019 Google LLC. This software is provided as-is,
+# without warranty or representation for any use or purpose.
+#
+
+timeout: 7200s
+options:
+  machineType: N1_HIGHCPU_8
+steps:
+  - name: gcr.io/cloud-builders/gsutil
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        echo 'STEP-START'
+        for v in "REF_PATH[${_REF_PATH}]" "_POTENTIAL_VERSION[${_POTENTIAL_VERSION}]" "_BRANCH_NAME[${_BRANCH_NAME}]"  "_INPUT_SHA_LONG[${_INPUT_SHA_LONG}]" "_STEPS_X[${_STEPS_X}]"  ; do
+          echo -e "${v}"
+        done
+
+        mkdir -p /workspace/myenv
+        echo "/workspace/myenv" > /workspace/myenv/_rootdir_TAG.out
+        MYENV_DIR=$(cat /workspace/myenv/_rootdir_TAG.out)
+
+        MYENV_TEST_DIR="$(cat /workspace/myenv/_rootdir_TAG.out)/tests"
+        mkdir -p "$${MYENV_TEST_DIR}"
+        echo "$${MYENV_TEST_DIR}" > /workspace/myenv/_testdir_TAG.out
+        MYENV_TEST_DIR=$(cat /workspace/myenv/_testdir_TAG.out)
+
+        gsutil cp -DD "gs://${_GS_PROJECT_ID}_build/repo/keys/id_rsa_${_GS_PROJECT_ID}-repo" '/builder/home/.ssh/id_rsa'
+        gsutil cp -DD "gs://${_GS_PROJECT_ID}_build/repo/github/build-ssh-config-git-hub" '/builder/home/.ssh/config'
+        gsutil cp -DD "gs://${_GS_PROJECT_ID}_build/billing/billing_acount_testing.txt" '/builder/home/.ssh/billing_acount_testing.txt'
+
+        CMD1="\$(kubectl get ns \"\$1\" --output 'jsonpath={.metadata.name}')"
+        CMD2="\$(( NEXT_WAIT_TIME ))"
+        CMD3="\$(date '+%Y%m%d-%H%M%S')"
+        CMD4="\$(( 5*NEXT_WAIT_TIME++  ))"
+        cat  > $${MYENV_TEST_DIR}/deploy_helper.sh << -EOF
+          #set -x
+          NEXT_WAIT_TIME=0
+
+          until ([ ! -z  "$$CMD1" ] || [ "$$CMD2" -gt 10 ]); do
+            echo "Waiting for NS \$1 to get going... - $$CMD3"
+            sleep $$CMD4
+          done
+
+
+          gsutil cat  "\$2/\$1/deploy-apps.yaml" | kubectl apply -f -
+          [ ! -z "\$3" ] || exit 0
+          kubectl -n \$1 rollout status deploy/\$3-1
+          kubectl -n \$1 rollout status deploy/\$3-2
+          kubectl -n \$1 rollout status deploy/\$3-3
+          kubectl -n \$1 rollout status deploy/\$3-4
+          [ -z "\$4" ] || kubectl -n \$1 rollout status deploy/\$4
+
+
+
+        -EOF
+
+
+        cat $${MYENV_TEST_DIR}/deploy_helper.sh
+        #return "1"
+
+  - name: 'gcr.io/cloud-builders/git'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        echo 'STEP-GIT-SETUP'
+        cp /builder/home/.ssh/id_rsa /root/.ssh/id_rsa
+        cp /builder/home/.ssh/config /root/.ssh/config
+        chmod 400 /root/.ssh/id_rsa
+        git clone git@github.com:GoogleCloudPlatform/anthos-appconfig.git build-source
+    volumes:
+      - name: 'ssh'
+        path: /root/.ssh
+  - name: 'gcr.io/cloud-builders/git'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        echo 'STEP-GIT-CHECKOUT'
+        #set -x
+        [ "$_REF_PATH" == 'BRANCH_AUTO' ] && { MY_CHECKOUT_REF="$_BRANCH_NAME"; MY_APP_VERSION="b-$_BRANCH_NAME"; }
+        [ "$_REF_PATH" == 'BRANCH_MANUAL' ] &&  { MY_CHECKOUT_REF="$_BRANCH_NAME"; MY_APP_VERSION="b-$_BRANCH_NAME"; }
+        [ "$_REF_PATH" == 'SHA_MANUAL_BR' ] && { MY_CHECKOUT_REF="$_INPUT_SHA_LONG"; MY_APP_VERSION="b-$_BRANCH_NAME"; }
+        [ "$_REF_PATH" == 'SHA_MANUAL_RELEASE' ] && { MY_CHECKOUT_REF="$_INPUT_SHA_LONG"; MY_APP_VERSION="$_POTENTIAL_VERSION"; }
+
+        MYENV_DIR=$(cat /workspace/myenv/_rootdir_TAG.out)
+        echo "$_INPUT_SHA_LONG" > $${MYENV_DIR}/_fileappsha1_long_TAG.out
+
+        mkdir -p  /workspace/myenv/tests
+        echo "$$MY_APP_VERSION" > /workspace/myenv/_fileappversion_TAG.out
+        git pull
+
+        git checkout $$MY_CHECKOUT_REF
+
+        echo "$(git rev-parse --short HEAD)" >  $${MYENV_DIR}/_fileappsha1_TAG.out
+
+        PARM_GIT_LAST_COMMIT_EMAIL=$(git log -1 --pretty=format:'%ae')
+        echo "$${PARM_GIT_LAST_COMMIT_EMAIL%@*}"  > $${MYENV_DIR}/_file_email_TAG.out
+        PARM_GIT_FIRST_COMMIT_NAME=$(git log  master..$${MY_CHECKOUT_REF} --oneline  --pretty=format:'%ae' | tail -n 1)
+        if [ -z "$${PARM_GIT_FIRST_COMMIT_NAME}" ]; then
+          PARM_GIT_FIRST_COMMIT_NAME=$${PARM_GIT_LAST_COMMIT_EMAIL}
+        fi
+        echo "$${PARM_GIT_FIRST_COMMIT_NAME%@*}"  > $${MYENV_DIR}/_file_email_TAG.out
+
+        PARM_BUILD_SHA_LONG="$(cat $${MYENV_DIR}/_fileappsha1_long_TAG.out)"
+        PARM_BUILD_SHA="$(cat $${MYENV_DIR}/_fileappsha1_TAG.out)"
+
+        git status
+
+        echo; for v in MY_APP_VERSION MY_CHECKOUT_REF PARM_BUILD_SHA PARM_BUILD_SHA_LONG PARM_GIT_LAST_COMMIT_EMAIL ; do
+          echo -e "${v}[${!v}]"
+        done
+
+
+    dir: "build-source"
+    volumes:
+      - name: 'ssh'
+        path: /root/.ssh
+  - name: 'gcr.io/cloud-builders/git'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        echo 'STEP-DEFINE-ENVIRONMENT-INFO'
+        MYENV_DIR=$(cat /workspace/myenv/_rootdir_TAG.out)
+        date "+%Y%m%d-%H%M%S" > $$MYENV_DIR/_fileat_TAG.out
+        date "+%Y%m%d-%H" > $$MYENV_DIR/_file_at_hr_TAG.out
+        date "+%Y%m%d" > $$MYENV_DIR/_file_at_day_TAG.out
+        echo "20190724000300" > /workspace/myenv/_file_TAG.out
+        echo "201907240003" > /workspace/myenv/_filemin_TAG.out
+        PARM_EMAIL=$(cat $${MYENV_DIR}/_file_email_TAG.out)
+        PARM_AT_SEC=$(cat $${MYENV_DIR}/_fileat_TAG.out)
+        PARM_AT_HOUR=$(cat $${MYENV_DIR}/_file_at_hr_TAG.out)
+        PARM_AT_DAY=$(cat $${MYENV_DIR}/_file_at_day_TAG.out)
+        echo "appcrd-$$PARM_EMAIL-$$PARM_AT_HOUR" > /workspace/myenv/_fileproj_TAG.out
+        #echo "appcrd-stogner-20190826-22" > /workspace/myenv/_fileproj_TAG.out
+        TEMP_CLUSTER="c-$(cat /workspace/myenv/_fileappversion_TAG.out)"
+        TEMP_CLUSTER=${TEMP_CLUSTER//./-}
+        echo ${TEMP_CLUSTER:0:30} > /workspace/myenv/_fileclus_TAG.out
+        echo "us-west1" > /workspace/myenv/_filereg_TAG.out
+        echo "us-west1-b" > /workspace/myenv/_filezone_TAG.out
+        cp /workspace/myenv/_fileat_TAG.out /workspace/myenv/_filerepopath_TAG.out
+        echo "repo9" > /workspace/myenv/_filerepo_TAG.out
+        PARM_PROJ="$(cat /workspace/myenv/_fileproj_TAG.out)"
+        PARM_BUILD_BRANCH="$(cat /workspace/myenv/_fileappversion_TAG.out)"
+
+        bash setup/setup_mapping_execution.sh
+        PARM_BUILD_BRANCH="$(cat /workspace/myenv/_fileappversion_TAG.out)"
+
+        mkdir -p /workspace/myroot/.private/gsa_keys
+        gsutil cp  "gs://anthos-appconfig_build/tests/gsa_keys/$${PARM_PROJ}/*" /workspace/myroot/.private/gsa_keys || echo "0"
+
+    dir: "build-source/tests"
+  - name: google/cloud-sdk
+    entrypoint: "bash"
+    args:
+      - '-c'
+      - |
+
+        echo 'STEP-PREPARE-STEP-GENERATE-ARTIFACTS'
+
+        MYENV_DIR=$(cat /workspace/myenv/_rootdir_TAG.out)
+        MYENV_TEST_DIR=$(cat $${MYENV_DIR}/_testdir_TAG.out)
+        PARM_TS_SEC=$(cat $${MYENV_DIR}/_file_TAG.out)
+        PARM_TS_MIN=$(cat $${MYENV_DIR}/_filemin_TAG.out)
+        PARM_PROJ="$(cat $${MYENV_DIR}/_fileproj_TAG.out)"
+        PARM_CLUSTER=$(cat$${MYENV_DIR}/_fileclus_TAG.out)
+        PARM_REGION=$(cat $${MYENV_DIR}/_filereg_TAG.out)
+        PARM_ZONE=$(cat $${MYENV_DIR}/_filezone_TAG.out)
+        PARM_REPO=$(cat $${MYENV_DIR}/_filerepo_TAG.out)
+        PARM_REPO_LOCAL_PATH=$(cat $${MYENV_DIR}/_filerepopath_TAG.out)
+        PARM_BUILD_BRANCH="$(cat $${MYENV_DIR}/_fileappversion_TAG.out)"
+
+        curl -Lo $${MYENV_TEST_DIR}/crd-setup-helper.sh \
+           https://storage.googleapis.com/anthos-appconfig_public/install/scripts/$${PARM_BUILD_BRANCH}/crd-setup-helper.sh
+        chmod a+x $${MYENV_TEST_DIR}/crd-setup-helper.sh
+
+        mkdir -p $${MYENV_TEST_DIR}/temp/bin
+
+        gsutil cp gs://anthos-appconfig_public/install/vault-linux-64  $${MYENV_TEST_DIR}/temp/bin/vault
+        chmod a+x $${MYENV_TEST_DIR}/temp/bin/vault
+
+        export PROJECT_NAME="$$PARM_PROJ"; export RELEASE_NAME=$$PARM_BUILD_BRANCH; echo -e "1.1.13\nyyyyyy" | $${MYENV_TEST_DIR}/crd-setup-helper.sh pre-install "$${MYENV_TEST_DIR}/generated/istio" -genexternal
+
+
+        gsutil cp gs://${_GS_PROJECT_ID}_build/repo/vault/root-token.enc /root/.ssh/x1
+
+        cat /root/.ssh/x1 | base64 --decode > /root/.ssh/x2| \
+          gcloud kms decrypt \
+          --project "appconfig-crd-vault2-dev" \
+          --location us-west1 \
+          --keyring vault-kms-key-ring\
+          --key vault-kms-crypto-key-init \
+          --ciphertext-file /root/.ssh/x2 \
+          --plaintext-file /root/.ssh/vt
+        gsutil cp gs://${_GS_PROJECT_ID}_build/repo/vault/ca.crt /root/.ssh/ca.pem
+
+
+    dir: "build-source/tests"
+    volumes:
+    - name: 'ssh'
+      path: /root/.ssh
+  - name: alpine/helm:2.13.1
+    entrypoint: "/bin/sh"
+    args:
+      - '-c'
+      - |
+        echo 'STEP-GENERATE-ARTIFACTS'
+
+        # set -x
+        MYENV_DIR=$(cat /workspace/myenv/_rootdir_TAG.out)
+        MYENV_TEST_DIR=$(cat /workspace/myenv/_testdir_TAG.out)
+
+
+        mkdir -p $${MYENV_TEST_DIR}/generated/yaml
+
+        helm template \
+        $${MYENV_TEST_DIR}/generated/istio/istio-build/install/kubernetes/helm/istio-init \
+        --name istio-init \
+        --namespace istio-system > $${MYENV_TEST_DIR}/generated/yaml/istio-init.yaml
+
+        helm template \
+        $${MYENV_TEST_DIR}/generated/istio/istio-build/install/kubernetes/helm/istio \
+        --name istio \
+        --namespace istio-system \
+        --set global.mtls.enabled=true \
+        --set grafana.enabled=true \
+        --set kiali-enabled=true \
+        --set tracing.enabled=true \
+        --set global.k8sIngress.enableHttps=true  \
+        --set global.disablePolicyChecks=false \
+        --set global.outboundTrafficPolicy.mode=REGISTRY_ONLY \
+        --values  $${MYENV_TEST_DIR}/generated/istio/istio-build/install/kubernetes/helm/istio/values-istio-demo-auth.yaml \
+        > $${MYENV_TEST_DIR}/generated/yaml/istio.yaml
+
+    dir: "build-source/tests/setup"
+  - name: google/cloud-sdk
+    entrypoint: "bash"
+    args:
+      - '-c'
+      - |
+
+        echo 'STEP-CLUSTER1a'
+        [[ "$_STEPS_X" == *"CLUSTER1a"* ]] && { echo 'STEP-CLUSTER1a*SKIP*'; exit 0; }
+
+        MYENV_DIR=$(cat /workspace/myenv/_rootdir_TAG.out)
+        PARM_TS_SEC=$(cat /workspace/myenv/_file_TAG.out)
+        PARM_TS_MIN=$(cat /workspace/myenv/_filemin_TAG.out)
+        PARM_PROJ="$(cat /workspace/myenv/_fileproj_TAG.out)"
+        PARM_CLUSTER=$(cat /workspace/myenv/_fileclus_TAG.out)
+        PARM_REGION=$(cat /workspace/myenv/_filereg_TAG.out)
+        PARM_ZONE=$(cat /workspace/myenv/_filezone_TAG.out)
+        PARM_REPO=$(cat /workspace/myenv/_filerepo_TAG.out)
+        PARM_REPO_LOCAL_PATH=$(cat /workspace/myenv/_filerepopath_TAG.out)
+        PARM_BUILD_BRANCH="$(cat /workspace/myenv/_fileappversion_TAG.out)"
+
+        gcloud config list  --quiet
+        [ ! -z "$(gcloud projects list --filter=name=\'$$PARM_PROJ\' --format='table[no-heading](name)')" ] \
+          || gcloud projects create --folder=611791615006  $$PARM_PROJ --name="$$PARM_PROJ" --quiet
+        gcloud services enable cloudbilling.googleapis.com --project "$$PARM_PROJ" --quiet
+        gcloud beta billing projects link "$$PARM_PROJ" --billing-account="$(cat /builder/home/.ssh/billing_acount_testing.txt)" --quiet
+        gcloud services enable compute.googleapis.com --project "$$PARM_PROJ" --quiet
+        gcloud services enable container.googleapis.com sourcerepo.googleapis.com monitoring.googleapis.com \
+        logging.googleapis.com pubsub.googleapis.com \
+        --project "$$PARM_PROJ" --quiet
+
+        [ ! -z "$(gcloud beta compute routers list --filter=name=\'r$$PARM_REGION\' --project "$$PARM_PROJ" --format='table[no-heading](name)')" ] \
+          || gcloud beta compute routers create "r$$PARM_REGION" --network=default --region "$$PARM_REGION" --project "$$PARM_PROJ"
+        [ ! -z "$(gcloud beta compute routers nats list --router "r$$PARM_REGION" --router-region "$$PARM_REGION" --project "$$PARM_PROJ" --format='table[no-heading](name)')" ] \
+          || gcloud beta compute routers nats create "n$$PARM_REGION" --router "r$$PARM_REGION" --region "$$PARM_REGION" --project "$$PARM_PROJ" \
+          --auto-allocate-nat-external-ips --nat-all-subnet-ip-ranges --router-region "$$PARM_REGION"
+
+
+    dir: "build-source/tests/setup"
+  - name: google/cloud-sdk
+    entrypoint: "bash"
+    args:
+    - '-c'
+    - |
+
+      echo 'STEP-CLUSTER1b'
+      [[ "$_STEPS_X" == *"CLUSTER1b"* ]] && { echo 'STEP-CLUSTER1b*SKIP*'; exit 0; }
+
+      #set -x
+
+      MYENV_DIR=$(cat /workspace/myenv/_rootdir_TAG.out)
+      PARM_TS_SEC=$(cat /workspace/myenv/_file_TAG.out)
+      PARM_TS_MIN=$(cat /workspace/myenv/_filemin_TAG.out)
+      PARM_PROJ="$(cat /workspace/myenv/_fileproj_TAG.out)"
+      PARM_CLUSTER=$(cat /workspace/myenv/_fileclus_TAG.out)
+      PARM_REGION=$(cat /workspace/myenv/_filereg_TAG.out)
+      PARM_ZONE=$(cat /workspace/myenv/_filezone_TAG.out)
+      PARM_REPO=$(cat /workspace/myenv/_filerepo_TAG.out)
+      PARM_REPO_LOCAL_PATH=$(cat /workspace/myenv/_filerepopath_TAG.out)
+      PARM_BUILD_BRANCH="$(cat /workspace/myenv/_fileappversion_TAG.out)"
+
+
+      for XI in {1..2}; do
+        echo "$$XI"
+      echo $(gcloud container clusters list --filter=name=\'$$PARM_CLUSTER\' --format='table[no-heading](name)'  --project "$$PARM_PROJ")  > out_cluster_TAG.out
+
+      PARM_SUBNET_MASTER_INC=$(gcloud container clusters list --format 'table[no-heading](name)'  --project "$$PARM_PROJ" | wc -l)
+      PARM_SUBNET_MASTER="$((28 + $$PARM_SUBNET_MASTER_INC))"
+      echo "CLUS-$(cat out_cluster_TAG.out)"
+
+      echo "PARM_CLUSTER=$$PARM_CLUSTER"
+      echo "PARM_SUBNET_MASTER=$$PARM_SUBNET_MASTER"
+      echo "PARM_PROJ=$$PARM_PROJ"
+      echo "PARM_REGION=$$PARM_REGION"
+      echo "PARM_ZONE=$$PARM_ZONE"
+      echo "PARM_SUBNET_MASTER=$$PARM_SUBNET_MASTER"
+
+      [  ! -z  "$(cat out_cluster_TAG.out)" ] ||  gcloud beta container --project "$$PARM_PROJ" \
+          clusters create "$$PARM_CLUSTER" \
+          --disk-size "500" \
+          --disk-type "pd-standard" \
+          --enable-autorepair \
+          --enable-cloud-logging \
+          --enable-cloud-monitoring \
+          --enable-ip-alias \
+          --enable-master-authorized-networks \
+          --enable-network-policy \
+          --enable-private-nodes \
+          --enable-stackdriver-kubernetes \
+          --machine-type "n1-standard-4" \
+          --master-ipv4-cidr "172.$${PARM_SUBNET_MASTER}.0.0/28" \
+          --metadata disable-legacy-endpoints=true \
+          --no-enable-autoupgrade \
+          --no-enable-basic-auth \
+          --no-issue-client-certificate \
+          --num-nodes "3" \
+          --network "projects/$$PARM_PROJ/global/networks/default" \
+          --subnetwork "projects/$$PARM_PROJ/regions/$$PARM_REGION/subnetworks/default" \
+          --identity-namespace "$$PARM_PROJ.svc.id.goog" \
+          --zone "$$PARM_ZONE"
+
+        PARM_CLUSTER_CHECK_STATUS=$(gcloud container clusters list --filter=name=\'$$PARM_CLUSTER\' --format='table[no-heading](status)'  --project "$$PARM_PROJ")
+        if [ "$$PARM_CLUSTER_CHECK_STATUS" != "ERROR" ] ; then
+         break
+        fi
+        gcloud container clusters delete "$$PARM_CLUSTER" --zone "$$PARM_ZONE" --project "$$PARM_PROJ"   --quiet  || echo "Delete might have failed but OK"
+
+      done
+
+      echo $(gcloud container clusters describe "$$PARM_CLUSTER" --zone "$$PARM_ZONE" --format="value(selfLink.basename())" --project "$$PARM_PROJ"  || echo "") > out2_cluster_TAG.out
+      echo "CLUS2-$(cat out2_cluster_TAG.out)"
+
+      gcloud container clusters update "$$PARM_CLUSTER"  --zone "$$PARM_ZONE" \
+        --enable-master-authorized-networks \
+        --master-authorized-networks 0.0.0.0/0 --zone "$$PARM_ZONE" --project "$$PARM_PROJ"
+
+
+      rm -f ./kubeconfig
+      touch ./kubeconfig
+
+      gcloud container clusters get-credentials "$$PARM_CLUSTER" --zone "$$PARM_ZONE"  --project "$$PARM_PROJ"
+
+      [ ! -z  "$(kubectl get clusterrolebinding cluster-admin-binding --output 'jsonpath={.metadata.name}')" ] || kubectl \
+        create clusterrolebinding cluster-admin-binding \
+        --clusterrole cluster-admin \
+        --user $(gcloud config get-value core/account)
+
+
+    dir: "build-source/tests/setup"
+  - name: google/cloud-sdk
+    entrypoint: "bash"
+    args:
+      - '-c'
+      - |
+        echo 'STEP-CRD1'
+        [[ "$_STEPS_X" == *"CRD1"* ]] && { echo 'STEP-CRD1*SKIP*'; exit 0; }
+        #set -x
+
+        PARM_AT_SEC=$(cat /workspace/myenv/_fileat_TAG.out)
+        PARM_TS_SEC=$(cat /workspace/myenv/_file_TAG.out)
+        PARM_TS_MIN=$(cat /workspace/myenv/_filemin_TAG.out)
+        PARM_PROJ="$(cat /workspace/myenv/_fileproj_TAG.out)"
+        PARM_CLUSTER=$(cat /workspace/myenv/_fileclus_TAG.out)
+        PARM_REGION=$(cat /workspace/myenv/_filereg_TAG.out)
+        PARM_ZONE=$(cat /workspace/myenv/_filezone_TAG.out)
+        PARM_REPO=$(cat /workspace/myenv/_filerepo_TAG.out)
+        PARM_REPO_LOCAL_PATH=$(cat /workspace/myenv/_filerepopath_TAG.out)
+        PARM_BUILD_BRANCH="$(cat /workspace/myenv/_fileappversion_TAG.out)"
+
+        MYENV_TEST_DIR=$(cat /workspace/myenv/_testdir_TAG.out)
+
+        echo $(gcloud source repos describe "$$PARM_REPO" --format="value(selfLink.basename())" --project "$$PARM_PROJ" || echo "") > out_repo_TAG.out
+        echo "REPO-$(cat out_repo_TAG.out)"
+
+        [ ! -z  "$(cat out_repo_TAG.out)" ] || gcloud source repos create "$$PARM_REPO" --project "$$PARM_PROJ"
+
+
+        gcloud source repos clone  $$PARM_REPO "$$PARM_REPO_LOCAL_PATH/$$PARM_REPO" --project "$$PARM_PROJ"
+        curl -Lo crd-setup-helper.sh \
+           https://storage.googleapis.com/anthos-appconfig_public/install/scripts/$${PARM_BUILD_BRANCH}/crd-setup-helper.sh
+        chmod a+x crd-setup-helper.sh
+        rm -f ./kubeconfig
+        touch ./kubeconfig
+
+        gcloud container clusters get-credentials "$$PARM_CLUSTER" \
+          --zone "$$PARM_ZONE" \
+          --project "$$PARM_PROJ"
+
+        kubectl get nodes
+
+        # Install column
+        apt-get install bsdmainutils -y
+
+        git config --global user.email $(gcloud config get-value core/account 2> /dev/null)
+        git config --global user.name  $(gcloud config get-value core/account 2> /dev/null)
+
+        export PROJECT_NAME="$$PARM_PROJ"; export RELEASE_NAME=$$PARM_BUILD_BRANCH; echo -e "y1.1.11\nyyyy" | ./crd-setup-helper.sh install  $${MYENV_TEST_DIR}/generated/yaml -f -external
+
+        # TODO - Check for Istio Install
+        # kubectl get deployment  -o yaml -n istio-system | grep image:
+
+        gsutil cp gs://${_GS_PROJECT_ID}_build/repo/keys/id_rsa_test* .
+        gsutil cp gs://${_GS_PROJECT_ID}_build/repo/gcloud_user.txt .
+        cp ./id_rsa_test* /root/.ssh/
+
+        export PROJECT_NAME="$$PARM_PROJ"; export RELEASE_NAME=$$PARM_BUILD_BRANCH; echo "yy" | ./crd-setup-helper.sh init-repo "$$PARM_REPO_LOCAL_PATH/$$PARM_REPO" "$(cat gcloud_user.txt)"
+
+        [ ! -z  "$(kubectl get secrets -n=config-management-system git-creds --output 'jsonpath={.metadata.name}')" ] || kubectl \
+          create secret generic -n=config-management-system git-creds \
+          --from-file=ssh=/root/.ssh/id_rsa_test
+
+        NEXT_WAIT_TIME=0
+        until [ ! -z  "$(kubectl get CustomResourceDefinition appenvconfigtemplatev2s.appconfigmgr.cft.dev -n appconfigmgrv2-system --output 'jsonpath={.metadata.name}')" ] || [ $$NEXT_WAIT_TIME -gt 10 ]; do
+          echo "Waiting for ACM to get going... - $(date '+%Y%m%d-%H%M%S')"
+          sleep $(( 5*NEXT_WAIT_TIME++ ))
+        done
+
+        if [ -z  "$(kubectl get CustomResourceDefinition appenvconfigtemplatev2s.appconfigmgr.cft.dev -n appconfigmgrv2-system --output 'jsonpath={.metadata.name}')" ]; then
+          echo "Waited and AppConfig Controller was not created!"; exit 1
+        fi
+
+        export PROJECT_NAME="$$PARM_PROJ"; export RELEASE_NAME=$$PARM_BUILD_BRANCH; yes | bash crd-setup-helper.sh status
+        export PROJECT_NAME="$$PARM_PROJ"; export RELEASE_NAME=$$PARM_BUILD_BRANCH;  echo -e "y\n" | ./crd-setup-helper.sh init-demos "$$PARM_REPO_LOCAL_PATH/$$PARM_REPO" "$(cat gcloud_user.txt)"
+
+
+        echo "Done"
+
+    dir: "build-source/tests"
+    volumes:
+      - name: 'ssh'
+        path: /root/.ssh
+  - name: google/cloud-sdk
+    entrypoint: "bash"
+    dir: "build-source/tests"
+    args:
+      - '-c'
+      - |
+        echo 'STEP-WORKLOAD-IDENTITY'
+
+        export PARM_PROJ="$(cat /workspace/myenv/_fileproj_TAG.out)"
+        export PROJECT_NAME="$$PARM_PROJ"
+        export CLOUDSDK_CORE_PROJECT="$$PROJECT_NAME"
+        
+        export GSA_NAME="gcp-pubsuber" # GoogleCloudPlatform Service Account
+        export GSA_FULLNAME="$${GSA_NAME}@$${PROJECT_NAME}.iam.gserviceaccount.com"
+        export KSA_NAME="k8s-pubsuber" # Kubernetes Service Account
+        export KSA_NAMESPACE="uc-workload-identity"
+        export TOPIC="workload-identity-topic"
+
+        gcloud pubsub topics create $$TOPIC
+        gcloud iam service-accounts create $$GSA_NAME
+
+        # Wait for topic to be gettable.
+        n=0
+        until [ $n -ge 15 ]
+        do
+          gcloud pubsub topics describe $$TOPIC && break
+          n=$[$n+1]
+          sleep 5
+        done
+        # Wait for service account to be gettable.
+        n=0
+        until [ $n -ge 15 ]
+        do
+          gcloud iam service-accounts describe $$GSA_FULLNAME && break
+          n=$[$n+1]
+          sleep 5
+        done
+
+        gcloud iam service-accounts add-iam-policy-binding \
+          --role roles/iam.workloadIdentityUser \
+          --member "serviceAccount:$${PROJECT_NAME}.svc.id.goog[$${KSA_NAMESPACE}/$${KSA_NAME}]" \
+          $$GSA_FULLNAME
+
+        gcloud beta pubsub topics add-iam-policy-binding $$TOPIC \
+          --member="serviceAccount:$${GSA_FULLNAME}" \
+          --role=roles/pubsub.publisher
+        
+        # Wait for namespace to exist.
+        n=0
+        until [ $n -ge 15 ]
+        do
+          kubectl get ns $$KSA_NAMESPACE && break
+          n=$[$n+1]
+          sleep 5
+        done
+
+        cat <<EOF | kubectl apply -f -
+          apiVersion: v1
+          kind: ServiceAccount
+          metadata:
+            name: $$KSA_NAME
+            namespace: $$KSA_NAMESPACE
+            annotations:
+              "iam.gke.io/gcp-service-account": "$${GSA_NAME}@$${PROJECT_NAME}.iam.gserviceaccount.com"
+        EOF
+
+  - name: google/cloud-sdk
+    entrypoint: "bash"
+    dir: "build-source/tests"
+    args:
+      - '-c'
+      - |
+        echo 'STEP-HTTPS-INGRESS'
+
+        export PARM_PROJ="$(cat /workspace/myenv/_fileproj_TAG.out)"
+        export CLOUDSDK_CORE_PROJECT="$$PARM_PROJ"
+        export K8S_NAMESPACE="uc-ingress-k8s-https"
+        
+        openssl genrsa -out ingress.key 2048
+
+        openssl req -new -key ingress.key -out ingress.csr \
+            -subj "/CN=example.com"
+
+        openssl x509 -req -days 365 -in ingress.csr -signkey ingress.key \
+            -out ingress.crt
+        
+        # Wait for namespace to exist.
+        n=0
+        until [ $n -ge 15 ]
+        do
+          kubectl get ns $$K8S_NAMESPACE && break
+          n=$[$n+1]
+          sleep 5
+        done
+
+        kubectl create secret tls my-secret --namespace $$K8S_NAMESPACE \
+          --cert ingress.crt --key ingress.key
+
+  - name: google/cloud-sdk
+    entrypoint: "bash"
+    args:
+      - '-c'
+      - |
+        echo 'STEP-CRD1-b'
+        [[ "$_STEPS_X" == *"CRD1"* ]] && { echo 'STEP-CRD1-b*SKIP*'; exit 0; }
+        # set -x
+        PARM_TS_SEC=$(cat /workspace/myenv/_file_TAG.out)
+        PARM_TS_MIN=$(cat /workspace/myenv/_filemin_TAG.out)
+        PARM_PROJ="$(cat /workspace/myenv/_fileproj_TAG.out)"
+        PARM_CLUSTER=$(cat /workspace/myenv/_fileclus_TAG.out)
+        PARM_REGION=$(cat /workspace/myenv/_filereg_TAG.out)
+        PARM_ZONE=$(cat /workspace/myenv/_filezone_TAG.out)
+        PARM_REPO=$(cat /workspace/myenv/_filerepo_TAG.out)
+        PARM_REPO_LOCAL_PATH=$(cat /workspace/myenv/_filerepopath_TAG.out)
+        PARM_BUILD_BRANCH="$(cat /workspace/myenv/_fileappversion_TAG.out)"
+
+        CHECK_SA1=$(gcloud iam service-accounts describe appconfigcrd-demo-sa1@$${PARM_PROJ}.iam.gserviceaccount.com  --project $${PARM_PROJ}  --format="value(selfLink.basename())"   || echo "")
+        [ ! -z  $$CHECK_SA1 ] || gcloud iam service-accounts create appconfigcrd-demo-sa1 --display-name=appconfigcrd-demo-sa1 --project $${PARM_PROJ}
+
+        CHECK_SA2=$(gcloud iam service-accounts describe appconfigcrd-demo-sa2@$${PARM_PROJ}.iam.gserviceaccount.com  --project $${PARM_PROJ}  --format="value(selfLink.basename())"   || echo "")
+        [ ! -z  $$CHECK_SA2 ] || gcloud iam service-accounts create appconfigcrd-demo-sa2 --display-name=appconfigcrd-demo-sa2 --project $${PARM_PROJ}
+
+
+        gcloud beta pubsub topics add-iam-policy-binding appconfigcrd-demo-topic1 --project $${PARM_PROJ}  \
+          --member=serviceAccount:appconfigcrd-demo-sa1@$${PARM_PROJ}.iam.gserviceaccount.com \
+          --role=roles/pubsub.publisher
+        gcloud beta pubsub topics add-iam-policy-binding appconfigcrd-demo-topic2 --project $${PARM_PROJ}  \
+          --member=serviceAccount:appconfigcrd-demo-sa2@$${PARM_PROJ}.iam.gserviceaccount.com \
+          --role=roles/pubsub.publisher
+
+
+        if [ ! -f /workspace/myroot/.private/gsa_keys/sa1.json ] ; then
+          gcloud iam service-accounts keys create '/workspace/myroot/.private/gsa_keys/sa1.json' --project $${PARM_PROJ} \
+            --iam-account=appconfigcrd-demo-sa1@$${PARM_PROJ}.iam.gserviceaccount.com
+          gsutil cp  '/workspace/myroot/.private/gsa_keys/sa1.json'  "gs://anthos-appconfig_build/tests/gsa_keys/$${PARM_PROJ}/sa1.json"
+        fi
+
+        if [ ! -f /workspace/myroot/.private/gsa_keys/sa2.json ] ; then
+          gcloud iam service-accounts keys create '/workspace/myroot/.private/gsa_keys/sa2.json' --project $${PARM_PROJ} \
+            --iam-account=appconfigcrd-demo-sa2@$${PARM_PROJ}.iam.gserviceaccount.com
+          gsutil cp  '/workspace/myroot/.private/gsa_keys/sa2.json'  "gs://anthos-appconfig_build/tests/gsa_keys/$${PARM_PROJ}/sa2.json"
+        fi
+
+        NEXT_WAIT_TIME=0
+        until [ ! -z  "$(kubectl get secret appconfigcrd-demo-sa1-secret -n appconfigmgrv2-system --output 'jsonpath={.metadata.name}')" ] || [ $$NEXT_WAIT_TIME -gt 10 ]; do
+          kubectl create secret generic appconfigcrd-demo-sa1-secret \
+          -n appconfigmgrv2-system \
+          --from-file=key.json=/workspace/myroot/.private/gsa_keys/sa1.json
+          sleep $(( 5*NEXT_WAIT_TIME++ ))
+        done
+        NEXT_WAIT_TIME=0
+        until [ ! -z  "$(kubectl get secret appconfigcrd-demo-sa2-secret -n appconfigmgrv2-system --output 'jsonpath={.metadata.name}')" ] || [ $$NEXT_WAIT_TIME -gt 10 ]; do
+          kubectl create secret generic appconfigcrd-demo-sa2-secret \
+          -n appconfigmgrv2-system \
+          --from-file=key.json=/workspace/myroot/.private/gsa_keys/sa2.json
+          sleep $(( 5*NEXT_WAIT_TIME++ ))
+        done
+
+        [ ! -z  "$(kubectl get secret appconfigcrd-demo-sa1-secret -n appconfigmgrv2-system --output 'jsonpath={.metadata.name}')" ] || exit 1
+        [ ! -z  "$(kubectl get secret appconfigcrd-demo-sa2-secret -n appconfigmgrv2-system --output 'jsonpath={.metadata.name}')" ] || exit 1
+
+
+
+
+
+    dir: "build-source/tests"
+
+  - name: google/cloud-sdk
+    entrypoint: "bash"
+    args:
+      - '-c'
+      - |
+        echo 'STEP-CRD1-b-vault1'
+        [[ "$_STEPS_X" == *"CRD1"* ]] && { echo 'STEP-CRD1-b-vault1*SKIP*'; exit 0; }
+
+        MYENV_DIR=$(cat /workspace/myenv/_rootdir_TAG.out)
+        PARM_TS_SEC=$(cat /workspace/myenv/_file_TAG.out)
+        PARM_TS_MIN=$(cat /workspace/myenv/_filemin_TAG.out)
+        PARM_PROJ="$(cat /workspace/myenv/_fileproj_TAG.out)"
+        PARM_CLUSTER=$(cat /workspace/myenv/_fileclus_TAG.out)
+        PARM_REGION=$(cat /workspace/myenv/_filereg_TAG.out)
+        PARM_ZONE=$(cat /workspace/myenv/_filezone_TAG.out)
+        PARM_REPO=$(cat /workspace/myenv/_filerepo_TAG.out)
+        PARM_REPO_LOCAL_PATH=$(cat /workspace/myenv/_filerepopath_TAG.out)
+        PARM_BUILD_BRANCH="$(cat /workspace/myenv/_fileappversion_TAG.out)"
+        MYENV_TEST_DIR=$(cat /workspace/myenv/_testdir_TAG.out)
+
+        export VAULT_ADDR="https://34.82.218.234"
+        export VAULT_CACERT="/root/.ssh/ca.pem"
+        export VAULT_TOKEN="$(cat /root/.ssh/vt)"
+        export PATH=$${MYENV_TEST_DIR}/temp/bin:$${PATH}
+
+        K8S_CONTEXT=$(kubectl config current-context)
+
+        kubectl delete secret vault-ca --namespace=appconfigmgrv2-system || echo "OK"
+        kubectl create secret generic vault-ca \
+          --namespace=appconfigmgrv2-system \
+          --from-file=$${VAULT_CACERT}
+
+        . ../tests/setup/scripts/vault-setup-helper-vault-gcp-sa.sh \
+          -p $${PARM_PROJ} --app-prefix app-crd-vault --cluster $${K8S_CONTEXT//_/-} \
+          --key-path ./key.json --role uc-secrets-vault-k8s \
+          --role-script-path ../examples/use-cases/uc-secrets-vault-k8s/vault-roles-policy.sh  \
+          --ns uc-secrets-vault-k8s --key-check /workspace/myroot/.private/gsa_keys
+        gsutil cp  '/workspace/myroot/.private/gsa_keys/vault.json'  "gs://anthos-appconfig_build/tests/gsa_keys/$${PROJECT_NAME}/vault.json"
+
+    dir: "build-source/tests"
+    volumes:
+      - name: 'ssh'
+        path: /root/.ssh
+  - name: google/cloud-sdk
+    entrypoint: "bash"
+    args:
+      - '-c'
+      - |
+        echo 'STEP-CRD1-c'
+        [[ "$_STEPS_X" == *"CRD1"* ]] && { echo 'STEP-CRD1-c*SKIP*'; exit 0; }
+
+        MYENV_DIR=$(cat /workspace/myenv/_rootdir_TAG.out)
+        MYENV_TEST_DIR=$(cat /workspace/myenv/_testdir_TAG.out)
+        PARM_TS_SEC=$(cat /workspace/myenv/_file_TAG.out)
+        PARM_TS_MIN=$(cat /workspace/myenv/_filemin_TAG.out)
+        PARM_PROJ="$(cat /workspace/myenv/_fileproj_TAG.out)"
+        PARM_CLUSTER=$(cat /workspace/myenv/_fileclus_TAG.out)
+        PARM_REGION=$(cat /workspace/myenv/_filereg_TAG.out)
+        PARM_ZONE=$(cat /workspace/myenv/_filezone_TAG.out)
+        PARM_REPO=$(cat /workspace/myenv/_filerepo_TAG.out)
+        PARM_REPO_LOCAL_PATH=$(cat /workspace/myenv/_filerepopath_TAG.out)
+        PARM_BUILD_BRANCH="$(cat /workspace/myenv/_fileappversion_TAG.out)"
+
+        PARM_PATH="gs://anthos-appconfig_public/deploy/$${PARM_BUILD_BRANCH}/examples/use-cases"
+        gsutil cat  "$$PARM_PATH/uc-allowed-services-k8s/deploy-apps.yaml" | kubectl delete -f -
+        gsutil cat  "$$PARM_PATH/uc-allowed-services-istio/deploy-apps.yaml" | kubectl delete -f -
+        gsutil cat  "$$PARM_PATH/uc-allowed-jwt-istio/deploy-apps.yaml" | kubectl delete -f -
+        gsutil cat  "$$PARM_PATH/uc-secrets-k8s/deploy-apps.yaml" | kubectl delete -f -
+        gsutil cat  "$$PARM_PATH/uc-secrets-istio/deploy-apps.yaml" | kubectl delete -f -
+        gsutil cat  "$$PARM_PATH/uc-firebase/deploy-apps.yaml" | kubectl delete -f -
+        gsutil cat  "$$PARM_PATH/uc-opa/deploy-apps.yaml" | kubectl delete -f -
+        gsutil cat  "$$PARM_PATH/uc-secrets-vault-k8s/deploy-apps.yaml" | kubectl delete -f -
+        gsutil cat  "$$PARM_PATH/uc-workload-identity/deploy-apps.yaml" | kubectl delete -f -
+        gsutil cat  "$$PARM_PATH/uc-ingress-k8s/deploy-apps.yaml" | kubectl delete -f -
+        gsutil cat  "$$PARM_PATH/uc-ingress-k8s-https/deploy-apps.yaml" | kubectl delete -f -
+
+        sleep 60
+
+
+        bash $${MYENV_TEST_DIR}/deploy_helper.sh 'uc-allowed-services-k8s' "$$PARM_PATH" "hello-app-sm-py" "hello-app-pubsub"
+        bash $${MYENV_TEST_DIR}/deploy_helper.sh 'uc-allowed-services-istio' "$$PARM_PATH" "appconfigv2-service-sm" ""
+        bash $${MYENV_TEST_DIR}/deploy_helper.sh 'uc-allowed-jwt-istio' "$$PARM_PATH" "appconfigv2-service-sm" ""
+        bash $${MYENV_TEST_DIR}/deploy_helper.sh 'uc-secrets-k8s' "$$PARM_PATH" "hello-app-sm-py" "hello-app-pubsub"
+        bash $${MYENV_TEST_DIR}/deploy_helper.sh 'uc-secrets-istio' "$$PARM_PATH" "appconfigv2-service-sm" "hello-app-pubsub"
+        bash $${MYENV_TEST_DIR}/deploy_helper.sh 'uc-secrets-vault-k8s' "$$PARM_PATH" "hello-app-sm-py" "hello-app-pubsub"
+        bash $${MYENV_TEST_DIR}/deploy_helper.sh 'uc-opa' "$$PARM_PATH"
+        bash $${MYENV_TEST_DIR}/deploy_helper.sh 'uc-firebase' "$$PARM_PATH"
+        bash $${MYENV_TEST_DIR}/deploy_helper.sh 'uc-workload-identity' "$$PARM_PATH"
+        bash $${MYENV_TEST_DIR}/deploy_helper.sh 'uc-ingress-k8s' "$$PARM_PATH"
+        bash $${MYENV_TEST_DIR}/deploy_helper.sh 'uc-ingress-k8s-https' "$$PARM_PATH"
+
+        kubectl get svc --all-namespaces | grep -v ClusterIP
+
+        sleep 360
+
+        kubectl get svc --all-namespaces | grep -v ClusterIP
+
+
+    dir: "build-source/tests"
+  - name: google/cloud-sdk
+    entrypoint: "bash"
+    args:
+      - '-c'
+      - |
+
+        PARM_TS_SEC=$(cat /workspace/myenv/_file_TAG.out)
+        PARM_TS_MIN=$(cat /workspace/myenv/_filemin_TAG.out)
+        PARM_PROJ="$(cat /workspace/myenv/_fileproj_TAG.out)"
+        PARM_CLUSTER=$(cat /workspace/myenv/_fileclus_TAG.out)
+        PARM_REGION=$(cat /workspace/myenv/_filereg_TAG.out)
+        PARM_ZONE=$(cat /workspace/myenv/_filezone_TAG.out)
+        PARM_REPO=$(cat /workspace/myenv/_filerepo_TAG.out)
+        PARM_REPO_LOCAL_PATH=$(cat /workspace/myenv/_filerepopath_TAG.out)
+        PARM_BUILD_BRANCH="$(cat /workspace/myenv/_fileappversion_TAG.out)"
+
+        export KUBECONFIG=$(pwd)/kc
+
+        rm -f $$KUBECONFIG || touch $$KUBECONFIG
+
+        gcloud container clusters get-credentials "$$PARM_CLUSTER" \
+          --zone "$$PARM_ZONE" \
+          --project "$$PARM_PROJ"
+
+        kubectl config current-context
+        export INGRESS_ISTIO_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+        export INGRESS_NO_ISTIO_HOST=$(kubectl -n devtest get service test-service-external -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+        echo $$INGRESS_ISTIO_HOST > /workspace/myenv/_fileout_test_istio_host.out
+        echo $$INGRESS_NO_ISTIO_HOST > /workspace/myenv/_fileout_test_istio_no_host.out
+    dir: "build-source/tests"
+  - name: gcr.io/anthos-appconfig/pso-e2e-testing-py:v1.0.1
+    entrypoint: "bash"
+    args:
+      - '-c'
+      - |
+        echo 'STEP-TEST'
+
+        PARM_TS_SEC=$(cat /workspace/myenv/_file_TAG.out)
+        PARM_TS_MIN=$(cat /workspace/myenv/_filemin_TAG.out)
+        PARM_PROJ="$(cat /workspace/myenv/_fileproj_TAG.out)"
+        PARM_CLUSTER=$(cat /workspace/myenv/_fileclus_TAG.out)
+        PARM_REGION=$(cat /workspace/myenv/_filereg_TAG.out)
+        PARM_ZONE=$(cat /workspace/myenv/_filezone_TAG.out)
+        PARM_REPO=$(cat /workspace/myenv/_filerepo_TAG.out)
+        PARM_REPO_LOCAL_PATH=$(cat /workspace/myenv/_filerepopath_TAG.out)
+        PARM_BUILD_BRANCH="$(cat /workspace/myenv/_fileappversion_TAG.out)"
+
+        pip install -r "requirements.txt"
+        kubectl get ns
+
+        export INGRESS_ISTIO_HOST=$(cat /workspace/myenv/_fileout_test_istio_host.out)
+        export INGRESS_NO_ISTIO_HOST=$(cat /workspace/myenv/_fileout_test_istio_no_host.out)
+
+        export GOOGLE_APPLICATION_CREDENTIALS=/workspace/myroot/.private/gsa_keys/sa1.json
+        export PUBSUB_GCP_PROJECT=$${PARM_PROJ}
+        python all_tests.py;  TEST_RESULTS_ALL_1=$? || echo "0"
+        echo $$TEST_RESULTS_ALL_1 > /workspace/myenv/tests/_filetest-results-all-1_TAG.out
+
+    dir: "build-source/tests/artifacts/drivers/simple_hello"
+  - name: google/cloud-sdk
+    entrypoint: "bash"
+    args:
+      - '-c'
+      - |
+        echo 'STEP-TEST-RESULTS'
+        # set -x
+
+        MYENV_TEST_DIR=$(cat /workspace/myenv/_testdir_TAG.out)
+        PARM_AT_SEC=$(cat /workspace/myenv/_fileat_TAG.out)
+        PARM_TS_SEC=$(cat /workspace/myenv/_file_TAG.out)
+        PARM_TS_MIN=$(cat /workspace/myenv/_filemin_TAG.out)
+        PARM_PROJ="$(cat /workspace/myenv/_fileproj_TAG.out)"
+        PARM_CLUSTER=$(cat /workspace/myenv/_fileclus_TAG.out)
+        PARM_REGION=$(cat /workspace/myenv/_filereg_TAG.out)
+        PARM_ZONE=$(cat /workspace/myenv/_filezone_TAG.out)
+        PARM_REPO=$(cat /workspace/myenv/_filerepo_TAG.out)
+        PARM_REPO_LOCAL_PATH=$(cat /workspace/myenv/_filerepopath_TAG.out)
+        PARM_BUILD_BRANCH="$(cat /workspace/myenv/_fileappversion_TAG.out)"
+        PARM_BUILD_SHA="$(cat /workspace/myenv/_fileappsha1_TAG.out)"
+        PARM_BUILD_SHA_LONG="$(cat /workspace/myenv/_fileappsha1_long_TAG.out)"
+        TEST_RESULTS_ALL_1=$(cat /workspace/myenv/tests/_filetest-results-all-1_TAG.out)
+
+        echo "" > placeholder.txt
+        TEST_RESULTS_DIR='fail'
+
+        echo "TEST_RESULTS_ALL_1-$$TEST_RESULTS_ALL_1"
+        if [ "$$TEST_RESULTS_ALL_1" == "0" ]; then
+          TEST_RESULTS_DIR='pass'
+        fi
+        echo -e "<html><body>" > /workspace/myenv/tests/build_info.html
+        echo -e "AppVersion:[$$PARM_BUILD_BRANCH]<br/>\n" >> /workspace/myenv/tests/build_info.html
+        echo; for v in PARM_BUILD_BRANCH PARM_BUILD_SHA PARM_BUILD_SHA_LONG PARM_AT_SEC PARM_PROJ K8S_CONTEXT PARM_CLUSTER PARM_REGION PARM_ZONE ; do
+          echo -e "${v}[${!v}]<br/>\n"  >> /workspace/myenv/tests/build_info.html
+        done
+        echo -e "</body></html>" >> /workspace/myenv/tests/build_info.html
+
+
+        TEST_RESULTS_FULL_DIR="gs://${_GS_PROJECT_ID}_build_reports/build_test/$${PARM_BUILD_BRANCH}/$${TEST_RESULTS_DIR}/$${PARM_AT_SEC}-sha-$${PARM_BUILD_SHA}"
+        gsutil cp '/workspace/myenv/tests/build_info.html' "$${TEST_RESULTS_FULL_DIR}/build_info.html"
+        gsutil cp placeholder.txt "$${TEST_RESULTS_FULL_DIR}/reports/placeholder.txt"
+        gsutil cp  -R "../tests/artifacts/drivers/simple_hello/reports/temp/*" "$${TEST_RESULTS_FULL_DIR}/reports/"
+
+        gsutil cp gs://${_GS_PROJECT_ID}_build_reports/build_test/all_include.inc $${MYENV_TEST_DIR}/all_include.inc
+        [ -f $${MYENV_TEST_DIR}/all_include.inc ] || echo "" > $${MYENV_TEST_DIR}/all_include.inc
+        echo "<a href='$${PARM_BUILD_BRANCH}/$${TEST_RESULTS_DIR}/$${PARM_AT_SEC}-sha-$${PARM_BUILD_SHA}/build_info.html'>" >> $${MYENV_TEST_DIR}/all_include.inc
+        echo "build info details</a>" >> $${MYENV_TEST_DIR}/all_include.inc
+
+        echo "<a href='$${PARM_BUILD_BRANCH}/$${TEST_RESULTS_DIR}/$${PARM_AT_SEC}-sha-$${PARM_BUILD_SHA}/reports/all_tests.html'>" >> $${MYENV_TEST_DIR}/all_include.inc
+        echo "$${PARM_BUILD_BRANCH}/$${TEST_RESULTS_DIR}/$${PARM_AT_SEC}-sha-$${PARM_BUILD_SHA}</a><br>" >> $${MYENV_TEST_DIR}/all_include.inc
+        echo "<html><body>" > $${MYENV_TEST_DIR}/all.html
+
+        cat $${MYENV_TEST_DIR}/all_include.inc >> $${MYENV_TEST_DIR}/all.html
+        echo "</body><html>" >> $${MYENV_TEST_DIR}/all.html
+        gsutil cp $${MYENV_TEST_DIR}/all_include.inc gs://${_GS_PROJECT_ID}_build_reports/build_test
+        gsutil cp $${MYENV_TEST_DIR}/all.html gs://${_GS_PROJECT_ID}_build_reports/build_test
+
+        exit $$TEST_RESULTS_ALL_1
+    dir: "build-source/tests"

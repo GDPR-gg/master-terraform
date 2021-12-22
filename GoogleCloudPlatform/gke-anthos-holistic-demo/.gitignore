@@ -1,0 +1,79 @@
+# OSX leaves these everywhere on SMB shares
+._*
+
+# OSX trash
+.DS_Store
+
+
+# Emacs save files
+*~
+\#*\#
+.\#*
+
+# Vim-related files
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+*.un~
+Session.vim
+.netrwhist
+
+### https://raw.github.com/github/gitignore/90f149de451a5433aebd94d02d11b0e28843a1af/Terraform.gitignore
+
+# Local .terraform directories
+**/.terraform/*
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+*.terraform
+*.tfvars
+# Crash log files
+crash.log
+
+
+output
+anthos/anthos-demo
+
+bazel-*
+.ijwb
+
+# Vim
+# Swap
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+[._]sw[a-p]
+
+# Session
+Session.vim
+Sessionx.vim
+
+# Temporary
+.netrwhist
+*~
+# Auto-generated tag files
+tags
+# Persistent undo
+[._]*.un~
+
+dist
+
+# Ignore any .tfvars files that are generated automatically for each Terraform
+# run. Most .tfvars files are not managed as part of configuration and so should
+# not be included in version control.
+terraform.tfvars
+
+.terraform
+
+properties.env
+
+# Binary authz
+note_payload.json
+generated-key.pgp
+generated_payload.json
+generated_signature.pgp
+
+*.DS_Store
+holistic-demo/istio/istio-*
+*terraform.tfstate*

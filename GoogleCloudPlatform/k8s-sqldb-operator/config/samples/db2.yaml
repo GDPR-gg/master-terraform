@@ -1,0 +1,14 @@
+apiVersion: infra.example.com/v1alpha1
+kind: SqlDB
+metadata:
+  labels:
+    controller-tools.k8s.io: "1.0"
+  name: db2
+spec:
+  type: PostgreSQL
+  version: latest
+  replicas: 1
+  disk:
+    type: ZonalPersistentDisk
+    sizeGB: 1
+  backupName: db1-backup

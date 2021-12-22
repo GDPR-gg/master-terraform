@@ -1,0 +1,33 @@
+language: csharp
+sudo: required
+dist: trusty
+group: deprecated-2017Q4
+mono: none
+dotnet: 2.0.0
+
+before_install:
+  # Needed for protobuf
+  - sudo apt-get install autoconf automake libtool curl make g++ unzip
+  # Needed for coreclr
+  - sudo apt-get install cmake llvm-3.9 clang-3.9 lldb-3.9 liblldb-3.9-dev libunwind8 libunwind8-dev gettext libicu-dev liblttng-ust-dev libcurl4-openssl-dev libssl-dev libkrb5-dev
+
+script:
+  # Build dependencies
+  - ./build-deps.sh
+  # Build all code.
+  - ./build.sh
+  # Run the unit tests.
+  - ./run_unit_tests.sh
+  
+cache:
+  # Wait 20 min for cache (these directories are large).
+  timeout: 1200
+  directories:
+  - $TRAVIS_BUILD_DIR/third_party/googletest/googletest/make
+  - $TRAVIS_BUILD_DIR/third_party/googletest/googlemock/make
+  - $TRAVIS_BUILD_DIR/third_party/coreclr/bin/Product/Linux.x64.Debug
+  - $TRAVIS_BUILD_DIR/third_party/protobuf/src
+ 
+# TODO(talarico): Hack to get build working as the scripts are not setting this properly.
+env:
+  - LD_LIBRARY_PATH=$TRAVIS_BUILD_DIR/third_party/coreclr/bin/Product/Linux.x64.Debug

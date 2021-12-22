@@ -1,0 +1,163 @@
+{
+  "//": "Rename this file to vcd_test_config.json and change the values to suit your system",
+  "//": "You can safely remove the comments or leave them. The parser will ignore them.",
+  "provider": {
+    "//"  : "This section contains credentials related to the vCD connection of Sys or Org user",
+    "user": "root",
+    "password": "somePassword",
+    "token": "Access token to be used instead of username/password",
+
+    "//": "If useSamlAdfs is true - client will try to authenticate against ADFS using SAML.",
+    "useSamlAdfs": false,
+    "//": "customAdfsRptId allows to specify custom Relaying Party Trust Identifier. By default",
+    "//": "client will use vCD SAML Entity ID",
+    "customAdfsRptId": "rpt-id",
+    
+    "//": "The 3 fields below allow to set SAML credentials for tests that specifically use it.",
+    "//": "May be useful when local user credentials are used by default.",
+    "//": "These credentials will authenticate to the Org specified in vcd.org parameter.",
+    "samlUser": "",
+    "samlPassword": "",
+    "samlCustomRptId": "",
+
+    "url": "https://10.13.21.20/api",
+    "//": "Use 'System' if you are Sys admin and Org name if you tenant",
+    "sysOrg": "System",
+    "//": "allowInsecure will skip the check on self-signed certificates",
+    "allowInsecure": true,
+    "//": "tfAcceptanceTests is needed to allow the whole test suite to run",
+    "//": "Warning: it may cost time (up to a few hours) and possibly money",
+    "tfAcceptanceTests": true,
+    "//": "If enabled, the test suite will cache the provider connection for up to 20 minutes",
+    "//": "and then renew it automatically. This will save some heavy network traffic.",
+    "//": "Disabled by default if useVcdConnectionCache is not set",
+    "useVcdConnectionCache": true,
+    "//": "The Terraform provider default for max retry timeout is 60, which often leads to premature test termination",
+    "//": "This value changes the default for the test suite. If no value is provided, it will set to 300",
+    "maxRetryTimeout": 300
+  },
+  "vcd": {
+    "//": "This section contains the organization composition",
+    "org": "tf_org",
+    "vdc": "tf_vdc",
+    "//": "Catalog name to be created (if using testEnvBuild) or to reuse if exists already",
+    "catalog": {
+      "name": "tf_catalog",
+      "catalogItem": "tf_catalog_item",
+      "//": "if catalog item isn't provided then default OVA is used as defined in `ovaVappMultiVmsPath`",
+      "catalogItemWithMultiVms": "item_with_multi_vms",
+      "//": "VM name in default OVA is secondVM",
+      "vmName1InMultiVmItem": "secondVM",
+      "//": "VM name in default OVA is thirdVM",
+      "vmName2InMultiVmItem": "thirdVM"
+    },
+    "providerVdc": {
+      "//": "Provider VDC details are needed for creating organization VDC",
+      "name": "Must-already-exist-provider-vdc-name",
+      "storageProfile": "Must-already-exist-storage-profile-name",
+      "networkPool": "Must-already-exist-network-pool-name"
+    }
+  },
+  "networking": {
+    "//": "Networking relates to communication, gateways, and vpn", 
+    "edgeGateway": "tf_edge_gw",
+
+    "//": "The IP of the gateway (must exist)", 
+    "externalIp": "10.15.21.10",
+
+    "//": "A free IP in the Org vDC network", 
+    "internalIp": "192.168.4.30",
+     "//": "define sharedSecret in the edge gateway service configuration", 
+    "sharedSecret": "ipoojaibooze0aiLooso1hourae9AhfooMoo6een",
+    "//": "The name of a vCD external network (it will be created when using testEnvBuild or reused is already exists) ",
+    "externalNetwork": "tf_external_network",
+    "local": {
+      "//": "Local definition for a vpn", 
+      "localIp": "10.15.21.11",
+      "localSubnetGw": "10.15.19.1"
+    },
+    "peer": {
+      "//": "Peer definition for a vpn", 
+      "peerIp": "192.168.5.1",
+      "peerSubnetGw": "192.168.5.1"
+    },
+    "vcenter" : "vC1",
+    "externalNetworkPortGroup": "ForTestingPG",
+    "externalNetworkPortGroupType": "DV_PORTGROUP"
+  },
+  "logging" : {
+    "//": "Enables logging from go-vcloud-director in vendor",
+    "enabled": false,
+    "logFileName": "go-vcloud-director.log",
+    "//": "If logging is enabled, logs automatically HTTP requests and responses",
+    "logHttpRequest" : true,
+    "logHttpResponse" : true
+  },
+  "ova": {
+    "ovaPath": "../test-resources/test_vapp_template.ova",
+    "//": "Size in megabytes",
+    "uploadPieceSize": 5,
+    "uploadProgress": true,
+    "//": "Link will be used to download OVA for tests",
+    "ovaDownloadUrl": "http://dl.bintray.com/vmware/photon/3.0/GA/ova/photon-hw13_uefi-3.0-26156e2.ova",
+    "//": "Name for downloaded file which will be saved in test-resources folder",
+    "ovaTestFileName": "photon.ova",
+    "//": "Won't destroy resources created for test suite. Will be reused next time running tests",
+    "preserve": true,
+    "ovaVappMultiVmsPath": "../test-resources/vapp_with_3_vms.ova"
+  },
+  "media": {
+    "mediaPath": "../test-resources/test.iso",
+    "//": "Size in megabytes",
+    "uploadPieceSize": 5,
+    "uploadProgress": true,
+    "//": "Already uploaded media name",
+    "mediaName" : "linuxOS"
+  },
+  "testEnvBuild": {
+    "//": "This section is optional for running tests. It's only needed to build the test environment in a new vCD",
+
+    "// ": "Entities that will be created in an empty vCD use names defined above",
+
+    "// ": "vcd.org                    -> organization name",
+    "// ": "vcd.vdc                    -> VDC name",
+    "// ": "vcd.catalog.name           -> catalog name",
+    "// ": "vcd.catalog.catalogItem    -> catalog item name",
+    "// ": "networking.edgeGateway     -> edge gateway name",
+    "// ": "networking.externalNetwork -> external network name",
+
+    "//": "Values used to build a new external network. Build will fail if the next 5 ones are empty",
+    "gateway": "10.15.21.1",
+    "netmask": "255.255.224.0",
+    "externalNetworkStartIp": "10.15.21.10",
+    "externalNetworkEndIp": "10.15.21.11",
+    "dns1": "10.15.21.101",
+    "dns2": "8.8.4.4",
+
+    "//": "external network parameters MUST BE DIFFERENT from the one defined for testing",
+    "externalNetworkPortGroup": "network_name_from_vcenter",
+    "externalNetworkPortGroupType": "NETWORK",
+
+    "//": "catalog and media paths can be different from the ones used for testing",
+    "ovaPath": "/home/username/vm/photon-hw11-3.0-26156e2.ova",
+    "media_path":  "/home/username/vm/test.iso",
+
+    "//": "Leave the network names, the second storage profile, and the media name empty to skip their creation",
+    "//": "They are not needed for terraform-provider-vcd testing, but are useful for go-vcloud-director",
+    "storageProfile2": "Must-already-exist-second-storage-profile-name-for-VDC-creation",
+    "mediaName": "tf_test_media_name",
+    "routedNetwork": "tf_routed_net_name",
+    "isolatedNetwork": "tf_isolated_net_name",
+    "directNetwork": "tf_direct_net_name",
+    "//": "Leaving the user or password empty will skip the org user creation",
+    "orgUser": "tf_orgUser",
+    "orgUserPassword": "user_secret"
+  },
+  "envVariables" : {
+    "//" : "Environment variables that we want the test to set (or unset)",
+    "GOVCD_DEBUG": "",
+    "VCD_SKIP_TEMPLATE_WRITING": "",
+    "VCD_ADD_PROVIDER": "",
+    "REMOVE_ORG_VDC_FROM_TEMPLATE": ""
+  }
+}

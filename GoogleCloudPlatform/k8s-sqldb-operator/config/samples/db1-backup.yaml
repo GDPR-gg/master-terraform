@@ -1,0 +1,9 @@
+apiVersion: infra.example.com/v1alpha1
+kind: SqlBackup
+metadata:
+  labels:
+    controller-tools.k8s.io: "1.0"
+  name: db1-backup
+spec:
+  sqlDBName: db1
+  fileName: postgresql.dump

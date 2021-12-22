@@ -1,0 +1,44 @@
+{
+  "name": "@google/cloud-diagnostics-common",
+  "version": "0.3.2",
+  "description": "Common utilities for Google Cloud Diagnostics",
+  "main": "index.js",
+  "repository": "GoogleCloudPlatform/cloud-diagnostics-common-nodejs",
+  "scripts": {
+    "test": "mocha test",
+    "coverage": "istanbul cover ./node_modules/mocha/bin/_mocha test",
+    "coveralls": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
+  },
+  "keywords": [
+    "google",
+    "tracing",
+    "profiling"
+  ],
+  "author": "Google Inc.",
+  "contributors": [
+    {
+      "name": "Ali Ijaz Sheikh",
+      "email": "ofrobots@google.com"
+    },
+    {
+      "name": "Matt Loring",
+      "email": "mattloring@google.com"
+    }
+  ],
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "coveralls": "^2.11.11",
+    "istanbul": "^0.4.4",
+    "jshint": "^2.8.0",
+    "mocha": "^3.0.2",
+    "mocha-lcov-reporter": "^1.2.0",
+    "mock-fs": "^4.2.0",
+    "nock": "^9.0.0",
+    "proxyquire": "^1.7.4",
+    "shimmer": "^1.1.0"
+  },
+  "dependencies": {
+    "google-auth-library": "^0.10.0",
+    "request": "^2.75.0"
+  }
+}

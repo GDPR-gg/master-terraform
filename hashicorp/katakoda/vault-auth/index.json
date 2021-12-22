@@ -1,0 +1,53 @@
+{
+  "pathwayTitle": "Learn HashiCorp Vault",
+  "title": "Vault Authentication",
+  "description": "Learn how to enable and use username and password auth method.",
+  "difficulty": "beginner",
+  "time": "5 minutes",
+  "icon": "fa-vault",
+  "details": {
+    "intro": {
+      "text": "intro.md",
+      "credits": "https://learn.hashicorp.com/vault"
+    },
+    "steps": [
+      {
+        "title": "Enable an Auth Method",
+        "text": "step1.md",
+        "code": "terminal.sh",
+        "courseData": "courseBase.sh"
+      },
+      {
+        "title": "Create a User",
+        "text": "step2.md"
+      },
+      {
+        "title": "Test the Username & Password",
+        "text": "step3.md"
+      }
+    ],
+    "assets": {
+      "host01": [
+        {
+          "file": "base.hcl",
+          "target": "~/"
+        }
+      ]
+    },
+    "finish": {
+      "text": "finish.md",
+      "credits": "https://learn.hashicorp.com/vault"
+    }
+  },
+  "environment": {
+    "uilayout": "terminal",
+    "showdashboard": true,
+    "dashboards": [{ "name": "Vault UI", "port": 8200 }],
+    "uimessage1": "\u001b[32mYour Interactive Bash Terminal. A safe place to learn and execute commands.\u001b[m\r\n"
+  },
+  "backend": {
+    "imageid": "hashicorp-hashistack",
+    "lifetime": 30
+  },
+  "private": true
+}

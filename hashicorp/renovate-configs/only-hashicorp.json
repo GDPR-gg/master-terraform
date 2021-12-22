@@ -1,0 +1,9 @@
+{
+  "enabledManagers": ["npm"],
+  "packageRules": [
+    {
+      "excludePackagePatterns": ["^@hashicorp/"],
+      "enabled": false
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "title": "Managing Secrets with Vault on Kubernes",
+  "description": "[Vault] HashiConf EU Digital Workshop 2021",
+  "courses": [
+    {
+      "pathway_id": "hashicorp",
+      "title": "Vault Kubernetes Sidecar",
+      "id": "vault-kubernetes-sidecar",
+      "course_id": "vault-kubernetes-sidecar",
+      "description": "Use Vault Agent with Kubernetes."
+    },
+    {
+      "pathway_id": "hashicorp",
+      "title": "Vault Kubernetes CSI Volumes",
+      "id": "vault-kubernetes-csi",
+      "course_id": "vault-kubernetes-csi",
+      "description": "Mount Vault secrets with Container Storage Interface (CSI) Volume."
+    }
+  ]
+}

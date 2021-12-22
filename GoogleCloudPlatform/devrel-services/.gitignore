@@ -1,0 +1,6 @@
+.vscode
+unit_test_coverage.txt
+coverage.txt
+coverage_integration.txt
+**/profile.out
+**/profile_integration.out

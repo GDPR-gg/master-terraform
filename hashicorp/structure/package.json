@@ -1,0 +1,7 @@
+{
+  "name": "@hashicorp/structure",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ]
+}

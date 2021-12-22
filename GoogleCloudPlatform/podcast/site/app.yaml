@@ -1,0 +1,46 @@
+runtime: python27
+api_version: 1
+threadsafe: true
+
+handlers:
+  - url: /favicon.ico
+    static_files: public/images/favicon.ico
+    upload: public/images/favicon.ico
+    secure: always
+
+  # For itunes.
+  - url: /images/logo_large.png
+    static_files: public/images/logo_large.png
+    upload: public/images/logo_large.png
+    secure: optional
+
+  # index files
+  - url: /categories/(.+)/
+    static_files: public/categories/\1/index.html
+    upload: public/categories/(.+)/index.html
+    secure: always
+
+  - url: /categories/(.+)
+    static_files: public/categories/\1/index.html
+    upload: public/categories/(.+)/index.html
+    secure: always
+
+  - url: /(.+)/
+    static_files: public/\1/index.html
+    upload: public/(.+)/index.html
+    secure: always
+
+  - url: /(license|about)
+    static_files: public/\1/index.html
+    upload: public/(license|about)/index.html
+    secure: always
+
+  - url: /(.+)
+    static_files: public/\1
+    upload: public/(.*)
+    secure: always
+
+  - url: /
+    static_files: public/index.html
+    upload: public/index.html
+    secure: always

@@ -1,0 +1,124 @@
+# Copyright 2020 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+timeout: 7200s # 2hr
+tags:
+  - modern-cicd-anthos
+substitutions:
+  _BUILD_IMAGES: "true"
+  _INSTALL_APPS: "true"
+  _PROJECT_ID: ${PROJECT_ID}
+options:
+  substitution_option: 'ALLOW_LOOSE'
+steps:
+- name: 'gcr.io/cloud-builders/gsutil'
+  id: 'create-tf-state-bucket'
+  entrypoint: 'bash'
+  args:
+  - '-xe'
+  - '-c'
+  - |
+    gsutil mb gs://${_PROJECT_ID}-anthos-platform-tf-state || true
+
+- name: 'gcr.io/cloud-builders/gsutil'
+  id: 'starter-repo-reference'
+  entrypoint: 'bash'
+  args:
+  - '-xe'
+  - '-c'
+  - |
+    gsutil mb gs://${_PROJECT_ID}-starter-repos || true
+    gsutil -m cp -r starter-repos gs://${_PROJECT_ID}-starter-repos
+
+# Create build-installation-image
+- name: "gcr.io/cloud-builders/gcloud"
+  id: "build-install-image"
+  entrypoint: bash
+  args:
+    - -c
+    - |
+      [[ "${_BUILD_IMAGES}" == "false" ]] && exit 0
+      gcloud builds submit --config=build-image/cloudbuild.yaml --substitutions _PROJECT_ID=${_PROJECT_ID}
+
+# Foundation
+- name: "gcr.io/cloud-builders/gcloud"
+  id: "trigger-foundation"
+  dir: "0_foundation"
+  entrypoint: bash
+  args:
+    - -c
+    - |
+      gcloud builds submit --substitutions _PROJECT_ID=${_PROJECT_ID}
+  waitFor:
+    - build-install-image
+
+# Clusters
+- name: "gcr.io/cloud-builders/gcloud"
+  id: "trigger-clusters"
+  dir: "1_clusters"
+  entrypoint: bash
+  args:
+    - -c
+    - |
+      gcloud builds submit --substitutions _PROJECT_ID=${_PROJECT_ID}
+  waitFor:
+    - trigger-foundation
+
+# CICD
+- name: "gcr.io/cloud-builders/gcloud"
+  id: "trigger-gitlab"
+  dir: "2_gitlab"
+  entrypoint: bash
+  args:
+    - -c
+    - |
+      gcloud builds submit --substitutions _PROJECT_ID=${_PROJECT_ID}
+  waitFor:
+    - trigger-clusters
+
+# ACM
+- name: "gcr.io/cloud-builders/gcloud"
+  id: "trigger-acm-install"
+  dir: "3_acm"
+  entrypoint: bash
+  args:
+    - -c
+    - |
+      gcloud builds submit --substitutions _PROJECT_ID=${_PROJECT_ID}
+  waitFor:
+    - trigger-gitlab
+
+# Apps
+- name: "gcr.io/cloud-builders/gcloud"
+  id: "trigger-app-install"
+  dir: "4_demo"
+  entrypoint: bash
+  args:
+    - -c
+    - |
+      [[ "${_INSTALL_APPS}" == "false" ]] && exit 0
+      gcloud builds submit --substitutions _PROJECT_ID=${_PROJECT_ID}
+  waitFor:
+    - trigger-acm-install
+
+- name: "gcr.io/cloud-builders/gcloud"
+  id: "output-connect-details"
+  dir: "5_output"
+  entrypoint: bash
+  args:
+    - -c
+    - |
+      gcloud builds submit --substitutions _PROJECT_ID=${_PROJECT_ID}
+  waitFor:
+    - trigger-app-install

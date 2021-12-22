@@ -1,0 +1,76 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <!-- Parent -->
+    <parent>
+        <groupId>com.google.appengine.tck</groupId>
+        <artifactId>appengine-tck-ext</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>mapreduce</artifactId>
+    <packaging>jar</packaging>
+    <name>GAE TCK External MapReduce</name>
+    <url>https://developers.google.com/appengine/</url>
+    <description>GAE TCK External MapReduce</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.google.appengine.tools</groupId>
+            <artifactId>appengine-mapreduce</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.appengine.tools</groupId>
+            <artifactId>appengine-pipeline</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.appengine.tools</groupId>
+            <artifactId>appengine-gcs-client</artifactId>
+        </dependency>
+
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+
+            <dependencies>
+                <dependency>
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>guava</artifactId>
+                    <scope>test</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>it.unimi.dsi</groupId>
+                    <artifactId>fastutil</artifactId>
+                    <scope>test</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>com.googlecode.charts4j</groupId>
+                    <artifactId>charts4j</artifactId>
+                    <scope>test</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                    <scope>test</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.json</groupId>
+                    <artifactId>json</artifactId>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+</project>

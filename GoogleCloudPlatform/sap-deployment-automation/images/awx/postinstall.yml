@@ -1,0 +1,138 @@
+# Copyright 2021 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+- hosts: all
+  become: true
+  vars:
+    awx_project_name: SAP
+    awx_projects_dir: /var/lib/awx/projects
+    awx_project_subdir: sap-iac
+    awx_project_path: '{{ awx_projects_dir }}/{{ awx_project_subdir }}'
+  tasks:
+  - name: ensure awx project path is present
+    file:
+      path: '{{ awx_project_path }}'
+      mode: 0755
+      state: directory
+  - name: copy sap-iac repo to awx project path
+    unarchive:
+      src: '{{ playbook_dir }}/sap-iac.tar.gz'
+      dest: '{{ awx_project_path }}'
+  - name: define awx job directories
+    shell: |
+      find {{ awx_project_path }}/stacks/*/awx/* -type d
+    register: awx_job_directories
+  - name: wait for tower to initialize
+    shell: |
+      docker logs awx_task 2>&1 | grep 'Demo Credential, Inventory, and Job Template added'
+    register: tower_initialized
+    retries: 60
+    delay: 15
+    until: tower_initialized is succeeded
+    changed_when: false
+  - name: delete demo tower job template
+    tower_job_template:
+      job_type: run
+      name: Demo Job Template
+      playbook: playbook.yml
+      project: Demo Project
+      state: absent
+      tower_host: http://localhost
+      tower_username: admin
+      tower_password: password
+      validate_certs: false
+    failed_when: false
+  - name: delete demo tower project
+    tower_project:
+      name: Demo Project
+      organization: Default
+      state: absent
+      tower_host: http://localhost
+      tower_username: admin
+      tower_password: password
+      validate_certs: false
+    failed_when: false
+  - name: delete demo tower inventory
+    tower_inventory:
+      name: Demo Inventory
+      organization: Default
+      state: absent
+      tower_host: http://localhost
+      tower_username: admin
+      tower_password: password
+      validate_certs: false
+    failed_when: false
+  - name: add tower project
+    tower_project:
+      name: '{{ awx_project_name }}'
+      local_path: '{{ awx_project_subdir }}'
+      organization: Default
+      scm_type: manual
+      tower_host: http://localhost
+      tower_username: admin
+      tower_password: password
+      validate_certs: false
+  - name: add tower localhost inventory
+    tower_inventory:
+      name: default
+      organization: Default
+      tower_host: http://localhost
+      tower_username: admin
+      tower_password: password
+      validate_certs: false
+  - name: read tower survey specs
+    slurp:
+      src: '{{ item }}/survey_spec.json'
+    register: awx_survey_specs_contents
+    loop: '{{ awx_job_directories.stdout_lines }}'
+  - name: add quickstart tower job templates
+    tower_job_template:
+      name: 'Quickstart Mode - {{ item.0.split("/")[-1] }}'
+      concurrent_jobs_enabled: true
+      extra_vars_path: '{{ item.0 }}/extra-vars.yml'
+      inventory: default
+      job_type: run
+      # Example value of `item.0`: /var/lib/awx/projects/sap-iac/stacks/HANA-HA/awx/HANA-HA.
+      # The value of `playbook` below needs to be relative to /var/lib/awx/projects/sap-iac,
+      # so we need just stacks/HANA-HA to get the playbook directory.
+      playbook: '{{ item.0.split("/")[6:8] | join("/") }}/playbook.yml'
+      project: '{{ awx_project_name }}'
+      survey_enabled: true
+      survey_spec: '{{ item.1 }}'
+      tower_host: http://localhost
+      tower_username: admin
+      tower_password: password
+      validate_certs: false
+    loop: '{{ awx_job_directories.stdout_lines | zip(awx_survey_specs_contents.results | map(attribute="content") | map("b64decode")) | list }}'
+  - name: add expert tower job templates
+    tower_job_template:
+      name: 'Expert Mode - {{ item.split("/")[-1] }}'
+      ask_extra_vars: true
+      ask_inventory: true
+      ask_skip_tags: true
+      ask_tags: true
+      concurrent_jobs_enabled: true
+      extra_vars_path: '{{ item }}/extra-vars.yml'
+      inventory: default
+      job_type: run
+      playbook: '{{ item.split("/")[6:8] | join("/") }}/playbook.yml'
+      project: '{{ awx_project_name }}'
+      tower_host: http://localhost
+      tower_username: admin
+      tower_password: password
+      validate_certs: false
+    loop: '{{ awx_job_directories.stdout_lines }}'
+  - name: intentionally exit with error in dev mode to prevent image being created
+    command: 'false'
+    when: dev_mode | bool

@@ -1,0 +1,104 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.google.cloud.trace</groupId>
+    <artifactId>samples</artifactId>
+    <version>0.8.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>guice-scheduled-grpc</artifactId>
+  <packaging>jar</packaging>
+
+  <name>Google Cloud Trace Java SDK Guice Scheduled gRPC Sample</name>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <dependencies>
+    <!-- There's a screwed up dependency, apparently in Guice. It is bringing in an ancient version of guava. This breaks gRPC. -->
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>${google-guava.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>guice-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>guice-google-auth</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>guice-grpc-sink</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>guice-java-timestamp</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>guice-single-thread-scheduler</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>guice-v1</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.cloud.trace.v1</groupId>
+      <artifactId>sink</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.inject</groupId>
+      <artifactId>guice</artifactId>
+      <version>${google-inject-guice.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.5.0</version>
+        <configuration>
+          <mainClass>com.google.cloud.trace.samples.guice.grpc.scheduled.ScheduledBufferingGrpc</mainClass>
+          <systemProperties>
+            <systemProperty>
+              <key>cloudtrace.project-id</key>
+              <value><!-- ENTER PROJECT ID --></value>
+            </systemProperty>
+            <systemProperty>
+              <key>cloudtrace.sink-buffer-size</key>
+              <value>65536</value>
+            </systemProperty>
+            <systemProperty>
+              <key>cloudtrace.sink-scheduled-delay</key>
+              <value>10</value>
+            </systemProperty>
+            <systemProperty>
+              <key>cloudtrace.client-secrets-file</key>
+              <value><!-- ENTER FILENAME --></value>
+            </systemProperty>
+          </systemProperties>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

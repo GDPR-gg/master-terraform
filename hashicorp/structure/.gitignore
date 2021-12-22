@@ -1,0 +1,30 @@
+# compiled output
+.storybook/preview-head.html
+dist
+tmp*
+storybook-static
+
+# dependencies
+bower_components
+node_modules
+
+# editor files
+*.swp
+.vscode
+
+# Misc
+*.log
+*.tar.gz
+*.tgz
+*~
+.DS_Store
+
+#---(Yarn v2)---
+# See https://yarnpkg.com/advanced/qa#which-files-should-be-gitignored
+#---------------
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+.pnp.*

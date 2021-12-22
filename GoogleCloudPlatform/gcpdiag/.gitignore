@@ -1,0 +1,15 @@
+.coverage
+dist
+.pipenv-dockerized
+*.pyc
+__pycache__
+.terraform
+terraform.tfstate
+terraform.tfstate.backup
+.terraform.tfstate.lock.info
+.venv
+*.lock.hcl
+.pyinstaller.build
+.*.swp
+website/public
+website/resources

@@ -1,0 +1,7 @@
+{
+  "PreemptionConfig": {
+    "SystemSchedulerEnabled": true,
+    "BatchSchedulerEnabled": false,
+    "ServiceSchedulerEnabled": true
+  }
+}

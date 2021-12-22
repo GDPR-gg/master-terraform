@@ -1,0 +1,150 @@
+orbs:
+  win: circleci/windows@1.0.0
+
+version: 2.1
+
+environment: &ENVIRONMENT
+  EMAIL: 62970560+packer-ci@users.noreply.github.com
+  GIT_AUTHOR_NAME: packer-ci
+  GIT_COMMITTER_NAME: packer-ci
+
+executors:
+  golang:
+    docker:
+      - image: docker.mirror.hashicorp.services/circleci/golang:1.16
+    resource_class: medium+
+  darwin:
+    macos:
+      xcode: "12.0.0"
+
+steps:
+  setup-gpg: &setup-gpg
+    run:
+      name: import base64 GPG key and prime passphrase
+      command: |
+        echo -e "${RELEASES_GPG_PRIV_KEY_B64}" | base64 -di | gpg --import --batch
+        echo "hello world" > temp.txt
+        gpg --detach-sig --yes -v --output=/dev/null --pinentry-mode loopback --passphrase "${RELEASES_GPG_PASSPHRASE}" temp.txt
+        rm temp.txt
+
+commands:
+  install-go-run-tests-unix:
+    parameters:
+      GOOS:
+        type: string
+      GOVERSION:
+        type: string
+    steps:
+      - checkout
+      - run: curl https://dl.google.com/go/go<< parameters.GOVERSION >>.<< parameters.GOOS >>-amd64.tar.gz | tar -C ~/ -xz
+      - run: GO111MODULE=on PATH="$PATH:$HOME/go/bin/" ~/go/bin/go test ./... -race -coverprofile=coverage.txt  -covermode=atomic
+  install-go-run-tests-windows:
+    parameters:
+      GOVERSION:
+        type: string
+    steps:
+      - checkout
+      - run: curl https://dl.google.com/go/go<< parameters.GOVERSION >>.windows-amd64.zip --output ~/go<< parameters.GOVERSION >>.windows-amd64.zip
+      - run: unzip ~/go<< parameters.GOVERSION >>.windows-amd64.zip -d ~/
+      - run: GO111MODULE=on PATH="$PATH:$HOME/go/bin/" ~/go/bin/go test ./... -coverprofile=coverage.txt  -covermode=atomic
+
+# Golang CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-go/ for more details
+jobs:
+  test-linux:
+    executor: golang
+    resource_class: large
+    working_directory: /go/src/github.com/hashicorp/packer-plugin-sdk
+    steps:
+      - checkout
+      - run: make vet
+      - run: TESTARGS="-coverprofile=coverage.txt -covermode=atomic" make ci
+  test-darwin:
+    executor: darwin
+    working_directory: ~/go/src/github.com/hashicorp/packer-plugin-sdk
+    environment:
+      GO111MODULE: "off"
+    steps:
+      - install-go-run-tests-unix:
+          GOOS: darwin
+          GOVERSION: "1.16"
+  test-windows:
+    executor:
+      name: win/vs2019
+      shell: bash.exe
+    steps:
+      - install-go-run-tests-windows:
+          GOVERSION: "1.16"
+  check-lint:
+    executor: golang
+    resource_class: xlarge
+    steps:
+      - checkout
+      - run: git fetch --all
+      - run:
+          command: make ci-lint
+          no_output_timeout: 30m
+  check-fmt:
+    executor: golang
+    steps:
+      - checkout
+      - run: make fmt-check
+  check-generate:
+    executor: golang
+    working_directory: /go/src/github.com/hashicorp/packer-plugin-sdk
+    steps:
+      - checkout
+      - run: make generate-check
+  release-sdk:
+    executor: golang
+    environment:
+      <<: *ENVIRONMENT
+    steps:
+      - *setup-gpg
+      - add_ssh_keys:
+          fingerprints:
+            - "52:49:7d:88:9b:81:21:fb:71:86:fd:89:c4:4b:95:df" # circleci-key of packer-ci user in GitHub
+      - checkout
+      - run: ./scripts/release/release.sh
+
+
+workflows:
+  version: 2
+  test:
+    jobs:
+      - test-linux
+      - test-darwin
+      - test-windows
+  check-code:
+    jobs:
+      - check-lint
+      - check-fmt
+      - check-generate
+  release:
+    jobs:
+      - check-generate
+      - check-fmt
+      - check-lint
+      - test-linux
+      - trigger-release:
+          filters:
+            branches:
+              only:
+                - main
+          type: approval
+      - release-sdk:
+          context:
+            - releases-gpg-private-signing-key
+            - releases-gpg-public-signing-key
+          filters:
+            branches:
+              only:
+                - main
+          requires:
+            - trigger-release
+            - check-generate
+            - check-fmt
+            - check-lint
+            - test-linux
+

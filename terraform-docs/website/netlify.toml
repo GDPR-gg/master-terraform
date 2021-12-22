@@ -1,0 +1,16 @@
+[build]
+  publish = "public"
+
+[build.environment]
+  NODE_VERSION = "16.3.0"
+  NPM_VERSION = "7.16.0"
+  HUGO_VERSION = "0.87.0"
+
+[context.production]
+  command = "hugo -b $URL --gc"
+
+[context.deploy-preview]
+  command = "hugo -b $DEPLOY_PRIME_URL --gc"
+
+[context.branch-deploy]
+  command = "hugo -b $DEPLOY_PRIME_URL --gc"

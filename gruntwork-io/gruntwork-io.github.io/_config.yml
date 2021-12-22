@@ -1,0 +1,53 @@
+# Website settings
+baseurl: ""
+url: "https://www.gruntwork.io"
+name: "Gruntwork | DevOps as a Service"
+description: "Your entire infrastructure. Defined as code. In about one day. At Gruntwork, we get you running on AWS with Terraform and you get 100% of the code."
+full_company_name: "Gruntwork, Inc"
+thumbnail_path: "/assets/img/logos-gruntwork/gruntwork-overview.png"
+repository: "gruntwork-io/gruntwork-io.github.io"
+overview_video_embed_url: "//www.youtube.com/embed/dcnDu5Cc0pY"
+
+highlighter: rouge
+
+timezone: "America/Los_Angeles"
+
+assets_base_url: "/assets/"
+gtm_id: GTM-W5PZQHS
+
+recaptchaApiKey: 6LcXFLoZAAAAAHVaImPgU3xGnBmyY-lwQ6sHllGN
+
+plugins:
+  - jekyll-asciidoc
+  - jekyll-toc
+  - jekyll-github-metadata
+
+sass:
+  sass_dir: assets/css/
+  style: :compressed
+
+asciidoc:
+  processor: asciidoctor
+  ext: asciidoc,adoc,ad
+  page_attribute_prefix: jekyll
+  require_front_matter_header: true
+asciidoctor: {}
+
+permalink: /guides/:categories/:title/
+
+exclude:
+  - .dockerignore
+  - .editorconfig
+  - .gitignore
+  - docker-compose.yml
+  - Dockerfile
+  - Gemfile
+  - Gemfile.lock
+  - jekyll-serve.sh
+  - LICENSE.txt
+  - package.json
+  - README.md
+  - webpack.config.js
+  - source
+  - node_modules
+  - terraform

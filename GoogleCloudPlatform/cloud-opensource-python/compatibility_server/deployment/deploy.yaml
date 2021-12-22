@@ -1,0 +1,55 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    run: compatibility-server
+  name: compatibility-server-deployment
+  namespace: default
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 200
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      run: compatibility-server
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        run: compatibility-server
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: run
+                operator: In
+                values:
+                - compatibility-server
+            topologyKey: kubernetes.io/hostname
+      containers:
+      - image: gcr.io/python-compatibility-tools/compatibility-image:v1
+        imagePullPolicy: IfNotPresent
+        name: compatibility-server
+        ports:
+        - containerPort: 8888
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /var/run/docker.sock
+          name: docker-sock
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 310
+      volumes:
+      - hostPath:
+          path: /var/run/docker.sock
+          type: File
+        name: docker-sock

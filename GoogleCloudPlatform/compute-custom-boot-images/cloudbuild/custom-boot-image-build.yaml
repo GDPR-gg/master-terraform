@@ -1,0 +1,11 @@
+steps:
+- id: 'create_agent_instance'
+  name: 'gcr.io/$PROJECT_ID/base-image-builder'
+  env:
+  - 'IMAGE_FAMILY=acme-centos-7'
+  - 'PROJECT_ID=$PROJECT_ID'
+  - 'TAG_NAME=$TAG_NAME'
+  - 'IMAGE_ZONE=us-central1-f'
+  - 'PACKER_SPEC=centos-7-from-iso.json'
+  - 'IMAGES_BUCKET=gs://$PROJECT_ID-custom-images'
+timeout: 1800s

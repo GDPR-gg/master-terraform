@@ -1,0 +1,49 @@
+dist: trusty 
+
+language: scala
+
+jdk:
+  - oraclejdk8
+
+scala:
+   - 2.11.12
+   - 2.12.7
+   - 2.13.0-M2
+
+matrix:
+  exclude:
+
+before_install:
+  - |
+    git clone https://github.com/hashicorp/nomad-java-sdk
+    cd nomad-java-sdk
+    mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+    cd -
+
+before_script:
+  - |
+    set -euo pipefail
+    if [[ ! -f cache/bin/nomad ]]; then
+      export GOPATH="$PWD/gopath"
+      eval "$(curl -sL https://raw.githubusercontent.com/travis-ci/gimme/master/gimme | GIMME_GO_VERSION=1.11 bash)"
+      export PATH="$PATH:$GOPATH/bin"
+      go get -u github.com/hashicorp/nomad
+      cd "$GOPATH/src/github.com/hashicorp/nomad"
+      git checkout tags/v0.9.7
+      make bootstrap
+      cd -
+
+      mkdir -p cache/bin
+      cd cache/bin
+      go build -tags nomad_test github.com/hashicorp/nomad
+      cd -
+    fi
+    set +euo pipefail  # restory options to work around https://github.com/travis-ci/travis-ci/issues/5434
+  - export PATH="$PWD/cache/bin:$PATH"
+
+script: sbt ++$TRAVIS_SCALA_VERSION scalastyle test
+
+cache:
+  directories:
+    - $HOME/.m2
+    - cache

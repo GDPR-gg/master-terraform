@@ -1,0 +1,12 @@
+env.mk
+backend/api-service/.openapi-generator/
+backend/api-service/api/
+backend/api-service/src/api*.go
+backend/api-service/src/logger.go
+backend/api-service/src/model_*.go
+backend/api-service/src/routers.go
+backend/api-service/main.go
+backend/api-service/README.md
+
+webui/api-client
+webui/user-svc-client

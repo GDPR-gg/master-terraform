@@ -1,0 +1,25 @@
+dist: trusty
+sudo: required
+services:
+- docker
+
+# only build master branch (and PRs)
+branches:
+  only:
+    - "master"
+
+language: go
+go:
+- "1.12.9"
+
+env:
+  - GO111MODULE=on
+    GOFLAGS=-mod=vendor
+
+install:
+- make tools
+
+script:
+- make test
+- make build
+- make website-test

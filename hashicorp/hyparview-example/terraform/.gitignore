@@ -1,0 +1,8 @@
+.terraform
+apply
+demo-key
+demo-key.pub
+hosts
+public
+terraform.tfstate
+terraform.tfstate.backup

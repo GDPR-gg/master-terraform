@@ -1,0 +1,7 @@
+domain: gke.io
+repo: github.com/GoogleCloudPlatform/gke-fqdnnetworkpolicies-golang
+resources:
+- group: networking
+  kind: FQDNNetworkPolicy
+  version: v1alpha2
+version: "2"

@@ -1,0 +1,10 @@
+﻿bin/
+obj/
+node_modules/
+.vs/
+*.user
+.vscode/
+**/wwwroot/lib/
+
+# NuGet packages
+packages

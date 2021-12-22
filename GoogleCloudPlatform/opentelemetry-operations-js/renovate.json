@@ -1,0 +1,14 @@
+{
+  "extends": ["config:js-lib", "group:allNonMajor"],
+  "dependencyDashboard": true,
+  "lockFileMaintenance": {
+    "enabled": true
+  },
+  "labels": ["dependencies"],
+  "packageRules": [
+    {
+      "matchPackageNames": ["typescript"],
+      "groupName": "typescript"
+    }
+  ]
+}

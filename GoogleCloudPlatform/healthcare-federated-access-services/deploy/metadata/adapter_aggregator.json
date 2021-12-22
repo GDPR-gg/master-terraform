@@ -1,0 +1,35 @@
+{
+  "services": {
+    "aggregator": {
+      "platform": "dam",
+      "properties": {
+        "isAggregate": true,
+        "canBeAggregated": false
+      },
+      "serviceVariables": {
+      },
+      "itemVariables": {
+        "resource": {
+          "type": "const",
+          "regexp": "^[A-Za-z][\\w\\-]*$",
+          "ui": {
+            "label": "Name of an existing resource in DAM",
+            "description": "Can aggregate resources in the same DAM as this aggregate view"
+          }
+        },
+        "view": {
+          "type": "const",
+          "regexp": "^[A-Za-z][\\w\\-]*$",
+          "ui": {
+            "label": "Name of an existing view",
+            "description": "Can aggregate existing views from the resource provided"
+          }
+        }
+      },
+      "ui": {
+        "label":       "View Aggregator",
+        "description": "Combines compatible views across resources to produce a single token with access to all of them"
+      }
+    }
+  }
+}

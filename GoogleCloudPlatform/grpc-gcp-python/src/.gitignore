@@ -1,0 +1,4 @@
+version.py
+build/
+dist/
+*.egg-info/

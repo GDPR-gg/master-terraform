@@ -1,0 +1,103 @@
+# Copyright 2021 Google LLC
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+
+cloudbuild:
+  enable_parallel: false
+versions:
+- dir: 8/debian9/8.0
+  excludeTests:
+  - tests/functional_tests/mysqld_exporter_test.yaml
+  from: marketplace.gcr.io/google/debian9
+  packages:
+    gosu:
+      gpg: B42F6819007F00F88E364FD4036A9C25BF357DD4
+      version: '1.11'
+    mysql:
+      gpg: A4A9406876FCBD3C456770C88C718D3B5072E1F5
+      major: '8.0'
+      version: 8.0.25-1debian9
+  repo: mysql8
+  tags:
+  - 8.0.25-debian9
+  - 8.0-debian9
+  - 8-debian9
+  - 8.0.25
+  - '8.0'
+  - '8'
+  - latest
+  templateArgs:
+    c2dRelease: 8.0.25
+  templateSubDir: debian9
+- dir: 5/debian9/5.7
+  excludeTests:
+  - tests/functional_tests/mysqld_exporter_test.yaml
+  from: marketplace.gcr.io/google/debian9
+  packages:
+    gosu:
+      gpg: B42F6819007F00F88E364FD4036A9C25BF357DD4
+      version: '1.11'
+    mysql:
+      gpg: A4A9406876FCBD3C456770C88C718D3B5072E1F5
+      major: '5.7'
+      version: 5.7.34-1debian9
+  repo: mysql5
+  tags:
+  - 5.7.34-debian9
+  - 5.7-debian9
+  - 5-debian9
+  - 5.7.34
+  - '5.7'
+  - '5'
+  - latest
+  templateArgs:
+    c2dRelease: 5.7.34
+  templateSubDir: debian9
+- dir: exporter
+  excludeTests:
+  - tests/functional_tests/create_db_test.yaml
+  - tests/functional_tests/remote_host_test.yaml
+  from: marketplace.gcr.io/google/debian9
+  packages:
+    mysqld_exporter:
+      sha256: 133b0c281e5c6f8a34076b69ade64ab6cac7298507d35b96808234c4aa26b351
+      version: 0.12.1
+  repo: mysql8
+  tags:
+  - exporter
+  - exporter-0.12
+  - exporter-0.12.1
+  templateArgs:
+    exporter_notices_check_sum: eeddfcef6c3d473fd2a177eb2f17062cf06637b0798d404317c052d0ffe14523
+  templateSubDir: exporter
+- dir: exporter
+  excludeTests:
+  - tests/functional_tests/create_db_test.yaml
+  - tests/functional_tests/remote_host_test.yaml
+  from: marketplace.gcr.io/google/debian9
+  packages:
+    mysqld_exporter:
+      sha256: 133b0c281e5c6f8a34076b69ade64ab6cac7298507d35b96808234c4aa26b351
+      version: 0.12.1
+  repo: mysql5
+  tags:
+  - exporter
+  - exporter-0.12
+  - exporter-0.12.1
+  templateArgs:
+    exporter_notices_check_sum: eeddfcef6c3d473fd2a177eb2f17062cf06637b0798d404317c052d0ffe14523
+  templateSubDir: exporter
+

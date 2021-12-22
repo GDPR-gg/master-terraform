@@ -1,0 +1,13 @@
+__pycache__/
+.env
+*.env
+node_modules
+.nyc_output
+build
+code-workspace
+views/partials/documentation.hbs
+views/partials/changelog.hbs
+.vscode
+config
+coverage
+public/github-markdown.css

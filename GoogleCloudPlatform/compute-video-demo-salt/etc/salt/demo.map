@@ -1,0 +1,6 @@
+zone1a:
+  - minion-1
+  - minion-3
+zone1b:
+  - minion-2
+  - minion-4

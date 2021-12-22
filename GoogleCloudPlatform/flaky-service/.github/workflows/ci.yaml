@@ -1,0 +1,109 @@
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+name: ci
+jobs:
+  server-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [12]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
+      - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+        with:
+          version: '290.0.1'
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+      - run: node --version
+        working-directory: ./packages/api
+      - run: npm install
+        working-directory: ./packages/api
+      - run: npm test
+        working-directory: ./packages/api
+        env:
+          GCLOUD_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
+      - name: track flaky tests
+        if: ${{ always() }}
+        uses: GoogleCloudPlatform/flaky-service/packages/action@v1.0.3
+        with:
+          file-path: ${{github.workspace}}/packages/api/test.tap
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          matrix: ${{toJson(matrix)}}
+          os: ${{runner.os}}
+          repo-description: ${{github.event.repository.description}}
+          tag: 'api'
+  frontend-test-linux:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [12]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
+      - name: set environment variables
+        uses: allenevans/set-env@v1.0.0
+        with:
+          BROWSER: 'linux'
+      - run: node --version
+        working-directory: ./packages/frontend
+      - run: npm install
+        working-directory: ./packages/frontend
+      - run: npm run test
+        working-directory: ./packages/frontend
+      - run: npm run e2e
+        working-directory: ./packages/frontend
+      - run: npm run lint
+        working-directory: ./packages/frontend
+      - name: track flaky tests
+        continue-on-error: true
+        if: ${{ always() }}
+        uses: GoogleCloudPlatform/flaky-service/packages/action@v1.0.3
+        with:
+          file-path: ${{github.workspace}}/packages/frontend/test.tap
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          matrix: ${{toJson(matrix)}}
+          os: ${{runner.os}}
+          repo-description: ${{github.event.repository.description}}
+          tag: 'frontend-linux'
+  frontend-test-windows:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        node: [12]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
+      - name: set environment variables
+        uses: allenevans/set-env@v1.0.0
+        with:
+          BROWSER: 'windows'
+      - run: node --version
+        working-directory: ./packages/frontend
+      - run: npm install
+        working-directory: ./packages/frontend
+      - run: npm run test
+        working-directory: ./packages/frontend
+      - run: npm run e2e
+        working-directory: ./packages/frontend
+      - name: track flaky tests
+        continue-on-error: true
+        if: ${{ always() }}
+        uses: GoogleCloudPlatform/flaky-service/packages/action@v1.0.2
+        with:
+          file-path: ${{github.workspace}}/packages/frontend/test.tap
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          matrix: ${{toJson(matrix)}}
+          os: ${{runner.os}}
+          repo-description: ${{github.event.repository.description}}
+          tag: 'frontend-windows'

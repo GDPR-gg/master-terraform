@@ -1,0 +1,162 @@
+#!/bin/bash
+### BEGIN INIT INFO
+# Provides:          collectd-td
+# Required-Start:    2 3 4 5
+# Required-Stop:     2 3 4 5
+# Default-Start:     2 3 4 5
+# Default-Stop:
+# Short-Description: Start Google Cloud Network Monitoring Agent on Deb systems
+#                    
+# Description: The Cloud Network Monitoring Agent reports fine-grained network
+#              statistics from VMs running on GCE.
+### END INIT INFO
+
+PATH=/bin:/usr/bin:/sbin:/usr/sbin
+
+servicename=collectd-td
+dir=/opt/collectd-td
+respawn="${dir}/bin/simple_respawn"
+prog="${dir}/sbin/collectd-td"
+logfile="/var/log/collectd-td.log"
+lockfile="/var/lock/$servicename"
+pidfile="/var/run/${servicename}.pid"
+respawn_pidfile="/var/run/respawn-${servicename}.pid"
+cgroup_root="/sys/fs/cgroup"
+cgroup_path="daemons/netperf"
+cgroup_subpaths="daemons daemons/netperf"
+declare -a cgroup_groups
+
+. /lib/lsb/init-functions
+
+cgroup_has_variable() {
+  ! cgget -r $1 / 2>&1 |
+    fgrep -e 'No such file or directory' -e 'cannot find controller' > /dev/null
+}
+
+# Ubuntu Trusty removes cgconfig for configuring CGroups but does not
+# furnish a replacement. cgroup-lite only provides the CGroups filesystem.
+# Build our configuration directly on that filesystem.  This might break
+# when Debian and/or Ubuntu do provide a replacement.
+configure_cgroup() {
+  cgroup_groups[0]=cpu
+  cgcreate -g cpu:$cgroup_path
+  
+  (
+    cgroup_has_variable cpu.cfs_period_us &&
+    cgset -r cpu.cfs_period_us=1000000 $cgroup_path &&
+    cgset -r cpu.cfs_quota_us=15000 $cgroup_path
+  ) || (
+    # E.g. Debian does not support quota and period, use cpu.shares
+    # instead. This provides a *share* of CPU but does not limit *total* CPU
+    # time consumed.
+    cgset -r cpu.shares=24 $cgroup_path
+    # We also have to define "cpus" and "mems" along the entire path. Limit
+    # those to just the first one.
+    for p in $cgroup_subpaths; do
+      cgset -r cpuset.cpus=0 $p
+      cgset -r cpuset.mems=0 $p
+    done
+  ) || log_warning_msg "Failed to limit CPU"
+
+  if (
+      cgroup_has_variable memory.limit_in_bytes &&
+      cgset -r memory.limit_in_bytes=180m $cgroup_path &&
+      (cgset -r memory.memsw_limit_in_bytes=180m $cgroup_path \
+        >/dev/null 2>&1 || true) &&
+      cgset -r memory.oom_control=0 $cgroup_path
+    ); then
+    cgroup_groups[1]=memory
+  else
+    log_warning_msg "Failed to limit mem"
+  fi
+}
+
+join() { local IFS="$1"; shift; echo "$*"; }
+
+start() {
+  local respawn_args="$respawn -respawn_pidfile $respawn_pidfile -program_pidfile $pidfile -d -l $logfile"
+  local cmd="$prog -f -C $dir/etc/collectd-td.conf"
+  local vars="MALLOC_ARENA_MAX=1 LD_LIBRARY_PATH=/opt/libgrpc-td/lib"
+  local RETVAL=0
+  log_daemon_msg "Starting $servicename" "$servicename"
+  configure_cgroup
+  local cgexec_cgroups=`join ',' ${cgroup_groups[@]}`
+  env $vars start-stop-daemon --start --pidfile "$respawn_pidfile" \
+    --exec "/usr/bin/cgexec" -- \
+    -g "${cgexec_cgroups}:$cgroup_path" $respawn_args $cmd
+  RETVAL=$?
+  log_end_msg $RETVAL
+  [ $RETVAL -eq 0 ] && touch "$lockfile"
+  return $RETVAL
+}
+
+stop() {
+  local RETVAL1=0
+  local RETVAL2=0
+  local collectd_pid
+  local -a failure_msg
+  log_daemon_msg "Stopping" "$servicename"
+  log_progress_msg "respawn"
+  collectd_pid=`cat $pidfile`   # Will be deleted when respawn_pidfile dies
+  start-stop-daemon --stop --pidfile "$respawn_pidfile" --exec "$respawn"
+  RETVAL1=$?
+  [ $RETVAL1 -eq 0 ] || failure_msg[${#failure_msg}]="failed to stop $respawn"
+  log_progress_msg "collectd"
+  # respawn PIDFILE for collectd is gone by now.
+  if /bin/kill -0 $collectd_pid; then
+    start-stop-daemon --stop --oknodo --exec "$prog"
+    RETVAL2=$?
+    [ $RETVAL2 -eq 0 ] || failure_msg[${#failure_msg}]="failed to stop $prog"
+  fi
+  [ $RETVAL1 -eq 0 -o $RETVAL2 -eq 0 ] && rm -f "$lockfile"
+  if [ ${#failure_msg} -ne 0 ]; then
+    log_failure_msg `join $'\n' ${failure_msg[@]}`
+    return 1
+  else
+    log_success_msg
+    return 0
+  fi
+}
+
+status() {
+  start-stop-daemon --status --pidfile "$respawn_pidfile" --exec "$respawn"
+  RETVAL1=$?
+  [ $RETVAL1 -eq 0 ] || log_warning_msg "No $respawn process running"
+  start-stop-daemon --status --pidfile "$pidfile" --exec "$prog"
+  RETVAL2=$?
+  [ $RETVAL2 -eq 0 ] || log_failure_msg "No $prog process running"
+  if [ $RETVAL1 -eq 0 -a $RETVAL2 -eq 0 ]; then
+    log_success_msg "$respawn and $prog are both running"
+    return 0
+  else
+    log_end_msg 1
+    return 1
+  fi
+}
+
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  status)
+    status
+    ;;
+  restart)
+    stop
+    start
+    ;;
+  reload)
+    stop
+    start
+    ;;
+  *)
+    echo "Usage: <servicename> {start|stop|status|reload|restart}"
+    exit 1
+    ;;
+esac
+exit $?
+
+    

@@ -1,0 +1,257 @@
+slug: nomad-basics
+id: zzdva5ydzqbv
+type: track
+title: Nomad Basics
+teaser: |
+  Learn how to run the Nomad agent, run basic commands, and run Nomad jobs.
+description: |-
+  Nomad is a flexible workload orchestrator that enables an organization to easily deploy and manage any containerized or legacy application using a single, unified workflow.
+
+  This track will introduce you to the open source version of Nomad. You will learn how to run some basic Nomad CLI commands, run a "dev" agent, initialize a simple Nomad job, and use the CLI, UI, and HTTP API to run, check the status of, and stop the job.
+icon: https://storage.googleapis.com/instruqt-hashicorp-tracks/logo/nomad.png
+tags:
+- nomad
+- basics
+owner: hashicorp
+developers:
+- roger@hashicorp.com
+- rjackson@hashicorp.com
+private: true
+published: true
+show_timer: true
+challenges:
+- slug: nomad-cli
+  id: atio81hiysfy
+  type: challenge
+  title: The Nomad CLI
+  teaser: |
+    Explore the Nomad Command Line Interface (CLI).
+  assignment: |-
+    Let's start with some basic Nomad commands, running them in the "Nomad CLI" tab on the left.
+    ```
+    nomad version
+    ```
+    You should see "Nomad v1.0.0".
+
+    You can also see the list of all Nomad CLI commands:
+    ```
+    nomad
+    ```
+    You'll see some common commands followed by other commands.
+
+    You can get help for any Nomad command by adding `-h`, `-help`, or `--help` after it.  Try this:
+    ```
+    nomad job run -h
+    ```
+  notes:
+  - type: text
+    contents: |-
+      The open source version of Nomad (Nomad OSS) is a single binary that you can download and run on your laptop or virtual workstation.
+
+      It is written in Go and runs on macOS, Windows, and Linux.
+
+      You can always download the latest version of Nomad OSS here:
+      https://www.nomadproject.io/downloads.html
+  - type: text
+    contents: |-
+      Installing Nomad on your laptop or workstation is easy. You simply download the zip file, unpack it, and place it somewhere in your PATH.
+
+      We've included Nomad in a VM in your Instruqt environment so that you don't need to download or install it.
+  tabs:
+  - title: Nomad CLI
+    type: terminal
+    hostname: nomad-server
+  difficulty: basic
+  timelimit: 900
+- slug: run-nomad-agent
+  id: 2gvixlkq52un
+  type: challenge
+  title: Run a Dev Mode Nomad Agent
+  teaser: |
+    Run a Nomad server in development mode.
+  assignment: |-
+    Nomad relies on a long running agent on every machine in the cluster. The agent can run either in server or client mode.
+
+    We'll start out by running one in development mode. This mode is used to quickly start an agent that is acting as both a client and a server.
+
+    Start the agent in dev mode on the "Nomad Dev Server" tab:
+    ```
+    nomad agent -dev -bind=0.0.0.0 &
+    ```
+    Running the above command will output some log data and run in the background (because of the `&`). We included the `-bind=0.0.0.0` argument so that the Nomad UI can connect to the agent in the Instruqt environment.
+
+    You'll run the rest of the Nomad commands in this challenge in the "Nomad CLI" tab to avoid intermixing of output from the agent and your commands.
+
+    Let's get the status of the Nomad node (the VM) you are running the agent on:
+    ```
+    nomad node status
+    ```
+
+    This will print information about the node including its ID, data center (DC), name, class, drain status, eligibility, and status.
+
+    Verify that the agent is running as a server by getting the list of servers in the local Nomad cluster:
+    ```
+    nomad server members
+    ```
+    You'll see that the nomad-server node is a member of and actually the leader of the cluster and is alive.
+
+    In the next challenge, you will run your first Nomad job.
+  notes:
+  - type: text
+    contents: |-
+      In this challenge, you will run your first Nomad agent in development mode and explore a few more Nomad CLI commands.
+
+      See https://learn.hashicorp.com/tutorials/nomad/get-started-run#starting-the-agent for more on Nomad's development mode.
+  tabs:
+  - title: Nomad Dev Server
+    type: terminal
+    hostname: nomad-server
+  - title: Nomad CLI
+    type: terminal
+    hostname: nomad-server
+  - title: Nomad UI
+    type: service
+    hostname: nomad-server
+    port: 4646
+  difficulty: basic
+  timelimit: 900
+- slug: run-first-job
+  id: xjjunqd5gsjz
+  type: challenge
+  title: Run Your First Nomad Job
+  teaser: |
+    Run your first Nomad job with the Nomad CLI and UI.
+  assignment: |-
+    In this challenge, you'll run your first Nomad job using a Nomad job specification file that has been provided.
+
+    You'll first start and stop it with the Nomad CLI. You'll then do the same with the Nomad UI.
+
+    First, inspect the job specification file, `redis.nomad`:
+    ```
+    cat redis.nomad
+    ```
+
+    Note the specifics of the job including the image, resources, and health check.
+
+    Run the redis job:
+    ```
+    nomad job run redis.nomad
+    ```
+    As a result, you'll see the lifecycle of the evaluation, that an allocation  was created on the node, and that the state of the evaluation has moved from "pending" to "complete".
+
+    Next view the status of the Redis job:
+    ```
+    nomad status
+    ```
+    The command returns a high level view of the status of the redis job, most importantly it's status, "running", and date submitted. As we only have one job running (redis), that is the only one listed.
+
+    Now that the job is running, and you're able to view the status, stop the job:
+    ```
+    nomad job stop redis
+    ```
+    Again, you'll see the progress of the job evaluation as the job is stopped.
+
+    View the status of the redis job again, identifying that the job has stopped:
+    ```
+    nomad status
+    ```
+    The status is now "dead (stopped)".
+
+    Next, we'll run through a similar process utilizing the Nomad User Interface (UI).  Click on the "Nomad UI" tab. (If it looks scrunched up, either make your browser window wider or click the rectangular icon above the "Nomad UI" tab to temporarily hide the assignment. Clicking that icon again will unhide the assignment.)
+
+    Within the Nomad UI, select the "redis" job.  On the "Job Overview" tab, click the red "Start" button.  Nomad will ask for confirmation; confirm by clicking the "Yes, Start" button.
+
+    In the UI, observe that the job is started and that there is one healthy allocation as desired.
+
+    Return to the Nomad CLI tab, and check on the job status:
+    ```
+    nomad status
+    ```
+    Observe that the CLI shows the job status is "running".
+
+    Back in the Nomad UI, click the red "Stop" button, thereby stopping the job.  Once again, the Nomad UI will request confirmation; confirm by clicking the "Yes, Stop" button.
+
+    Within the Nomad UI, validate that the job has stopped.  This is indicated by the fact that the number of running jobs is 0.
+
+    Return to the Nomad CLI tab, and confirm that the status of "dead (stopped)" is also reflected in the CLI:
+    ```
+    nomad status
+    ```
+
+    In the next challenge, you will run the same job and check its status using the Nomad HTTP API.
+  notes:
+  - type: text
+    contents: |-
+      In this challenge, you'll run your first Nomad job using a Nomad job specification file that has been provided.
+
+      See https://learn.hashicorp.com/tutorials/nomad/get-started-jobs for more on running Nomad jobs.
+  tabs:
+  - title: Nomad CLI
+    type: terminal
+    hostname: nomad-server
+  - title: Nomad UI
+    type: service
+    hostname: nomad-server
+    port: 4646
+  difficulty: basic
+  timelimit: 900
+- slug: use-nomad-http-api
+  id: 4vobrui0upoe
+  type: challenge
+  title: Use Nomad's HTTP API
+  teaser: |
+    Run and stop a job with Nomad's HTTP API.
+  assignment: |-
+    In this challenge, you'll run the same Nomad job using Nomad's HTTP API.
+
+    First, generate a JSON representation of the job from the redis.nomad file that can be sent to the HTTP API. Execute the following on the "Nomad CLI" tab:
+    ```
+    nomad job run -output redis.nomad > payload.json
+    ```
+
+    Run the following `curl` command against the Nomad server's HTTP API to create the job from the payload.json file. We use the `jq` program to make the response easier to read.
+    ```
+    curl --data @payload.json http://localhost:4646/v1/jobs | jq
+    ```
+    The JSON data returned will include a job index, an evaluation ID, and other information.
+
+    For more information regarding creating jobs using Nomad's HTTP API, refer to https://www.nomadproject.io/api/jobs.html#create-job
+
+    With the job running, we can use Nomad's HTTP API to query the job status:
+    ```
+    curl http://localhost:4646/v1/job/redis/summary | jq
+    ```
+    Note that the JSON response includes the job ID ("redis") and counts for the numbers of allocations failed, started, running, etc.
+
+    For more information regarding querying jobs using the API, refer to https://www.nomadproject.io/api/jobs.html#read-job-summary)
+
+    Finally, let's use the HTTP API to stop the job:
+    ```
+    curl --request DELETE http://localhost:4646/v1/job/redis | jq
+    ```
+    The JSON data returned will include a job index, and evaluation ID, and other information.
+
+    For more information regarding stopping a job using the API, refer to https://www.nomadproject.io/api/jobs.html#stop-a-job.
+
+    To ensure that the job has been properly terminated, query the job summary API again:
+    ```
+    curl http://localhost:4646/v1/job/redis/summary | jq
+    ```
+    The JSON response should show that no allocations are currently running and that the number of complete allocations has increased by 1.
+  notes:
+  - type: text
+    contents: |-
+      In this challenge, you'll run the same Nomad job using Nomad's HTTP API.
+
+      See https://www.nomadproject.io/api/jobs.html for more on running Nomad jobs with Nomad's HTTP API.
+  tabs:
+  - title: Nomad CLI
+    type: terminal
+    hostname: nomad-server
+  - title: Nomad UI
+    type: service
+    hostname: nomad-server
+    port: 4646
+  difficulty: basic
+  timelimit: 900
+checksum: "8075692714081613461"

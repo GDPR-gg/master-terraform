@@ -1,0 +1,9 @@
+builds:
+  - main: main.go
+    binary: kafka-health-check
+    goos:
+      - darwin
+      - linux
+      - freebsd
+    goarch:
+      - amd64

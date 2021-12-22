@@ -1,0 +1,15 @@
+[
+  {
+    "first_step": {
+      "assign": [
+        {
+          "my_map": {
+            "name": "Lila",
+            "last_name": "Barton",
+            "birthYear": 1990
+          }
+        }
+      ]
+    }
+  }
+]

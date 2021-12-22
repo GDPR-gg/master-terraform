@@ -1,0 +1,100 @@
+steps:
+- id: 'Create namespace'
+  name: 'gcr.io/cloud-builders/kubectl'
+  entrypoint: 'bash'
+  args:
+  - '-c'
+  - |
+    kubectl config view
+    gcloud container clusters get-credentials $$CLOUDSDK_CONTAINER_CLUSTER
+    kubectl config view
+    kubectl create namespace $$TEST_NAMESPACE
+
+- id: 'Deploy to staging'
+  name: 'gcr.io/k8s-skaffold/skaffold:latest'
+  entrypoint: 'bash'
+  args:
+  - '-c'
+  - |
+    # Builds java apps with dockerfile profile due to jib/skaffold community builder incompatibility 
+    if [ "${_LANG}" = "java" ]
+    then
+        skaffold run -p dockerfile -l $BUILD_ID -n $$TEST_NAMESPACE -d $$SKAFFOLD_DEFAULT_REPO
+    else
+        skaffold run -p cloudbuild -l $BUILD_ID -n $$TEST_NAMESPACE -d $$SKAFFOLD_DEFAULT_REPO
+    fi
+  dir: '/workspace/${_DIR}/${_LANG}-${_APP}'
+  timeout: 1200s
+  waitFor: ['Create namespace']
+
+- id: 'Get Endpoint'
+  name: 'gcr.io/cloud-builders/kubectl'
+  entrypoint: 'bash'
+  args:
+  - '-c'
+  - |
+    if [ "${_APP}" = "hello-world" ]
+    then
+        service=$$HELLO_WORLD_SERVICE
+    fi
+    if [ "${_APP}" = "guestbook" ]
+    then
+        service=$$GUESTBOOK_SERVICE
+    fi
+    echo 'service is' $service
+    get_externalIP() {
+      kubectl get service $service --namespace $$TEST_NAMESPACE -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
+    }
+    until [[ -n "$(get_externalIP)" ]]; do
+      echo "Querying for external IP $service"
+      sleep 3
+    done
+
+    echo "$(get_externalIP):$(kubectl get service $service --namespace $$TEST_NAMESPACE -o jsonpath='{.spec.ports[0].port}')" > _externalIP
+    echo "External IP and port for $service is $(cat _externalIP)"
+  timeout: 1200s
+  waitFor: ['Deploy to staging']
+
+- id: 'Integration tests'
+  name: 'gcr.io/cloud-builders/curl'
+  entrypoint: '/bin/bash'
+  args:
+  - '-c'
+  - |
+    set -e 
+
+    # Testing connection
+    chmod +x test_connection.sh
+    ./test_connection.sh -r 20 -i 3 -u http://$(cat _externalIP)
+
+    # Testing content
+    if [ "${_APP}" = "hello-world" ]
+    then
+        keyword='Hello'
+    fi
+    if [ "${_APP}" = "guestbook" ]
+    then
+        keyword='Guestbook'
+    fi
+    chmod +x test_content.sh
+    ./test_content.sh -r 25 -i 3 -u http://$(cat _externalIP) -k $keyword
+  waitFor: ['Get Endpoint']
+
+- id: 'Delete namespaces'
+  name: 'gcr.io/cloud-builders/kubectl'
+  entrypoint: 'bash'
+  args:
+  - '-c'
+  - |
+    kubectl delete namespace $$TEST_NAMESPACE
+  waitFor: ['Integration tests']
+timeout: 2500s
+
+options:
+    env:
+    - CLOUDSDK_COMPUTE_ZONE=us-central1-a
+    - CLOUDSDK_CONTAINER_CLUSTER=staging
+    - SKAFFOLD_DEFAULT_REPO=gcr.io/$PROJECT_ID
+    - TEST_NAMESPACE=test-$BUILD_ID-$_LANG-$_APP
+    - HELLO_WORLD_SERVICE=${_LANG}-${_APP}-external
+    - GUESTBOOK_SERVICE=${_LANG}-${_APP}-frontend

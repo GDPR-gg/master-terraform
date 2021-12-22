@@ -1,0 +1,38 @@
+#!/bin/bash
+# Copyright 2019 Google Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+gcloud config set project instruqt-shadow
+
+# Starts the user in the /home directory
+set-workdir /home
+
+echo "export USA_NAMES=usa_1910_current" >> /root/.instruqt/.customenv
+
+source /root/.instruqt/.customenv
+source /root/.instruqt/.translationsenv
+
+# Put the help text in help.txt
+echo "$PUBLIC_DATASET_HELP" > /root/.instruqt/help.txt
+
+# Put the hint text in hint.txt
+echo "$PUBLIC_DATASET_HINT" > /root/.instruqt/hint.txt
+
+# Put the choices text in choices.txt
+echo "$PUBLIC_DATASET_CHOICES" > /root/.instruqt/choices.txt
+
+bq query "SELECT 1"
+echo $'\n'"--dataset_id=bigquery-public-data:usa_names" >> $HOME/.bigqueryrc
+echo "--max_rows_per_request=100" >> $HOME/.bigqueryrc
+echo $'\n'"[query]"$'\n'"--use_legacy_sql=false" >> $HOME/.bigqueryrc

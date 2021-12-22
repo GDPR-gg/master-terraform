@@ -1,0 +1,6 @@
+bazel-bin
+bazel-gce-containers-startup
+bazel-genfiles
+bazel-out
+bazel-testlogs
+bazel-konlet

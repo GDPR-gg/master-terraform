@@ -1,0 +1,10 @@
+func (todo *TODO) GetTODO(ctx context.Context) (*client.TODO, *QueryMeta, error) {
+	request := todo.TODOApi().TODO(todo.client.Ctx)
+	result, meta, err := a.client.ExecQuery(ctx, request)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	final := result.(client.TODO)
+	return &final, meta, nil
+}

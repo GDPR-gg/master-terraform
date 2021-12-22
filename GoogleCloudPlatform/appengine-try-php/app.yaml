@@ -1,0 +1,7 @@
+application: helloworld
+runtime: php55
+api_version: 1
+
+handlers:
+- url: /.*
+  script: helloworld.php

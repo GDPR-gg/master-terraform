@@ -1,0 +1,146 @@
+# Copyright 2021 Google LLC
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy of
+# this software and associated documentation files (the "Software"), to deal in
+# the Software without restriction, including without limitation the rights to
+# use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+# the Software, and to permit persons to whom the Software is furnished to do so,
+# subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+# FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+# COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+# IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+# CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+cloudbuild:
+  enable_parallel: false
+versions:
+- dir: 14/debian9/14.0
+  excludeTests:
+  - tests/functional_tests/exporter_licence_test.yaml
+  from: marketplace.gcr.io/google/debian9
+  packages:
+    gosu:
+      gpg: B42F6819007F00F88E364FD4036A9C25BF357DD4
+      version: '1.12'
+    postgresql:
+      gpg: B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8
+      major: '14'
+      version: 14.0*
+  repo: postgresql14
+  tags:
+  - 14.0-debian9
+  - 14-debian9
+  - '14.0'
+  - '14'
+  - latest
+  templateArgs:
+    c2dRelease: 14.0.0
+- dir: 13/debian9/13.4
+  excludeTests:
+  - tests/functional_tests/exporter_licence_test.yaml
+  from: marketplace.gcr.io/google/debian9
+  packages:
+    gosu:
+      gpg: B42F6819007F00F88E364FD4036A9C25BF357DD4
+      version: '1.12'
+    postgresql:
+      gpg: B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8
+      major: '13'
+      version: 13.4*
+  repo: postgresql13
+  tags:
+  - 13.4.1-debian9
+  - 13.4-debian9
+  - 13-debian9
+  - 13.4.1
+  - '13.4'
+  - '13'
+  - latest
+  templateArgs:
+    c2dRelease: 13.4.1
+- dir: 12/debian9/12.8
+  excludeTests:
+  - tests/functional_tests/exporter_licence_test.yaml
+  from: marketplace.gcr.io/google/debian9
+  packages:
+    gosu:
+      gpg: B42F6819007F00F88E364FD4036A9C25BF357DD4
+      version: '1.12'
+    postgresql:
+      gpg: B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8
+      major: '12'
+      version: 12.8*
+  repo: postgresql12
+  tags:
+  - 12.8-debian9
+  - 12-debian9
+  - '12.8'
+  - '12'
+  - latest
+  templateArgs:
+    c2dRelease: 12.8.0
+- dir: 11/debian9/11.13
+  excludeTests:
+  - tests/functional_tests/exporter_licence_test.yaml
+  from: marketplace.gcr.io/google/debian9
+  packages:
+    gosu:
+      gpg: B42F6819007F00F88E364FD4036A9C25BF357DD4
+      version: '1.12'
+    postgresql:
+      gpg: B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8
+      major: '11'
+      version: 11.13*
+  repo: postgresql11
+  tags:
+  - 11.13-debian9
+  - 11-debian9
+  - '11.13'
+  - '11'
+  - latest
+  templateArgs:
+    c2dRelease: 11.13.0
+- dir: 10/debian9/10.18
+  excludeTests:
+  - tests/functional_tests/exporter_licence_test.yaml
+  from: marketplace.gcr.io/google/debian9
+  packages:
+    gosu:
+      gpg: B42F6819007F00F88E364FD4036A9C25BF357DD4
+      version: '1.12'
+    postgresql:
+      gpg: B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8
+      major: '10'
+      version: 10.18*
+  repo: postgresql10
+  tags:
+  - 10.18-debian9
+  - 10-debian9
+  - '10.18'
+  - '10'
+  - latest
+  templateArgs:
+    c2dRelease: 10.18.0
+- dir: exporter
+  excludeTests:
+  - tests/functional_tests/create_db_test.yaml
+  - tests/functional_tests/remote_host_test.yaml
+  from: marketplace.gcr.io/google/debian9
+  packages:
+    postgres_exporter:
+      version: 0.8.0
+  repo: postgresql-exporter0
+  tags:
+  - 0.8.0
+  - '0.8'
+  - '0'
+  - latest
+  templateSubDir: exporter
+

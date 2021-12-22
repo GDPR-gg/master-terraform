@@ -1,0 +1,8 @@
+.DS_Store
+ssh-key
+ssh-key.pub
+terraform.tfstate
+terraform.tfstate.backup
+.cache/
+.terraform/
+venv/

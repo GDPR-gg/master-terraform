@@ -1,0 +1,18 @@
+schemaVersion: "1.0.0"
+
+globalEnvVars:
+  - key: "VIRTUAL_ENV"
+    value: "/env"
+  - key: "PATH"
+    value: "/env/bin:$PATH"
+
+commandTests:
+  - name: "requirements 3.5"
+    setup: [["virtualenv", "-p", "/opt/python3.5/bin/python3.5", "/env"]]
+    command: ["pip", "install", "-r", "/requirements.txt"]
+    exitCode: 0
+
+  - name: "requirements 3.6"
+    setup: [["virtualenv", "-p", "/opt/python3.6/bin/python3.6", "/env"]]
+    command: ["pip", "install", "-r", "/requirements.txt"]
+    exitCode: 0

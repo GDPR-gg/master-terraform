@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <ProjectGuid>{0a7863b2-b281-450b-9cb6-c0b93913d080}</ProjectGuid>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{3AF33F2E-1136-4D97-BBB7-1795711AC8B8};{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}</ProjectTypeGuids>
+    <EnableTypeScript>true</EnableTypeScript>
+    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <ItemGroup>
+    <Content Include="manifest.json" />
+    <Content Include="package.json" />
+    <Content Include="README.md" />
+    <Content Include="task.json" />
+    <Content Include="test\mocha.opts" />
+    <Content Include="tsconfig.json" />
+    <TypeScriptCompile Include="set-login.ts" />
+    <TypeScriptCompile Include="test\gcloud-fails.ts" />
+    <TypeScriptCompile Include="test\missing-password-output.ts" />
+    <TypeScriptCompile Include="test\missing-machine-ip-output.ts" />
+    <TypeScriptCompile Include="test\missing-user-name.ts" />
+    <TypeScriptCompile Include="test\missing-machine.ts" />
+    <TypeScriptCompile Include="test\missing-zone.ts" />
+    <TypeScriptCompile Include="test\missing-endpoint.ts" />
+    <TypeScriptCompile Include="test\gcloud-output-missing-password.ts" />
+    <TypeScriptCompile Include="test\gcloud-output-missing-ip_address.ts" />
+    <TypeScriptCompile Include="test\normal-inputs.ts" />
+    <TypeScriptCompile Include="test\no-gcloud.ts" />
+    <TypeScriptCompile Include="test\_suite.ts">
+      <SubType>Code</SubType>
+      <TestFramework>Mocha</TestFramework>
+      <Publish>True</Publish>
+    </TypeScriptCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="test\" />
+  </ItemGroup>
+  <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsTools.targets" />
+  <Import Project="..\InstallCommon.targets" />
+</Project>

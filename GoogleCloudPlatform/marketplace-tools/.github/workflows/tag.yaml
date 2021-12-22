@@ -1,0 +1,54 @@
+name: Tag release
+
+on:
+  push:
+    tags:
+    - 'v*'
+
+jobs:
+  build:
+    name: Upload Release Asset
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Get the version
+        id: get_version
+        run: echo "::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}"
+      - name: Build
+        run: |
+          for OS in darwin linux;
+          do
+            bazel build --stamp --workspace_status_command="./scripts/workspace-status.sh" \
+            --platforms=@io_bazel_rules_go//go/toolchain:${OS}_amd64 //mpdev:mpdev;
+            tar czf mpdev_${OS}_amd64_${MPDEV_VERSION}.tar.gz LICENSE README.md -C bazel-bin/mpdev/mpdev_ mpdev;
+          done
+        env:
+          # Sets STABLE_VERSION variable in ./scripts/workspace-status.sh
+          MPDEV_VERSION: ${{ steps.get_version.outputs.VERSION }}
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+      - name: Upload Release Asset Darwin
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./mpdev_darwin_amd64_${{ steps.get_version.outputs.VERSION }}.tar.gz
+          asset_name: mpdev_darwin_amd64_${{ steps.get_version.outputs.VERSION }}.tar.gz
+          asset_content_type: application/gzip
+      - name: Upload Release Asset Linux
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./mpdev_linux_amd64_${{ steps.get_version.outputs.VERSION }}.tar.gz
+          asset_name: mpdev_linux_amd64_${{ steps.get_version.outputs.VERSION }}.tar.gz
+          asset_content_type: application/gzip

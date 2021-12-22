@@ -1,0 +1,39 @@
+# Define a ServiceAccount for the counting service so that it can use
+# Consul injection for the service mesh
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: api
+automountServiceAccountToken: false
+
+# Create a deployment for the api
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: counting-api
+  labels:
+    app: api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      name: api
+      labels:
+        app: api
+      annotations:
+        'consul.hashicorp.com/connect-inject': 'true'
+        "consul.hashicorp.com/connect-service": "api"
+    spec:
+      serviceAccountName: api
+      automountServiceAccountToken: true
+      containers:
+        - name: api
+          image: hashicorp/counting-service:0.0.2
+          ports:
+            - containerPort: 9001
+              name: http

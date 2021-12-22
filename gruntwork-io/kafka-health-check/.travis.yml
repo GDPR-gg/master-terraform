@@ -1,0 +1,21 @@
+sudo: required
+
+services:
+  - docker
+
+language: go
+
+go:
+  - 1.8.3
+
+sudo: false
+
+install:
+ - make deps
+
+script:
+  - make test-no-race
+  - make compatibility
+
+after_success:
+  - test -n "$TRAVIS_TAG" && curl -sL https://git.io/goreleaser | bash

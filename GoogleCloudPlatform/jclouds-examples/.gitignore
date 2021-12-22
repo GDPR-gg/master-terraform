@@ -1,0 +1,19 @@
+# use glob syntax.
+syntax: glob
+target/
+test-output/
+.settings/
+.classpath
+.project
+.idea/
+atlassian-ide-plugin.xml
+*.iml
+*.ipr
+*.iws
+*.class
+lib/
+bin/
+lein
+project.clj
+.lein-deps-sum
+.DS_STORE

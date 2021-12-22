@@ -1,0 +1,15 @@
+.terraform
+.terraform.tfstate.lock.info
+*.zip
+terraform.tfstate
+terraform.tfstate.backup
+terraform.tfstate.*.backup
+terraform.tfvars
+credentials
+deploy
+.history
+.vscode
+.idea
+config/sra.yaml
+config/filters/*.rego
+cloudfunctions/filter/internal/storage/blob.go

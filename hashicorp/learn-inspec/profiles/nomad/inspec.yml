@@ -1,0 +1,22 @@
+---
+name: nomad 
+title: Nomad profile 
+maintainer: Zack Smith
+copyright: Hashicorp Inc.
+copyright_email: zsmith@hashicorp.com
+license: Apache-2.0
+summary: This profile runs all commands found in the nomad directory 
+version: 2.0.0
+depends:
+  - name: shared
+    path: ../shared
+inputs:
+  - name: replacements
+    type: hash
+    value:
+      '<TOKEN>': 's.KkNJYWF5g0pomcCLEmDdOVCW'
+  - name:  products_used
+    type: array
+    value: ['Nomad','Nomad Enterprise'] 
+  - name: files_to_check
+    value: []

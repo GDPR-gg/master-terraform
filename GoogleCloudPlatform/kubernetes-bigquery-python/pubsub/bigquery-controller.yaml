@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bigquery-controller
+  labels:
+    name: bigquery-controller
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      name: bigquery-controller
+  template:
+    metadata:
+      labels:
+        name: bigquery-controller
+    spec:
+      containers:
+      - name: bigquery
+        image: gcr.io/google-samples/pubsub-bq-pipe:v5
+        env:
+        - name: PROCESSINGSCRIPT
+          value: pubsub-to-bigquery
+        # Change this to your pubsub topic
+        - name: PUBSUB_TOPIC
+          value: projects/your-project/topics/your-topic
+        # Change this to your project ID.
+        - name: PROJECT_ID
+          value: xxxx
+        # Change the following two settings to your dataset and table.
+        - name: BQ_DATASET
+          value: xxxx
+        - name: BQ_TABLE
+          value: xxxx

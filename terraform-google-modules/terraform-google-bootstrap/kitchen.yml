@@ -1,0 +1,65 @@
+# Copyright 2018 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+---
+driver:
+  name: terraform
+  verify_version: false
+  command_timeout: 1200
+
+provisioner:
+  name: terraform
+
+verifier:
+  name: terraform
+
+platforms:
+  - name: default
+
+suites:
+  - name: simple
+    driver:
+      root_module_directory: test/fixtures/simple/
+    verifier:
+      color: false
+      systems:
+        - name: simple gcp
+          backend: gcp
+          controls:
+            - bootstrap
+  - name: simple-folder
+    driver:
+      root_module_directory: test/fixtures/simple-folder/
+    verifier:
+      color: false
+      systems:
+        - name: bootstrap-folder
+          backend: gcp
+          controls:
+            - bootstrap-folder
+  - name: cloudbuild_enabled
+    driver:
+      root_module_directory: test/fixtures/cloudbuild_enabled/
+    verifier:
+      color: false
+      systems:
+        - name: cloudbuild_enabled gcp
+          backend: gcp
+          controls:
+            - bootstrap
+            - cloudbuild
+        - name: cloudbuild_enabled gcloud
+          backend: local
+          controls:
+            - gcloud

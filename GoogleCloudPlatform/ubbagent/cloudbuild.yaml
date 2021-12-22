@@ -1,0 +1,55 @@
+options:
+  machineType: 'N1_HIGHCPU_8'
+
+steps:
+
+- id: &BazelBuild Bazel build and test
+  waitFor: ['-']
+  name: gcr.io/cloud-builders/bazel
+  entrypoint: bash
+  args:
+  - -exc
+  - |
+    bazel build ...
+    bazel test ...
+
+- id: &BuildRuntime Build runtime 
+  waitFor: ['-']
+  name: gcr.io/cloud-builders/docker
+  args:
+  - build
+  - --tag
+  - runtime:local
+  - -f
+  - cloudbuild.Dockerfile
+  - '.'
+
+- id: &Test Test
+  waitFor:
+  - *BuildRuntime
+  name: runtime:local
+  entrypoint: bash
+  args:
+  - -exc
+  - |
+    make setup
+    make deps
+    make build
+    make test
+    make -j2 test-sdk-python2 test-sdk-python3
+
+- id: &BuildImage Build Image
+  name: gcr.io/cloud-builders/docker
+  waitFor:
+  - *Test
+  args:
+  - build
+  - --tag
+  - gcr.io/$PROJECT_ID/metering/ubbagent:sha_$COMMIT_SHA
+  - --tag
+  - gcr.io/$PROJECT_ID/metering/ubbagent:sha_$SHORT_SHA
+  - .
+
+images:
+- gcr.io/$PROJECT_ID/metering/ubbagent:sha_$COMMIT_SHA
+- gcr.io/$PROJECT_ID/metering/ubbagent:sha_$SHORT_SHA

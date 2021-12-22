@@ -1,0 +1,142 @@
+/*
+ * Copyright (C) 2018 Google LLC.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.bmuschko:gradle-docker-plugin:6.2.0'
+    }
+}
+
+plugins {
+    id 'java'
+    id 'application'
+    id 'com.github.hierynomus.license' version '0.14.0'
+}
+
+def transcoderJvmArgs = ["-Dorg.dcm4che3.imageio.codec.ImageReaderFactory=com/google/cloud/healthcare/imaging/dicomadapter/transcoder/ImageReaderFactory.properties",
+                         "-Dorg.dcm4che3.imageio.codec.ImageWriterFactory=com/google/cloud/healthcare/imaging/dicomadapter/transcoder/ImageWriterFactory.properties"]
+
+mainClassName = "com.google.cloud.healthcare.imaging.dicomadapter.ImportAdapter"
+run {
+    // Accept command line arguments via gradle run -Dexec.args="<args>"
+    args System.getProperty("exec.args", "").split()
+    jvmArgs(transcoderJvmArgs)
+}
+
+test {
+    jvmArgs(transcoderJvmArgs)
+}
+
+buildDir = '/tmp/gradle_build/dicom_adapter/import'
+
+sourceCompatibility = 1.11
+version = '0.2'
+
+compileJava {
+    // Print out detailed deprecation warnings.
+    options.deprecation = true
+}
+
+repositories {
+    mavenCentral()
+    maven { url 'http://www.dcm4che.org/maven2/' }
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    compile 'com.google.guava:guava:28.1-jre'
+    compile "com.beust:jcommander:1.72"
+    compile 'com.google.auth:google-auth-library-oauth2-http:0.17.2'
+    compile "com.google.api-client:google-api-client:1.30.5"
+    compile "org.dcm4che:dcm4che-core:5.18.1"
+    compile "org.dcm4che:dcm4che-net:5.18.1"
+
+    compile "org.dcm4che:dcm4che-imageio:5.18.1"
+    runtime "org.dcm4che:dcm4che-imageio-rle:5.18.1"
+    compile project(":jai-imageio-jpeg2000")
+
+    compile project(":dicom_util")
+    compile project(":util")
+
+    compile "com.github.red1408:deid-redactor:233908ca"
+
+    compile "com.google.cloud:google-cloud-storage:1.98.0"
+    compile 'com.google.cloud:google-cloud-nio:0.116.0-alpha'
+
+    testCompile "com.google.truth:truth:1.0"
+    testCompile "org.mockito:mockito-core:3.+"
+    testCompile "junit:junit:4.2"
+    testCompile project(path: ":dicom_util", configuration: 'testArtifacts')
+    testCompile project(path: ":util", configuration: 'testArtifacts')
+}
+
+apply plugin: 'com.bmuschko.docker-java-application'
+docker {
+    javaApplication {
+        baseImage = 'openjdk:11'
+        images = [project.findProperty("docker_tag") ?: "import_adapter"]
+        jvmArgs = transcoderJvmArgs
+    }
+}
+
+// TODO(b/77952311): Factor common gradle tasks between import/export adapters.
+// Download open source license texts.
+task downloadOpensSourceLicenses(type: nl.javadude.gradle.plugins.license.DownloadLicenses) {
+  // These libraries have their license in a non-standard location.
+  licenses = specialCaseLicenses
+  dependencyConfiguration = 'compile'
+  doLast {
+    downloadLicensesText(buildDir)
+  }
+}
+
+// Download full source jar for all dependencies.
+// https://stackoverflow.com/questions/16154458/how-to-copy-all-source-jars-using-gradle
+task downloadSourceJars( type: Copy ) {
+  def sources = configurations.runtime.resolvedConfiguration.resolvedArtifacts.collect { artifact ->
+    project.dependencies.create( [
+      group: artifact.moduleVersion.id.group,
+      name: artifact.moduleVersion.id.name,
+      version: artifact.moduleVersion.id.version,
+      classifier: 'sources'
+    ] )
+  }
+  from configurations.detachedConfiguration( sources as Dependency[] )
+    .resolvedConfiguration.lenientConfiguration.getFiles( Specs.SATISFIES_ALL )
+  into file( buildDir.toString() + "/docker/source" )
+}
+
+// OSS release requires license and source code to be included in Docker image.
+task copySourceAndLicenseToDockerImage {
+  dependsOn tasks.downloadOpensSourceLicenses
+  dependsOn tasks.downloadSourceJars
+}
+
+task printVersion {
+    doLast {
+        println project.version
+    }
+}
+
+dockerSyncBuildContext.finalizedBy tasks.copySourceAndLicenseToDockerImage
+dockerCreateDockerfile {
+    instruction 'ADD license /usr/share/oss-license'
+    instruction 'ADD source /usr/share/oss-source'
+}
+

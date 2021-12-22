@@ -1,0 +1,52 @@
+name: Examples Integration
+on:
+  pull_request:
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
+      - "website/**"
+
+jobs:
+  build-example-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      examples: ${{ steps.set-examples.outputs.examples }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - id: set-examples
+        run: |
+          tfDefault=$(cat .terraform.versions.json | jq -r '.default')
+          examples=$(npx lerna list --scope "@examples/*" | jq  -R -s -c --arg tfDefault "${tfDefault}" 'split("\n") | map(select(length > 0)) | { target: values, terraform: [$tfDefault]}')
+          echo $examples
+          echo "::set-output name=examples::$examples"
+
+  examples:
+    needs: build-example-matrix
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{fromJSON(needs.build-example-matrix.outputs.examples)}}
+    container:
+      image: docker.mirror.hashicorp.services/hashicorp/jsii-terraform
+    env:
+      CHECKPOINT_DISABLE: "1"
+    steps:
+      - uses: actions/checkout@v2
+      - name: installing dependencies
+        run: |
+          yarn install
+      - name: compile
+        run: |
+          yarn build
+        env:
+          TERRAFORM_BINARY_NAME: "terraform${{ matrix.terraform }}"
+      - name: create bundle
+        run: yarn package
+      - name: examples integration tests
+        run: test/run-against-dist tools/build-examples.sh ${TEST_TARGET}
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          TEST_TARGET: "${{ matrix.target }}"
+          TERRAFORM_BINARY_NAME: "terraform${{ matrix.terraform }}"
+          MAVEN_OPTS: "-Xmx3G"

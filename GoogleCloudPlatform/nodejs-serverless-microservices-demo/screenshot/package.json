@@ -1,0 +1,32 @@
+{
+  "name": "screenshot",
+  "engines": {
+    "node": "8.x"
+  },
+  "version": "1.0.0",
+  "description": "Takes screenshot of given URL",
+  "scripts": {
+    "start": "node server.js",
+    "deploy": "gcloud app deploy --quiet",
+    "test": "eslint *.js logger/",
+    "dev": "npm start | bunyan"
+  },
+  "author": {
+    "name": "Google LLC"
+  },
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@google-cloud/debug-agent": "^2.5.1",
+    "@google-cloud/logging-bunyan": "^0.7.0",
+    "@google-cloud/profiler": "^0.1.14",
+    "@google-cloud/storage": "^1.6.0",
+    "@google-cloud/trace-agent": "^2.10.1",
+    "body-parser": "^1.18.2",
+    "bunyan": "^1.8.12",
+    "express": "^4.16.3",
+    "puppeteer": "^1.2.0"
+  },
+  "devDependencies": {
+    "eslint": "^4.19.1"
+  }
+}

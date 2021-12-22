@@ -1,0 +1,149 @@
+#!/bin/bash
+# Copyright 2019 Google Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+cat <<EOF > /root/.instruqt/help.txt
+$UPLOADING_HELP_TEXT
+EOF
+
+cat <<EOF > /root/.instruqt/hint.txt
+$UPLOADING_HINT_TEXT
+EOF
+
+cat <<EOF > node/challenge.js
+$CREATING_NODE_COMMENTS_1
+const {Storage} = require('@google-cloud/storage')
+
+$CREATING_NODE_COMMENTS_2
+const bucketName = "bucket-$(cat /usr/local/lib/UUID)"
+
+$CREATING_NODE_COMMENTS_3
+const storage = new Storage()
+
+async function uploadFile () {
+  $UPLOADING_NODE_COMMENTS_1
+  $UPLOADING_NODE_COMMENTS_2
+  $UPLOADING_NODE_COMMENTS_3
+  //
+  $UPLOADING_NODE_COMMENTS_4
+  $UPLOADING_NODE_COMMENTS_5
+  $UPLOADING_NODE_COMMENTS_6
+}
+
+uploadFile()
+EOF
+
+cat <<EOF > /root/foo.txt
+hello world!
+EOF
+
+cat <<EOF > /usr/local/lib/goog/bin/check-for-file.js
+const {Storage} = require('@google-cloud/storage')
+const storage = new Storage()
+const name = process.argv[2]
+const bucketName = process.env.BUCKET_NAME
+async function checkForFile () {
+    try {
+      const [files] = await storage.bucket(bucketName).getFiles()
+      let foundFile = false
+      files.forEach(file => {
+          if (file.name === name) foundFile = true
+      });
+      if (!foundFile) {
+          console.error('could not find file ' + name)
+          process.exit(1)
+      }
+    } catch (err) {
+      console.error(err)
+      process.exit(1)
+    }
+}
+checkForFile()
+EOF
+
+mkdir root/python
+
+cat <<EOF > python/challenge.py
+import os
+from google.cloud import storage
+
+$UPLOADING_PYTHON_COMMENTS_1
+$UPLOADING_PYTHON_COMMENTS_2
+$UPLOADING_PYTHON_COMMENTS_3
+def upload_blob():
+    storage_client = storage.Client()
+    bucket_name = os.environ['BUCKET_NAME']
+    bucket = storage_client.get_bucket(bucket_name)
+    $UPLOADING_PYTHON_COMMENTS_4
+    $UPLOADING_PYTHON_COMMENTS_5
+    $UPLOADING_PYTHON_COMMENTS_6
+    $UPLOADING_PYTHON_COMMENTS_7
+
+if __name__ == '__main__':
+    upload_blob()
+EOF
+
+# go code samples and stubbed out challenge.
+cat <<EOF > go/challenge.go
+package main
+
+import (
+	"cloud.google.com/go/storage"
+	"context"
+	"io"
+	"log"
+	"os"
+)
+
+func main() {
+	ctx := context.Background()
+
+	// [START setup]
+	client, err := storage.NewClient(ctx)
+	if err != nil {
+		log.Fatal(err)
+	}
+	// [END setup]
+
+	$DOWNLOADING_GO_COMMENT_1
+	bucketName := os.Getenv("BUCKET_NAME")
+	if err := write(client, bucketName, "bar.txt"); err != nil {
+		log.Fatalf("Cannot write object: %v", err)
+	}
+}
+
+func write(client *storage.Client, bucketName, object string) error {
+  $UPLOADING_GO_COMMENTS
+  ctx := context.Background()
+  // f, err := os.Open("/root/foo.txt")
+  // if err != nil {
+  // return err
+  // }
+  // defer f.Close()
+
+  // wc := client.Bucket(bucketName).Object(object).NewWriter(ctx)
+  // if _, err = io.Copy(wc, f); err != nil {
+  // return err
+  // }
+  // if err := wc.Close(); err != nil {
+  //  return err
+  // }
+  return nil
+}
+EOF
+
+# Remove hint in hard mode
+if [[ "$INSTRUQT_DIFFICULTY" = "hard" ]]; then
+    echo "$CREATING_NODE_HINT_TOOLTIP" > /root/hint.txt
+fi

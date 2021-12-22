@@ -1,0 +1,559 @@
+{
+  "extends" : "thirdParty.api",
+  "abstract" : false,
+  "root" : "https://griddler-testing.appspot.com/_ah/api",
+  "name" : "griddler",
+  "version" : "v1",
+  "description" : "Griddler API",
+  "defaultVersion" : false,
+  "adapter" : {
+    "bns" : "https://griddler-testing.appspot.com/_ah/spi",
+    "deadline" : 10.0,
+    "type" : "lily"
+  },
+  "auth" : {
+    "allowCookieAuth" : false
+  },
+  "frontendLimits" : {
+    "unregisteredUserQps" : -1,
+    "unregisteredQps" : -1,
+    "unregisteredDaily" : -1,
+    "rules" : [ ]
+  },
+  "cacheControl" : {
+    "type" : "no-cache",
+    "maxAge" : 0
+  },
+  "ownerDomain" : "google.com",
+  "ownerName" : "google.com",
+  "packagePath" : "cloud.solutions.sampleapps.griddler.client",
+  "methods" : {
+    "griddler.playerEndpoint.registerDevice" : {
+      "path" : "players/me/device",
+      "httpMethod" : "PUT",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "317590444271.apps.googleusercontent.com" ],
+      "clientIds" : [ "317590444271.apps.googleusercontent.com", "317590444271-vod2n7ksdkh8t3s31na0v5dk8ikkh1va.apps.googleusercontent.com", "317590444271-d4ga5rqv6riql7ms5s8jh9alhufom83f.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.google.cloud.solutions.sampleapps.griddler.backend.api.PlayerEndpoint.registerDevice",
+      "request" : {
+        "parameters" : {
+          "deviceId" : {
+            "type" : "string",
+            "required" : true
+          },
+          "deviceType" : {
+            "type" : "int32",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "empty"
+      }
+    },
+    "griddler.playerEndpoint.unRegisterDevice" : {
+      "path" : "players/me/device",
+      "httpMethod" : "DELETE",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "317590444271.apps.googleusercontent.com" ],
+      "clientIds" : [ "317590444271.apps.googleusercontent.com", "317590444271-vod2n7ksdkh8t3s31na0v5dk8ikkh1va.apps.googleusercontent.com", "317590444271-d4ga5rqv6riql7ms5s8jh9alhufom83f.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.google.cloud.solutions.sampleapps.griddler.backend.api.PlayerEndpoint.unRegisterDevice",
+      "request" : {
+        "parameters" : {
+          "deviceId" : {
+            "type" : "string",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "empty"
+      }
+    },
+    "griddler.playerEndpoint.get" : {
+      "path" : "players/me",
+      "httpMethod" : "GET",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "317590444271.apps.googleusercontent.com" ],
+      "clientIds" : [ "317590444271.apps.googleusercontent.com", "317590444271-vod2n7ksdkh8t3s31na0v5dk8ikkh1va.apps.googleusercontent.com", "317590444271-d4ga5rqv6riql7ms5s8jh9alhufom83f.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.google.cloud.solutions.sampleapps.griddler.backend.api.PlayerEndpoint.get",
+      "request" : {
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "griddler.playerEndpoint.assignPlayerPlusId" : {
+      "path" : "players/me/{googlePlusId}",
+      "httpMethod" : "PUT",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "317590444271.apps.googleusercontent.com" ],
+      "clientIds" : [ "317590444271.apps.googleusercontent.com", "317590444271-vod2n7ksdkh8t3s31na0v5dk8ikkh1va.apps.googleusercontent.com", "317590444271-d4ga5rqv6riql7ms5s8jh9alhufom83f.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.google.cloud.solutions.sampleapps.griddler.backend.api.PlayerEndpoint.assignPlayerPlusId",
+      "request" : {
+        "parameters" : {
+          "googlePlusId" : {
+            "type" : "string",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "empty"
+      }
+    },
+    "griddler.playerEndpoint.insert" : {
+      "path" : "players",
+      "httpMethod" : "POST",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "317590444271.apps.googleusercontent.com" ],
+      "clientIds" : [ "317590444271.apps.googleusercontent.com", "317590444271-vod2n7ksdkh8t3s31na0v5dk8ikkh1va.apps.googleusercontent.com", "317590444271-d4ga5rqv6riql7ms5s8jh9alhufom83f.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.google.cloud.solutions.sampleapps.griddler.backend.api.PlayerEndpoint.insert",
+      "request" : {
+        "parameters" : {
+          "googlePlusId" : {
+            "type" : "string",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "griddler.playerEndpoint.list" : {
+      "path" : "players",
+      "httpMethod" : "GET",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "317590444271.apps.googleusercontent.com" ],
+      "clientIds" : [ "317590444271.apps.googleusercontent.com", "317590444271-vod2n7ksdkh8t3s31na0v5dk8ikkh1va.apps.googleusercontent.com", "317590444271-d4ga5rqv6riql7ms5s8jh9alhufom83f.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.google.cloud.solutions.sampleapps.griddler.backend.api.PlayerEndpoint.list",
+      "request" : {
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "griddler.gameEndpoint.declineInvitation" : {
+      "path" : "games/{gameId}/invitations/{invitationId}/decline",
+      "httpMethod" : "PUT",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "317590444271.apps.googleusercontent.com" ],
+      "clientIds" : [ "317590444271.apps.googleusercontent.com", "317590444271-vod2n7ksdkh8t3s31na0v5dk8ikkh1va.apps.googleusercontent.com", "317590444271-d4ga5rqv6riql7ms5s8jh9alhufom83f.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.google.cloud.solutions.sampleapps.griddler.backend.api.GameEndpoint.declineInvitation",
+      "request" : {
+        "parameters" : {
+          "gameId" : {
+            "type" : "int64",
+            "required" : true
+          },
+          "invitationId" : {
+            "type" : "int64",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "empty"
+      }
+    },
+    "griddler.gameEndpoint.submitAnswers" : {
+      "path" : "games/{id}/answers",
+      "httpMethod" : "PUT",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "317590444271.apps.googleusercontent.com" ],
+      "clientIds" : [ "317590444271.apps.googleusercontent.com", "317590444271-vod2n7ksdkh8t3s31na0v5dk8ikkh1va.apps.googleusercontent.com", "317590444271-d4ga5rqv6riql7ms5s8jh9alhufom83f.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.google.cloud.solutions.sampleapps.griddler.backend.api.GameEndpoint.submitAnswers",
+      "request" : {
+        "parameters" : {
+          "id" : {
+            "type" : "int64",
+            "required" : true
+          }
+        },
+        "body" : "autoTemplate(backendRequest)",
+        "bodyName" : "resource"
+      },
+      "response" : {
+        "body" : "empty"
+      }
+    },
+    "griddler.gameEndpoint.cancelInvitation" : {
+      "path" : "games/{gameId}/invitations/{invitationId}/cancel",
+      "httpMethod" : "PUT",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "317590444271.apps.googleusercontent.com" ],
+      "clientIds" : [ "317590444271.apps.googleusercontent.com", "317590444271-vod2n7ksdkh8t3s31na0v5dk8ikkh1va.apps.googleusercontent.com", "317590444271-d4ga5rqv6riql7ms5s8jh9alhufom83f.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.google.cloud.solutions.sampleapps.griddler.backend.api.GameEndpoint.cancelInvitation",
+      "request" : {
+        "parameters" : {
+          "gameId" : {
+            "type" : "int64",
+            "required" : true
+          },
+          "invitationId" : {
+            "type" : "int64",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "empty"
+      }
+    },
+    "griddler.gameEndpoint.startMultiplayerGame" : {
+      "path" : "games/startMultiPlayer",
+      "httpMethod" : "POST",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "317590444271.apps.googleusercontent.com" ],
+      "clientIds" : [ "317590444271.apps.googleusercontent.com", "317590444271-vod2n7ksdkh8t3s31na0v5dk8ikkh1va.apps.googleusercontent.com", "317590444271-d4ga5rqv6riql7ms5s8jh9alhufom83f.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.google.cloud.solutions.sampleapps.griddler.backend.api.GameEndpoint.startMultiplayerGame",
+      "request" : {
+        "parameters" : {
+          "inviteeId" : {
+            "type" : "int64",
+            "required" : true
+          },
+          "boardLevel" : {
+            "type" : "int32",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "griddler.gameEndpoint.getGame" : {
+      "path" : "games/{id}",
+      "httpMethod" : "GET",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "317590444271.apps.googleusercontent.com" ],
+      "clientIds" : [ "317590444271.apps.googleusercontent.com", "317590444271-vod2n7ksdkh8t3s31na0v5dk8ikkh1va.apps.googleusercontent.com", "317590444271-d4ga5rqv6riql7ms5s8jh9alhufom83f.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.google.cloud.solutions.sampleapps.griddler.backend.api.GameEndpoint.getGame",
+      "request" : {
+        "parameters" : {
+          "id" : {
+            "type" : "int64",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "griddler.gameEndpoint.getInvitationStatus" : {
+      "path" : "games/{gameId}/invitations/{invitationId}",
+      "httpMethod" : "GET",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "317590444271.apps.googleusercontent.com" ],
+      "clientIds" : [ "317590444271.apps.googleusercontent.com", "317590444271-vod2n7ksdkh8t3s31na0v5dk8ikkh1va.apps.googleusercontent.com", "317590444271-d4ga5rqv6riql7ms5s8jh9alhufom83f.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.google.cloud.solutions.sampleapps.griddler.backend.api.GameEndpoint.getInvitationStatus",
+      "request" : {
+        "parameters" : {
+          "gameId" : {
+            "type" : "int64",
+            "required" : true
+          },
+          "invitationId" : {
+            "type" : "int64",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "griddler.gameEndpoint.startMultiplayerGameByGooglePlusId" : {
+      "path" : "games/startMultiPlayerWithGooglePlus",
+      "httpMethod" : "POST",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "317590444271.apps.googleusercontent.com" ],
+      "clientIds" : [ "317590444271.apps.googleusercontent.com", "317590444271-vod2n7ksdkh8t3s31na0v5dk8ikkh1va.apps.googleusercontent.com", "317590444271-d4ga5rqv6riql7ms5s8jh9alhufom83f.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.google.cloud.solutions.sampleapps.griddler.backend.api.GameEndpoint.startMultiplayerGameByGooglePlusId",
+      "request" : {
+        "parameters" : {
+          "inviteeGooglePlusId" : {
+            "type" : "string",
+            "required" : true
+          },
+          "boardLevel" : {
+            "type" : "int32",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    },
+    "griddler.gameEndpoint.acceptInvitation" : {
+      "path" : "games/{gameId}/invitations/{invitationId}/accept",
+      "httpMethod" : "PUT",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "317590444271.apps.googleusercontent.com" ],
+      "clientIds" : [ "317590444271.apps.googleusercontent.com", "317590444271-vod2n7ksdkh8t3s31na0v5dk8ikkh1va.apps.googleusercontent.com", "317590444271-d4ga5rqv6riql7ms5s8jh9alhufom83f.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.google.cloud.solutions.sampleapps.griddler.backend.api.GameEndpoint.acceptInvitation",
+      "request" : {
+        "parameters" : {
+          "gameId" : {
+            "type" : "int64",
+            "required" : true
+          },
+          "invitationId" : {
+            "type" : "int64",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "empty"
+      }
+    },
+    "griddler.gameEndpoint.startSinglePlayerGame" : {
+      "path" : "games/startSinglePlayer",
+      "httpMethod" : "POST",
+      "scopes" : [ "https://www.googleapis.com/auth/userinfo.email" ],
+      "audiences" : [ "317590444271.apps.googleusercontent.com" ],
+      "clientIds" : [ "317590444271.apps.googleusercontent.com", "317590444271-vod2n7ksdkh8t3s31na0v5dk8ikkh1va.apps.googleusercontent.com", "317590444271-d4ga5rqv6riql7ms5s8jh9alhufom83f.apps.googleusercontent.com" ],
+      "rosyMethod" : "com.google.cloud.solutions.sampleapps.griddler.backend.api.GameEndpoint.startSinglePlayerGame",
+      "request" : {
+        "parameters" : {
+          "boardLevel" : {
+            "type" : "int32",
+            "required" : true
+          }
+        },
+        "body" : "empty"
+      },
+      "response" : {
+        "body" : "autoTemplate(backendResponse)"
+      }
+    }
+  },
+  "descriptor" : {
+    "schemas" : {
+      "Player" : {
+        "id" : "Player",
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "int64"
+          },
+          "nickname" : {
+            "type" : "string"
+          },
+          "statistics" : {
+            "$ref" : "PlayerStatistics"
+          }
+        }
+      },
+      "PlayerStatistics" : {
+        "id" : "PlayerStatistics",
+        "type" : "object",
+        "properties" : {
+          "numberOfWins" : {
+            "type" : "integer"
+          },
+          "numberOfGames" : {
+            "type" : "integer"
+          }
+        }
+      },
+      "PlayerCollection" : {
+        "id" : "PlayerCollection",
+        "type" : "object",
+        "properties" : {
+          "items" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "Player"
+            }
+          }
+        }
+      },
+      "GamePlayStatus" : {
+        "id" : "GamePlayStatus",
+        "type" : "object",
+        "properties" : {
+          "correctAnswers" : {
+            "type" : "array",
+            "items" : {
+              "type" : "integer"
+            }
+          },
+          "timeLeft" : {
+            "type" : "string",
+            "format" : "int64"
+          }
+        }
+      },
+      "Invitation" : {
+        "id" : "Invitation",
+        "type" : "object",
+        "properties" : {
+          "invitationId" : {
+            "type" : "string",
+            "format" : "int64"
+          },
+          "gameId" : {
+            "type" : "string",
+            "format" : "int64"
+          }
+        }
+      },
+      "Game" : {
+        "id" : "Game",
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "int64"
+          },
+          "board" : {
+            "$ref" : "Board"
+          },
+          "gamePlays" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "GamePlay"
+            }
+          }
+        }
+      },
+      "Board" : {
+        "id" : "Board",
+        "type" : "object",
+        "properties" : {
+          "gridDefinition" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "riddles" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "answers" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "allottedTime" : {
+            "type" : "string",
+            "format" : "int64"
+          }
+        }
+      },
+      "GamePlay" : {
+        "id" : "GamePlay",
+        "type" : "object",
+        "properties" : {
+          "player" : {
+            "$ref" : "Player"
+          },
+          "correctAnswers" : {
+            "type" : "array",
+            "items" : {
+              "type" : "integer"
+            }
+          },
+          "finished" : {
+            "type" : "boolean"
+          },
+          "timeLeft" : {
+            "type" : "string",
+            "format" : "int64"
+          },
+          "isWinner" : {
+            "type" : "boolean"
+          }
+        }
+      },
+      "Status" : {
+        "id" : "Status",
+        "type" : "string",
+        "enum" : [ "SENT", "ACCEPTED", "DECLINED", "CANCELED" ]
+      }
+    },
+    "methods" : {
+      "com.google.cloud.solutions.sampleapps.griddler.backend.api.PlayerEndpoint.registerDevice" : {
+      },
+      "com.google.cloud.solutions.sampleapps.griddler.backend.api.PlayerEndpoint.unRegisterDevice" : {
+      },
+      "com.google.cloud.solutions.sampleapps.griddler.backend.api.PlayerEndpoint.get" : {
+        "response" : {
+          "$ref" : "Player"
+        }
+      },
+      "com.google.cloud.solutions.sampleapps.griddler.backend.api.PlayerEndpoint.assignPlayerPlusId" : {
+      },
+      "com.google.cloud.solutions.sampleapps.griddler.backend.api.PlayerEndpoint.insert" : {
+        "response" : {
+          "$ref" : "Player"
+        }
+      },
+      "com.google.cloud.solutions.sampleapps.griddler.backend.api.PlayerEndpoint.list" : {
+        "response" : {
+          "$ref" : "PlayerCollection"
+        }
+      },
+      "com.google.cloud.solutions.sampleapps.griddler.backend.api.GameEndpoint.declineInvitation" : {
+      },
+      "com.google.cloud.solutions.sampleapps.griddler.backend.api.GameEndpoint.submitAnswers" : {
+        "request" : {
+          "$ref" : "GamePlayStatus"
+        }
+      },
+      "com.google.cloud.solutions.sampleapps.griddler.backend.api.GameEndpoint.cancelInvitation" : {
+      },
+      "com.google.cloud.solutions.sampleapps.griddler.backend.api.GameEndpoint.startMultiplayerGame" : {
+        "response" : {
+          "$ref" : "Invitation"
+        }
+      },
+      "com.google.cloud.solutions.sampleapps.griddler.backend.api.GameEndpoint.getGame" : {
+        "response" : {
+          "$ref" : "Game"
+        }
+      },
+      "com.google.cloud.solutions.sampleapps.griddler.backend.api.GameEndpoint.getInvitationStatus" : {
+        "response" : {
+          "$ref" : "Status"
+        }
+      },
+      "com.google.cloud.solutions.sampleapps.griddler.backend.api.GameEndpoint.startMultiplayerGameByGooglePlusId" : {
+        "response" : {
+          "$ref" : "Invitation"
+        }
+      },
+      "com.google.cloud.solutions.sampleapps.griddler.backend.api.GameEndpoint.acceptInvitation" : {
+      },
+      "com.google.cloud.solutions.sampleapps.griddler.backend.api.GameEndpoint.startSinglePlayerGame" : {
+        "response" : {
+          "$ref" : "Game"
+        }
+      }
+    }
+  }
+}

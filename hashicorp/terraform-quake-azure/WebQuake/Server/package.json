@@ -1,0 +1,15 @@
+{
+  "name": "QuakeServer",
+  "version": "1.0.0",
+  "main": "WebQDS.js",
+  "license": "MIT",
+  "dependencies": {
+    "websocket": "^1.0.24",
+    "winser": "^1.0.2"
+  },
+  "scripts": {
+    "start": "node WebQDS.js",
+    "install-windows-service": "winser -i",
+    "uninstall-windows-service": "winser -r"
+  }
+}

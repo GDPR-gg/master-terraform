@@ -1,0 +1,41 @@
+name: Update Product Formula in Tap
+# This workflow will automatically update our product formulae on the release of
+# new versions
+on:
+  repository_dispatch:
+    types: [version-updated]
+
+jobs:
+  update-formula:
+    name: Update Formula
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v2.3.4
+      -
+        name: Setup Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.16'
+      -
+        name: Build formula_templater CLI
+        run: |
+          cd util/formula_templater && go build
+      -
+        name: Generate new formula
+        if: ${{ github.event.client_payload.cask == 'false' }}
+        run: |
+          ./util/formula_templater/formula_templater ${{github.event.client_payload.name}} ${{github.event.client_payload.version}} ./util/formula_templater/config.hcl > ./Formula/${{github.event.client_payload.name}}.rb
+      -
+        name: Generate new cask
+        if: ${{ github.event.client_payload.cask == 'true' }}
+        run: |
+          ./util/formula_templater/formula_templater ${{github.event.client_payload.name}} ${{github.event.client_payload.version}} ./util/formula_templater/config.hcl > ./Casks/hashicorp-${{github.event.client_payload.name}}.rb
+      - 
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Bump ${{github.event.client_payload.name}} ${{github.event.client_payload.version}}
+          file_pattern: Formula/*.rb Casks/*.rb
+          commit_user_name: hc-espd-packager
+          commit_user_email: team-product-delivery@hashicorp.com

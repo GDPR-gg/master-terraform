@@ -1,0 +1,46 @@
+# Configuration for the build for the Visual Studio extension for Google Cloud.
+
+# Version for the build.
+version: 2.0.0-dev.{build}
+
+# We're using Visual Studio 2017
+image: Visual Studio 2019
+
+configuration: Release
+
+init:
+  # This change was recommended by the AppVeyor team to save space.
+  - rmdir C:\cygwin /s /q
+  # This was taking up to nine minutes. Make it a job to run it behind the scenes and let the build start immediatly.
+  - ps: Start-Job {Remove-Item "C:\QT" -Recurse -Force} | Out-Null
+
+cache:
+  - C:\ProgramData\chocolatey\bin -> appveyor.yml
+  - C:\ProgramData\chocolatey\lib -> appveyor.yml
+  - GoogleCloudExtension\packages -> **\packages.config
+
+install:
+  - choco install opencover.portable
+  - choco install codecov
+
+before_build:
+  - bash -c ./tools/ensure_strings_extracted.sh
+  - bash -c ./tools/ensure_no_unused_strings.sh
+  - nuget restore GoogleCloudExtension
+
+build:
+  project: GoogleCloudExtension\GoogleCloudExtension.sln
+  verbosity: minimal
+
+# Defines the artifacts to be saved.
+artifacts:
+  - path: GoogleCloudExtension\GoogleCloudExtension\bin\Release\GoogleCloudExtension.vsix
+  - path: logs
+
+# Run the analytics tests with code coverage report.
+test_script:
+  - ps: .\TestScript.ps1
+
+# Upload to codecov.io
+after_test:
+  - codecov -f codecoverage.xml

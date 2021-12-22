@@ -1,0 +1,247 @@
+# Copyright 2018 Google Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: netd
+  namespace: kube-system
+  labels:
+    kubernetes.io/cluster-service: "true"
+    addonmanager.kubernetes.io/mode: Reconcile
+rules:
+- apiGroups: [""]
+  resources: ["nodes", "pods"]
+  verbs: ["get","watch","list"]
+
+---
+
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: netd
+  namespace: kube-system
+  labels:
+    kubernetes.io/cluster-service: "true"
+    addonmanager.kubernetes.io/mode: Reconcile
+
+---
+
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: netd
+  labels:
+    kubernetes.io/cluster-service: "true"
+    addonmanager.kubernetes.io/mode: Reconcile
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: netd
+subjects:
+- kind: ServiceAccount
+  name: netd
+  namespace: kube-system
+
+---
+
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: netd-config
+  namespace: kube-system
+  labels:
+    addonmanager.kubernetes.io/mode: Reconcile
+data:
+  cni_spec_template: |-
+    {
+      "name": "gke-pod-network",
+      "cniVersion": "0.3.1",
+      "plugins": [
+        {
+          "type": "@cniType",
+          "mtu": @mtu,
+          "ipam": {
+              "type": "host-local",
+              "ranges": [
+              @ipv4Subnet@ipv6SubnetOptional
+              ],
+              "routes": [
+                {"dst": "0.0.0.0/0"}@ipv6RouteOptional
+              ]
+          }
+        },
+        {
+          "type": "portmap",
+          "capabilities": {
+            "portMappings": true
+          }
+        }@cniBandwidthPlugin@cniCiliumPlugin
+      ]
+    }
+  cni_spec_name: "10-gke-ptp.conflist"
+  enable_policy_routing: "true"
+  enable_masquerade: "true"
+  enable_calico_network_policy: "false"
+  enable_private_ipv6_access: "false"
+  enable_bandwidth_plugin: "true"
+  enable_cilium_plugin: "true"
+  reconcile_interval_seconds: "60s"
+  enable_pod_watch: "true"
+
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: networking-metrics-config
+  namespace: kube-system
+  labels:
+    addonmanager.kubernetes.io/mode: EnsureExists
+data:
+  metrics_collectors: "conntrack,socket,kernel_metrics"
+  metrics_address: "localhost:10231"
+---
+
+kind: DaemonSet
+apiVersion: extensions/v1beta1
+metadata:
+  name: netd
+  namespace: kube-system
+  labels:
+    k8s-app: netd
+    addonmanager.kubernetes.io/mode: Reconcile
+spec:
+  selector:
+    matchLabels:
+      k8s-app: netd
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 10%
+  template:
+    metadata:
+      labels:
+        k8s-app: netd
+    spec:
+      priorityClassName: system-node-critical
+      serviceAccountName: netd
+      terminationGracePeriodSeconds: 0
+      nodeSelector:
+        cloud.google.com/gke-netd-ready: "true"
+      tolerations:
+      - operator: "Exists"
+        effect: "NoExecute"
+      - operator: "Exists"
+        effect: "NoSchedule"
+      hostNetwork: true
+      initContainers:
+      - image: gcr.io/google-containers/netd-amd64:latest
+        name: install-cni
+        command: ["sh", "/install-cni.sh"]
+        env:
+          - name: CNI_SPEC_TEMPLATE
+            valueFrom:
+              configMapKeyRef:
+                name: netd-config
+                key: cni_spec_template
+          - name: CNI_SPEC_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: netd-config
+                key: cni_spec_name
+          - name: ENABLE_CALICO_NETWORK_POLICY
+            valueFrom:
+              configMapKeyRef:
+                name: netd-config
+                key: enable_calico_network_policy
+          - name: ENABLE_PRIVATE_IPV6_ACCESS
+            valueFrom:
+              configMapKeyRef:
+                name: netd-config
+                key: enable_private_ipv6_access
+          - name: ENABLE_MASQUERADE
+            valueFrom:
+              configMapKeyRef:
+                name: netd-config
+                key: enable_masquerade
+          - name: ENABLE_BANDWIDTH_PLUGIN
+            valueFrom:
+              configMapKeyRef:
+                name: netd-config
+                key: enable_bandwidth_plugin
+          - name: ENABLE_CILIUM_PLUGIN
+            valueFrom:
+              configMapKeyRef:
+                name: netd-config
+                key: enable_cilium_plugin
+        volumeMounts:
+        - mountPath: /host/etc/cni/net.d
+          name: cni-net-dir
+        - mountPath: /host/home/kubernetes/bin
+          name: kubernetes-bin
+          readOnly: true
+      containers:
+      - image: gcr.io/google-containers/netd-amd64:latest
+        name: netd
+        imagePullPolicy: Always
+        hostPID: true
+        securityContext:
+          privileged: true
+          capabilities:
+            add: ["NET_ADMIN"]
+        args:
+        - --enable-policy-routing=$(ENABLE_POLICY_ROUTING)
+        - --logtostderr
+        - --enable-pod-watch=$(ENABLE_POD_WATCH)
+        - --reconcile-interval-seconds=$(RECONCILE_INTERVAL_SECONDS)
+        - --metrics-collectors=$(METRICS_COLLECTORS)
+        - --metrics-address=$(METRICS_ADDRESS)
+        env:
+          - name: CURRENT_NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: ENABLE_POD_WATCH
+            valueFrom:
+              configMapKeyRef:
+                name: netd-config
+                key: enable_pod_watch
+          - name: ENABLE_POLICY_ROUTING
+            valueFrom:
+              configMapKeyRef:
+                name: netd-config
+                key: enable_policy_routing
+          - name: RECONCILE_INTERVAL_SECONDS
+            valueFrom:
+              configMapKeyRef:
+                name: netd-config
+                key: reconcile_interval_seconds
+          - name: METRICS_COLLECTORS
+            valueFrom:
+              configMapKeyRef:
+                name: networking-metrics-config
+                key: metrics_collectors
+          - name: METRICS_ADDRESS
+            valueFrom:
+              configMapKeyRef:
+                name: networking-metrics-config
+                key: metrics_address
+      volumes:
+      - name: cni-net-dir
+        hostPath:
+          path: /etc/cni/net.d
+      - name: kubernetes-bin
+        hostPath:
+          path: /home/kubernetes/bin
+          type: Directory

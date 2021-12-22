@@ -1,0 +1,44 @@
+# Copyright 2021 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: skaffold/v2beta7
+kind: Config
+build:
+  artifacts:
+    - image: leeroy-web-profiles
+      context: leeroy-web-profiles
+    - image: leeroy-app-profiles
+      context: leeroy-app-profiles
+  googleCloudBuild:
+    projectId: ${PROJECT_ID}
+deploy:
+  kubectl:
+    manifests:
+      - leeroy-web-profiles/kubernetes/*
+profiles:
+- name: test
+  deploy:
+    kustomize:
+      paths:
+        - leeroy-app-profiles/kubernetes/test
+- name: staging
+  deploy:
+    kustomize:
+      paths:
+        - leeroy-app-profiles/kubernetes/staging
+- name: prod
+  deploy:
+    kustomize:
+      paths:
+        - leeroy-app-profiles/kubernetes/prod

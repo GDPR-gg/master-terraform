@@ -1,0 +1,31 @@
+{
+  "description": "Uploads a local file to Google Cloud Storage",
+  "supports_noop": false,
+  "input_method": "stdin",
+  "parameters": {
+    "name": {
+      "description": "The name of the remote file to upload",
+      "type": "String[1]"
+    },
+    "type": {
+      "description": "The type of the remote file (in MIME notation) (default: 'application/octet-stream')",
+      "type": "Optional[String[1]]"
+    },
+    "source": {
+      "description": "The path to a local file to upload",
+      "type": "String[1]"
+    },
+    "bucket": {
+      "description": "The target bucket to write the file to",
+      "type": "String[1]"
+    },
+    "project": {
+      "description": "The project that owns the bucket",
+      "type": "String[1]"
+    },
+    "credential": {
+      "description": "Path to a service account credentials file",
+      "type": "String[1]"
+    }
+  }
+}

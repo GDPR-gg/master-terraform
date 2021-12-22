@@ -1,0 +1,15 @@
+{
+	"schemaVersion": "1.0.0",
+	"commandTests": [
+		{
+			"name": "test_rbenv_installation",
+			"command": ["rbenv", "global"],
+			"expectedOutput": ["[0-9]+\\.[0-9]+\\.[0-9]+\n"]
+		},
+		{
+			"name": "test_bundler_installation",
+			"command": ["bundle", "version"],
+			"expectedOutput": ["Bundler version [0-9]+\\.\\d+.*"]
+		}
+	]
+}

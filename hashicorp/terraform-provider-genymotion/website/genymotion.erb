@@ -1,0 +1,27 @@
+<% wrap_layout :inner do %>
+  <% content_for :sidebar do %>
+  <div class="docs-sidebar hidden-print affix-top" role="complementary">
+      <ul class="nav docs-sidenav">
+          <li<%= sidebar_current("docs-home") %>>
+              <a href="/docs/providers/index.html">All Providers</a>
+          </li>
+  
+          <li<%= sidebar_current("docs-genymotion-index") %>>
+              <a href="/docs/providers/genymotion/index.html">Genymotion Cloud Provider</a>
+          </li>
+
+          <li<%= sidebar_current("docs-genymotion-resource") %>>
+          <a href="#">Resources</a>
+          <ul class="nav nav-visible">
+            <li<%= sidebar_current("docs-genymotion-resource-genymotion_cloud") %>>
+              <a href="/docs/providers/genymotion/r/genymotion_cloud.html">genymotion_cloud</a>
+            </li>
+          </ul>
+</li>
+
+      </ul>
+  </div>
+  <% end %>
+  
+  <%= yield %>
+  <% end %>

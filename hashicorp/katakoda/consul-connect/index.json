@@ -1,0 +1,54 @@
+{
+  "title": "Consul Connect Service Mesh",
+  "description": "Securely connect two services with Consul service mesh",
+  "time": "15 minutes",
+  "icon": "fa-consul",
+  "details": {
+    "steps": [
+      {
+        "title": "Access the Consul UI and Start Backend Service",
+        "text": "step1.md"
+      },
+      {
+        "title": "Start the Frondend Service",
+        "text": "step2.md"
+      },
+      {
+        "title": "Start the Sidecar Proxies",
+        "text": "step3.md"
+      },
+      {
+        "title": "Enforce a Zero-trust Network",
+        "text": "step4.md"
+      },
+      {
+        "title": "Allow Frontend Connections",
+        "text": "step5.md"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "code": "courseBase.sh",
+      "credits": "https://learn.hashicorp.com/consul"
+    },
+    "finish": {
+      "text": "finish.md",
+      "credits": "https://learn.hashicorp.com/consul"
+    }
+  },
+  "environment": {
+    "uilayout": "terminal",
+    "uimessage1": "\u001b[32mYour Interactive Bash Terminal. A safe place to learn and execute commands version 0.1.\u001b[m\r\n"
+  },
+  "backend": {
+    "imageid": "hashicorp-hashistack",
+    "lifetime": 30,
+    "showdashboard": true,
+    "dashboards": [
+      { "name": "Counting", "port": 9003 },
+      { "name": "Dashboard", "port": 9002 },
+      { "name": "Consul-UI", "port": 8500 }
+    ]
+  },
+  "private": true
+}

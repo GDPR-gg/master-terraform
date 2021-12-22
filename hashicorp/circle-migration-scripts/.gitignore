@@ -1,0 +1,4 @@
+.env
+*-test.json
+git-clone
+*.DS_Store

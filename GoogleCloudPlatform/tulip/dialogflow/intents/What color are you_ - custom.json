@@ -1,0 +1,46 @@
+{
+  "id": "1e101caf-ef39-4345-b6eb-7998e2c1a32c",
+  "parentId": "86e69bfd-9ca4-4b1a-865e-b3b1e5ff8d53",
+  "rootParentId": "86e69bfd-9ca4-4b1a-865e-b3b1e5ff8d53",
+  "name": "What color are you? - custom",
+  "auto": true,
+  "contexts": [
+    "Whatcolorareyou-followup"
+  ],
+  "responses": [
+    {
+      "resetContexts": false,
+      "action": "Whatcolorareyou.Whatcolorareyou-custom",
+      "affectedContexts": [],
+      "parameters": [
+        {
+          "id": "258ca88a-e67c-45e6-b5ae-f4411ddeb023",
+          "dataType": "@sys.color",
+          "name": "color",
+          "value": "$color",
+          "isList": false
+        }
+      ],
+      "messages": [
+        {
+          "type": 0,
+          "lang": "en",
+          "speech": "Well, I\u0027m sad I\u0027m not red. But at least I know that now, thanks. What else should we talk about?"
+        },
+        {
+          "type": 0,
+          "lang": "nl",
+          "speech": []
+        }
+      ],
+      "defaultResponsePlatforms": {},
+      "speech": []
+    }
+  ],
+  "priority": 500000,
+  "webhookUsed": false,
+  "webhookForSlotFilling": false,
+  "lastUpdate": 1553978034723,
+  "fallbackIntent": false,
+  "events": []
+}

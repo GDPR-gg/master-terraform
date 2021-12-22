@@ -1,0 +1,87 @@
+# This workflow will build a Java project with Maven
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+name: Java CI with Maven
+
+on:
+  push:
+    branches-ignore:
+      - 'dependabot/**'
+
+jobs:
+  std-java-build:
+    if: github.repository_owner == 'GoogleCloudPlatform'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up JDK 11
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+
+    - uses: actions/cache@v1
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
+
+    - name: Setup gcloud
+      uses: google-github-actions/setup-gcloud@master
+      with:
+        version: latest
+        project_id: spring-cloud-gcp-ci
+        service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+        export_default_credentials: true
+
+    - name: Build with Maven
+      run: |
+        mvn clean install -B -q
+        mvn package -B --file native-image-samples/
+
+    - name: Run Samples
+      run: |
+        cd native-image-samples
+        java -jar native-image-samples-client-library/pubsub-sample/target/pubsub-sample-0.11.0-SNAPSHOT.jar
+        java -jar native-image-samples-client-library/trace-sample/target/trace-sample-0.11.0-SNAPSHOT.jar
+
+  graal-java-build:
+    if: github.repository_owner == 'GoogleCloudPlatform'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up GraalVM Compiler
+      uses: DeLaGuardo/setup-graalvm@4.0
+      with:
+        graalvm: '21.3.0'
+        java: 'java11'
+        arch: 'amd64'
+
+    - uses: actions/cache@v1
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
+
+    - name: Setup gcloud
+      uses: google-github-actions/setup-gcloud@master
+      with:
+        version: latest
+        project_id: spring-cloud-gcp-ci
+        service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+        export_default_credentials: true
+
+    - name: Native Image Compile
+      run: |
+        gu install native-image
+        mvn clean install -B -q
+        mvn package -P native -B --file native-image-samples/native-image-samples-client-library/pubsub-sample
+
+    - name: Run Samples
+      run: |
+        cd native-image-samples
+        ./native-image-samples-client-library/pubsub-sample/target/pubsub-sample

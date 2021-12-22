@@ -1,0 +1,30 @@
+#
+# New pricing
+# See checkout.yml for defaults.
+#
+subscriptions:
+  standard:
+    name: Standard
+    users: 20
+    checkout_url: /checkout/?subscription-type=standard
+    price:
+      label: "795"
+      value: 795
+      monthly: true
+    pro_support_price:
+      label: "1<span class='small'>,</span>950"
+      value: 1950
+      monthly: true
+    cis_compliance_price:
+      label: "1<span class='small'>,</span>245"
+      value: 1245
+      monthly: true
+
+addons:
+  reference_architecture:
+    name: Reference Architecture
+    details: one-time, flat fee
+    price:
+      label: "4<span class='small'>,</span>950"
+      value: 4950
+      monthly: false

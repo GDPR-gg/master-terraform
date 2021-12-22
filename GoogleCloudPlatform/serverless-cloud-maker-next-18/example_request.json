@@ -1,0 +1,15 @@
+{
+  "data": {
+    "bucket": "inputs",
+    "name": "image1.jpg"
+  },
+  "outputBucketName": "outputs",
+  "functions": [
+    {
+      "name": "copyImage",
+      "parameters": {
+        "outputBucketName": "outputs-copied"
+      }
+    }
+  ]
+}

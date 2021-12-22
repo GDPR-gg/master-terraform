@@ -1,0 +1,12 @@
+.terraform
+terraform.tfstate*
+terraform.tfvars
+assets
+bin
+./*.tfstate
+terraform.tfplan
+terraform.tfstate
+
+.DS_STORE
+.vscode/
+.idea

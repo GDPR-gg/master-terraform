@@ -1,0 +1,45 @@
+{
+  "pathwayTitle": "Learn HashiCorp Vault",
+  "title": "SSH Secrets Engine: One-Time SSH Password",
+  "description": "The SSH secrets engine supports one-time password (OTP) on remote hosts",
+  "difficulty": "intermediate",
+  "time": "15 minutes",
+  "icon": "fa-vault",
+  "details": {
+    "steps": [
+      {
+        "title": "Setup the SSH secrets engine",
+        "text": "step1.md",
+        "courseData": "step1.courseData.sh"
+      },
+      {
+        "title": "Setup the client authentication",
+        "text": "step2.md"
+      },
+      {
+        "title": "Remote host: Install vault-ssh-helper",
+        "text": "step3.md"
+      },
+      {
+        "title": "Generate an OTP and establish connection",
+        "text": "step4.md"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "credits": "https://learn.hashicorp.com/vault"
+    },
+    "finish": {
+      "text": "finish.md",
+      "credits": "https://learn.hashicorp.com/vault"
+    }
+  },
+  "environment": {
+    "uilayout": "terminal-terminal"
+  },
+  "backend": {
+    "imageid": "hashicorp-hashistack-cluster",
+    "lifetime": 30
+  },
+  "private": true
+}

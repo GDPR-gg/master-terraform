@@ -1,0 +1,1236 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <!-- This will make the tools use the v3 version of the .vsix format. Without this the extension won't load on VS 2017. -->
+    <VsixType>v3</VsixType>
+    <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
+    <UseCodebase>true</UseCodebase>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectTypeGuids>{82b43b9b-a64c-4715-b499-d71e9ca2bd60};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectGuid>{BFD6AFBF-F0DB-4CE1-9681-DAE4E93F6DC5}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GoogleCloudExtension</RootNamespace>
+    <AssemblyName>GoogleCloudExtension</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <GeneratePkgDefFile>true</GeneratePkgDefFile>
+    <IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>
+    <IncludeDebugSymbolsInVSIXContainer>false</IncludeDebugSymbolsInVSIXContainer>
+    <IncludeDebugSymbolsInLocalVSIXDeployment>true</IncludeDebugSymbolsInLocalVSIXDeployment>
+    <CopyBuildOutputToOutputDirectory>true</CopyBuildOutputToOutputDirectory>
+    <CopyOutputSymbolsToOutputDirectory>true</CopyOutputSymbolsToOutputDirectory>
+    <!-- Default Visual Studio Start values. -->
+    <StartAction>Program</StartAction>
+    <StartProgram>$(DevEnvDir)devenv.exe</StartProgram>
+    <StartArguments>/rootsuffix Exp</StartArguments>
+    <DeployExtension>True</DeployExtension>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <LangVersion>7.1</LangVersion>
+    <CodeAnalysisRuleSet>GoogleCloudExtension.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <LangVersion>7.1</LangVersion>
+    <CodeAnalysisRuleSet>GoogleCloudExtension.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.1</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>GoogleCloudExtension.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.1</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>GoogleCloudExtension.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Accounts\CredentialsStore.cs" />
+    <Compile Include="Accounts\CredentialsStoreException.cs" />
+    <Compile Include="Accounts\DefaultCredentials.cs" />
+    <Compile Include="Accounts\ICredentialsStore.cs" />
+    <Compile Include="Accounts\IUserAccount.cs" />
+    <Compile Include="Accounts\IWindowsCredentialsStore.cs" />
+    <Compile Include="AddTrafficSplit\AddTrafficSplitResult.cs" />
+    <Compile Include="AddTrafficSplit\AddTrafficSplitViewModel.cs" />
+    <Compile Include="AddTrafficSplit\AddTrafficSplitWindow.cs" />
+    <Compile Include="AddTrafficSplit\AddTrafficSplitWindowContent.xaml.cs">
+      <DependentUpon>AddTrafficSplitWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AddWindowsCredential\AddWindowsCredentialResult.cs" />
+    <Compile Include="Analytics\AnalyticsEvent.cs" />
+    <Compile Include="Analytics\AnalyticsLearnMoreConstants.cs" />
+    <Compile Include="Analytics\AnalyticsOptInDialog\AnalyticsOptInWindowContent.xaml.cs">
+      <DependentUpon>AnalyticsOptInWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Analytics\AnalyticsOptInDialog\AnalyticsOptInWindowViewModel.cs" />
+    <Compile Include="Analytics\CommandStatus.cs" />
+    <Compile Include="Analytics\CommandStatusUtils.cs" />
+    <Compile Include="Analytics\DebugEventReporter.cs" />
+    <Compile Include="Analytics\Events\AddWindowsCredentialEvent.cs" />
+    <Compile Include="Analytics\Events\ChangedFirewallPortsEvent.cs" />
+    <Compile Include="Analytics\Events\CloudExplorerInteractionEvent.cs" />
+    <Compile Include="Analytics\Events\CsrListedEvent.cs" />
+    <Compile Include="Analytics\Events\CsrCreatedEvent.cs" />
+    <Compile Include="Analytics\Events\ErrorsViewerErrorsLoadedEvent.cs" />
+    <Compile Include="Analytics\Events\ErrorsViewerNavigateToDetailWindowEvent.cs" />
+    <Compile Include="Analytics\Events\ErrorsViewerOpenEvent.cs" />
+    <Compile Include="Analytics\Events\GaeDeployedEvent.cs" />
+    <Compile Include="Analytics\Events\GaeInstancesLoadedEvent.cs" />
+    <Compile Include="Analytics\Events\GaeServiceDeletedEvent.cs" />
+    <Compile Include="Analytics\Events\GaeServicesLoadedEvent.cs" />
+    <Compile Include="Analytics\Events\GaeTrafficSplitUpdatedEvent.cs" />
+    <Compile Include="Analytics\Events\GaeVersionDeletedEvent.cs" />
+    <Compile Include="Analytics\Events\GaeVersionServingStatusUpdatedEvent.cs" />
+    <Compile Include="Analytics\Events\GaeVersionsLoadedEvent.cs" />
+    <Compile Include="Analytics\Events\CsrClonedEvent.cs" />
+    <Compile Include="Analytics\Events\GceDeployedEvent.cs" />
+    <Compile Include="Analytics\Events\GceVMsLoadedEvent.cs" />
+    <Compile Include="Analytics\Events\GkeDeployedEvent.cs" />
+    <Compile Include="Analytics\Events\LogsViewerAdvancedFilterEvent.cs" />
+    <Compile Include="Analytics\Events\LogsViewerCancelRequestEvent.cs" />
+    <Compile Include="Analytics\Events\LogsViewerLogsLoadedEvent.cs" />
+    <Compile Include="Analytics\Events\LogsViewerOpenEvent.cs" />
+    <Compile Include="Analytics\Events\LogsViewerShowAdvancedFilterHelpEvent.cs" />
+    <Compile Include="Analytics\Events\LogsViewerSimpleTextSearchEvent.cs" />
+    <Compile Include="Analytics\Events\NewInstallEvent.cs" />
+    <Compile Include="Analytics\Events\NewLoginEvent.cs" />
+    <Compile Include="Analytics\Events\OpenGceInstanceOnCloudConsoleEvent.cs" />
+    <Compile Include="Analytics\Events\OpenGceInstanceWebsiteEvent.cs" />
+    <Compile Include="Analytics\Events\RemoteDebuggerAttachedEvent.cs" />
+    <Compile Include="Analytics\Events\RemoteDebuggerRemoteToolsInstalledEvent.cs" />
+    <Compile Include="Analytics\Events\RemoteDebuggerRemoteToolsStartedEvent.cs" />
+    <Compile Include="Analytics\Events\CsrConnectSectionOpenEvent.cs" />
+    <Compile Include="Analytics\Events\RemoteDebuggerWindowOpenEvent.cs" />
+    <Compile Include="Analytics\Events\SavePublishSettingsEvent.cs" />
+    <Compile Include="Analytics\Events\StartGceInstanceEvent.cs" />
+    <Compile Include="Analytics\Events\StartRemoteDesktopSessionEvent.cs" />
+    <Compile Include="Analytics\Events\StopGceInstanceEvent.cs" />
+    <Compile Include="Analytics\Events\UnhandledExceptionEvent.cs" />
+    <Compile Include="Analytics\Events\UpgradeEvent.cs" />
+    <Compile Include="ApiManagement\ApiManager.cs" />
+    <Compile Include="ApiManagement\IApiManager.cs" />
+    <Compile Include="ApiManagement\KnownApis.cs" />
+    <Compile Include="AppEngineManagement\AppEngineManagementViewModel.cs" />
+    <Compile Include="AppEngineManagement\AppEngineManagementWindow.cs" />
+    <Compile Include="AppEngineManagement\AppEngineManagementWindowContent.xaml.cs">
+      <DependentUpon>AppEngineManagementWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AttachDebuggerDialog\AttachDebuggerContext.cs" />
+    <Compile Include="AttachDebuggerDialog\AttachDebuggerSettingsStore.cs" />
+    <Compile Include="AttachDebuggerDialog\AttachDebuggerSettings.cs" />
+    <Compile Include="AttachDebuggerDialog\AttachDebuggerStepBase.cs" />
+    <Compile Include="AttachDebuggerDialog\AttachDebuggerWindow.cs" />
+    <Compile Include="AttachDebuggerDialog\AttachDebuggerWindowContent.xaml.cs">
+      <DependentUpon>AttachDebuggerWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AttachDebuggerDialog\AttachDebuggerWindowViewModel.cs" />
+    <Compile Include="AttachDebuggerDialog\EnableDebuggerPortStepViewModel.cs" />
+    <Compile Include="AttachDebuggerDialog\EnablePortStepContent.xaml.cs">
+      <DependentUpon>EnablePortStepContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AttachDebuggerDialog\EnablePortStepViewModel.cs" />
+    <Compile Include="AttachDebuggerDialog\EnablePowerShellPortStepViewModel.cs" />
+    <Compile Include="AttachDebuggerDialog\AttachDebuggerFirewallPort.cs" />
+    <Compile Include="AttachDebuggerDialog\IAttachDebuggerStep.cs" />
+    <Compile Include="AttachDebuggerDialog\HelpStepContent.xaml.cs">
+      <DependentUpon>HelpStepContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AttachDebuggerDialog\InstallStartRemoteToolStepContent.xaml.cs">
+      <DependentUpon>InstallStartRemoteToolStepContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AttachDebuggerDialog\HelpStepViewModel.cs" />
+    <Compile Include="AttachDebuggerDialog\InstallStartRemoteToolStepViewModel.cs" />
+    <Compile Include="AttachDebuggerDialog\ListProcessStepContent.xaml.cs">
+      <DependentUpon>ListProcessStepContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AttachDebuggerDialog\ListProcessStepViewModel.cs" />
+    <Compile Include="AttachDebuggerDialog\ProcessItem.cs" />
+    <Compile Include="AttachDebuggerDialog\SetCredentialStepContent.xaml.cs">
+      <DependentUpon>SetCredentialStepContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AttachDebuggerDialog\SetCredentialStepViewModel.cs" />
+    <Compile Include="CloudExplorerSources\CloudConsoleLinks\ConsoleLinkGroup.cs" />
+    <Compile Include="CloudExplorerSources\Gae\GaeSource.cs" />
+    <Compile Include="CloudExplorerSources\Gae\GaeSourceRootViewModel.cs" />
+    <Compile Include="CloudExplorerSources\Gae\IGaeSourceRootViewModel.cs" />
+    <Compile Include="CloudExplorerSources\Gae\ServiceItem.cs" />
+    <Compile Include="CloudExplorerSources\Gae\ServiceViewModel.cs" />
+    <Compile Include="CloudExplorerSources\Gae\VersionItem.cs" />
+    <Compile Include="CloudExplorerSources\Gae\VersionViewModel.cs" />
+    <Compile Include="CloudExplorerSources\Gce\GceInstanceViewModel.cs" />
+    <Compile Include="CloudExplorer\CloudExplorerSourceBase.cs" />
+    <Compile Include="CloudExplorerSources\CloudConsoleLinks\ConsoleLinksRoot.cs" />
+    <Compile Include="CloudExplorer\ISourceRootViewModelBase.cs" />
+    <Compile Include="CloudExplorer\ITreeHierarchy.cs" />
+    <Compile Include="CloudExplorer\ITreeNode.cs" />
+    <Compile Include="CloudExplorer\SampleData\EmptyState.cs" />
+    <Compile Include="CloudExplorer\SampleData\LoadingState.cs" />
+    <Compile Include="CloudExplorer\SampleData\SampleDataBase.cs" />
+    <Compile Include="CloudExplorer\SampleData\WithDataState.cs" />
+    <Compile Include="CopyablePrompt\CopyablePromptDialogWindow.cs" />
+    <Compile Include="CopyablePrompt\CopyablePromptDialogWindowContent.xaml.cs">
+      <DependentUpon>CopyablePromptDialogWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CopyablePrompt\CopyablePromptDialogWindowViewModel.cs" />
+    <Compile Include="Deployment\IGkeDeploymentService.cs" />
+    <Compile Include="Deployment\INetCoreAppUtils.cs" />
+    <Compile Include="Deployment\IWindowsVmDeployment.cs" />
+    <Compile Include="Deployment\MSBuildProperty.cs" />
+    <Compile Include="Deployment\MSBuildTarget.cs" />
+    <Compile Include="Deployment\ProgressHelper.cs" />
+    <Compile Include="GCloud\IGCloudContext.cs" />
+    <Compile Include="GCloud\IGCloudWrapper.cs" />
+    <Compile Include="GCloud\IKubectlContext.cs" />
+    <Compile Include="GCloud\IKubectlContextProvider.cs" />
+    <Compile Include="GCloud\KubectlContext.cs" />
+    <Compile Include="GCloud\KubectlContextProvider.cs" />
+    <Compile Include="Git\CsrGitUtils.cs" />
+    <Compile Include="Git\GitCommandException.cs" />
+    <Compile Include="Git\GitCommit.cs" />
+    <Compile Include="Git\GitRepository.cs" />
+    <Compile Include="Git\VSGitData.cs" />
+    <Compile Include="PublishDialog\PublishDialogWindow.xaml.cs">
+      <DependentUpon>PublishDialogWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MenuBarControls\GcpMenuBarControl.xaml.cs">
+      <DependentUpon>GcpMenuBarControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MenuBarControls\GcpMenuBarControlFactory.cs" />
+    <Compile Include="MenuBarControls\GcpMenuBarPopupControl.xaml.cs">
+      <DependentUpon>GcpMenuBarPopupControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MenuBarControls\GcpUserProjectViewModel.cs" />
+    <Compile Include="MenuBarControls\IGcpUserProjectViewModel.cs" />
+    <Compile Include="MenuBarControls\ProvideMainWindowFrameControlAttribute.cs" />
+    <Compile Include="PublishDialog\Steps\CoreGceWarning\CoreGceWarningStepContent.xaml.cs">
+      <DependentUpon>CoreGceWarningStepContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PublishDialog\Steps\CoreGceWarning\CoreGceWarningStepViewModel.cs" />
+    <Compile Include="PublishDialog\Steps\Flex\GaeInputsControl.xaml.cs">
+      <DependentUpon>GaeInputsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PublishDialog\Steps\Flex\NeedAppCreatedControl.xaml.cs">
+      <DependentUpon>NeedAppCreatedControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PublishDialog\Steps\Gce\GceInputsControl.xaml.cs">
+      <DependentUpon>GceInputsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PublishDialog\Steps\GeneralErrorControl.xaml.cs">
+      <DependentUpon>GeneralErrorControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PublishDialog\Steps\Gke\GkeInputsControl.xaml.cs">
+      <DependentUpon>GkeInputsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PublishDialog\Steps\LoadingProjectDataControl.xaml.cs">
+      <DependentUpon>LoadingProjectDataControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PublishDialog\Steps\NeedApiEnabledControl.xaml.cs">
+      <DependentUpon>NeedApiEnabledControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PublishDialog\Steps\PublishDialogStepHeaderControl.xaml.cs">
+      <DependentUpon>PublishDialogStepHeaderControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Projects\ProjectPropertyConstants.cs" />
+    <Compile Include="RegisterUIFactoriesExtensions.cs" />
+    <Compile Include="Services\BrowserService.cs" />
+    <Compile Include="Services\Configuration\AppEngineConfiguration.cs" />
+    <Compile Include="Deployment\AppEngineFlexDeployment.cs" />
+    <Compile Include="Deployment\GkeDeploymentService.cs" />
+    <Compile Include="Services\Configuration\IAppEngineConfiguration.cs" />
+    <Compile Include="Deployment\IAppEngineFlexDeployment.cs" />
+    <Compile Include="Deployment\NetCoreAppUtils.cs" />
+    <Compile Include="Deployment\WindowsVmDeployment.cs" />
+    <Compile Include="GCloud\GCloudContext.cs" />
+    <Compile Include="GCloud\GCloudWrapper.cs" />
+    <Compile Include="IGoogleCloudExtensionPackage.cs" />
+    <Compile Include="PickProjectDialog\IPickProjectIdViewModel.cs" />
+    <Compile Include="Projects\IParsedDteProject.cs" />
+    <Compile Include="Projects\ParsedDteProjectExtensions.cs" />
+    <Compile Include="PublishDialog\Steps\Choice\Choice.cs" />
+    <Compile Include="PublishDialog\Steps\Choice\ChoiceStepViewModel.cs" />
+    <Compile Include="PublishDialog\Steps\IStepContent.cs" />
+    <Compile Include="Services\EnvironmentService.cs" />
+    <Compile Include="Services\FileSystem\FileSystemService.cs" />
+    <Compile Include="Services\FileSystem\IDirectory.cs" />
+    <Compile Include="Services\FileSystem\IFile.cs" />
+    <Compile Include="Services\FileSystem\IFileSystem.cs" />
+    <Compile Include="Services\FileSystem\IODirectoryService.cs" />
+    <Compile Include="Services\FileSystem\IOFileService.cs" />
+    <Compile Include="Services\FileSystem\IOPathService.cs" />
+    <Compile Include="Services\FileSystem\IPath.cs" />
+    <Compile Include="Services\FileSystem\IXDocument.cs" />
+    <Compile Include="Services\FileSystem\LinqXDocumentService.cs" />
+    <Compile Include="Services\IBrowserService.cs" />
+    <Compile Include="Services\IEnvironment.cs" />
+    <Compile Include="Services\VsProject\IVsProjectPropertyService.cs" />
+    <Compile Include="Services\VsProject\VsProjectPropertyService.cs" />
+    <Compile Include="StackdriverLogsViewer\ILogsViewerViewModel.cs" />
+    <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\AppTypeSelectorControl.xaml.cs">
+      <DependentUpon>AppTypeSelectorControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\AspNetTemplateChooserWindowContent.xaml.cs">
+      <DependentUpon>AspNetTemplateChooserWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\AspNetTemplateChooserViewModel.cs" />
+    <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\TemplateChooserViewModelBase.cs" />
+    <Compile Include="TemplateWizards\TemplateType.cs" />
+    <Compile Include="Theming\CommonDialogWindow.cs" />
+    <Compile Include="Theming\CommonWindowContent.cs" />
+    <Compile Include="TitleBar\TitleBar.xaml.cs">
+      <DependentUpon>TitleBar.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TitleBar\TitleBarViewModel.cs" />
+    <Compile Include="Utils\Disposable.cs" />
+    <Compile Include="Utils\EditableModel.cs" />
+    <Compile Include="CloudSourceRepositories\RepoNameConverter.cs" />
+    <Compile Include="CloudSourceRepositories\CsAddRepoWindow.cs" />
+    <Compile Include="CloudSourceRepositories\CsrCloneWindow.cs" />
+    <Compile Include="CloudSourceRepositories\CsrAddRepoWindowContent.xaml.cs">
+      <DependentUpon>CsrAddRepoWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CloudSourceRepositories\CsrCloneWindowContent.xaml.cs">
+      <DependentUpon>CsrCloneWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CloudSourceRepositories\CsrAddRepoWindowViewModel.cs" />
+    <Compile Include="CloudSourceRepositories\CsrCloneWindowViewModel.cs" />
+    <Compile Include="CloudSourceRepositories\CsrGitSetupWarningContent.xaml.cs">
+      <DependentUpon>CsrGitSetupWarningContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CloudSourceRepositories\CsrGitSetupWarningViewModel.cs" />
+    <Compile Include="CloudSourceRepositories\CsrUtils.cs" />
+    <Compile Include="PickProjectDialog\IPickProjectIdWindow.cs" />
+    <Compile Include="PickProjectDialog\SampleData\ErrorState.cs" />
+    <Compile Include="Utils\ICloseSource.cs" />
+    <Compile Include="Theming\ICommonWindowContent.cs" />
+    <Compile Include="Utils\IDataSourceFactory.cs" />
+    <Compile Include="Utils\IGcpOutputWindow.cs" />
+    <Compile Include="Utils\IProcessService.cs" />
+    <Compile Include="Utils\IDisposableProgress.cs" />
+    <Compile Include="Utils\IProtectedCommand.cs" />
+    <Compile Include="Utils\ISelectionUtils.cs" />
+    <Compile Include="Utils\IShellUtils.cs" />
+    <Compile Include="Utils\IStatusbarService.cs" />
+    <Compile Include="Services\IUserPromptService.cs" />
+    <Compile Include="Utils\IViewModelBase.cs" />
+    <Compile Include="Utils\MockAsyncProperty.cs" />
+    <Compile Include="PickProjectDialog\SampleData\LoadedState.cs" />
+    <Compile Include="PickProjectDialog\SampleData\NeedsAccountState.cs" />
+    <Compile Include="PickProjectDialog\SampleData\LoadingState.cs" />
+    <Compile Include="Options\GeneralOptionsPage.xaml.cs">
+      <DependentUpon>GeneralOptionsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Options\GeneralOptionsPageViewModel.cs" />
+    <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\AppType.cs" />
+    <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\AspNetVersion.cs" />
+    <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\FrameworkType.cs" />
+    <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\AspNetCoreTemplateChooserViewModel.cs" />
+    <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\TemplateChooserViewModelResult.cs" />
+    <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\TemplateChooserWindow.cs" />
+    <Compile Include="TemplateWizards\Dialogs\TemplateChooserDialog\AspNetCoreTemplateChooserWindowContent.xaml.cs">
+      <DependentUpon>AspNetCoreTemplateChooserWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TemplateWizards\GoogleProjectTemplateSelectorWizard.cs" />
+    <Compile Include="TemplateWizards\GoogleTemplateWizardHelper.cs" />
+    <Compile Include="TemplateWizards\ReplacementsKeys.cs" />
+    <Compile Include="Theming\ICloseable.cs" />
+    <Compile Include="Utils\DataSourceFactory.cs" />
+    <Compile Include="CloudExplorer\DisabledApiWarning.cs" />
+    <Compile Include="CloudExplorerSources\Gce\GceGaeInstanceItem.cs" />
+    <Compile Include="CloudExplorerSources\Gce\GceSourceRootViewModel.cs" />
+    <Compile Include="CloudExplorerSources\Gce\GceSource.cs" />
+    <Compile Include="CloudExplorerSources\Gce\GceInstanceItem.cs" />
+    <Compile Include="CloudExplorerSources\Gce\WindowsInstanceItem.cs" />
+    <Compile Include="CloudExplorerSources\Gce\ZoneItem.cs" />
+    <Compile Include="CloudExplorerSources\Gce\ZoneViewModel.cs" />
+    <Compile Include="CloudExplorerSources\CloudConsoleLinks\CloudConsoleLinksSource.cs" />
+    <Compile Include="CloudExplorer\CloudExplorerSourceException.cs" />
+    <Compile Include="CloudExplorer\IAcceptInput.cs" />
+    <Compile Include="CloudExplorer\ICloudSourceContext.cs" />
+    <Compile Include="CloudExplorer\SourceRootViewModelBase.cs" />
+    <Compile Include="CloudExplorer\ButtonDefinition.cs" />
+    <Compile Include="CloudExplorer\DynamicCloudExplorerSourceBase.cs" />
+    <Compile Include="CloudExplorer\CloudExplorerViewModel.cs" />
+    <Compile Include="CloudExplorer\CloudExplorerToolWindow.cs" />
+    <Compile Include="CloudExplorer\CloudExplorerCommand.cs" />
+    <Compile Include="CloudExplorer\CloudExplorerToolWindowControl.xaml.cs">
+      <DependentUpon>CloudExplorerToolWindowControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Analytics\EventsReporterWrapper.cs" />
+    <Compile Include="CloudExplorer\ICloudExplorerItemSource.cs" />
+    <Compile Include="CloudExplorer\ICloudExplorerSource.cs" />
+    <Compile Include="CloudExplorer\TreeHierarchy.cs" />
+    <Compile Include="CloudExplorer\TreeLeaf.cs" />
+    <Compile Include="CloudExplorerSources\CloudConsoleLinks\ConsoleLink.cs" />
+    <Compile Include="CloudExplorer\TreeNode.cs" />
+    <Compile Include="CloudSourceRepositories\CsrReposContent.xaml.cs">
+      <DependentUpon>CsrReposContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CloudSourceRepositories\CsrReposViewModel.cs" />
+    <Compile Include="CloudSourceRepositories\CsrSectionControl.xaml.cs">
+      <DependentUpon>CsrSectionControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CloudSourceRepositories\CsrSectionControlViewModel.cs" />
+    <Compile Include="CloudSourceRepositories\CsrUnconnectedContent.xaml.cs">
+      <DependentUpon>CsrUnconnectedContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CloudSourceRepositories\CsrUnconnectedViewModel.cs" />
+    <Compile Include="CloudSourceRepositories\RepoItemViewModel.cs" />
+    <Compile Include="Controls\AutoReloadButton.cs" />
+    <Compile Include="Controls\DotsProgressIndicator.cs" />
+    <Compile Include="Controls\IconButton.cs" />
+    <Compile Include="Controls\ImageToggleButton.cs" />
+    <Compile Include="Controls\LabelWithHelp.cs" />
+    <Compile Include="Controls\PasswordBoxWithReveal.cs" />
+    <Compile Include="Controls\PressButton.cs" />
+    <Compile Include="Controls\ProgressIndicator.xaml.cs">
+      <DependentUpon>ProgressIndicator.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TimeBox.cs" />
+    <Compile Include="FirewallManagement\PortInfo.cs" />
+    <Compile Include="FirewallManagement\PortManagerViewModel.cs" />
+    <Compile Include="FirewallManagement\PortManagerWindow.cs" />
+    <Compile Include="FirewallManagement\PortManagerWindowContent.xaml.cs">
+      <DependentUpon>PortManagerWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FirewallManagement\PortModel.cs" />
+    <Compile Include="ManageWindowsCredentials\ManageWindowsCredentialsViewModel.cs" />
+    <Compile Include="ManageWindowsCredentials\ManageWindowsCredentialsWindow.cs" />
+    <Compile Include="ManageWindowsCredentials\ManageWindowsCredentialsWindowContent.xaml.cs">
+      <DependentUpon>ManageWindowsCredentialsWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Accounts\WindowsCredentialsStore.cs" />
+    <Compile Include="Extensions\ImageResource.cs" />
+    <Compile Include="ManageAccounts\ManageAccountsCommand.cs" />
+    <Compile Include="Accounts\AccountsManager.cs" />
+    <Compile Include="ManageAccounts\ManageAccountsViewModel.cs" />
+    <Compile Include="ManageAccounts\ManageAccountsWindowContent.xaml.cs">
+      <DependentUpon>ManageAccountsWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Accounts\UserAccount.cs" />
+    <Compile Include="OauthLoginFlow\OauthLoginFlowViewModel.cs" />
+    <Compile Include="OauthLoginFlow\OauthLoginFlowWindow.cs" />
+    <Compile Include="ManageAccounts\UserAccountViewModel.cs" />
+    <Compile Include="OauthLoginFlow\OauthLoginFlowWindowContent.xaml.cs">
+      <DependentUpon>OauthLoginFlowWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PickFileDialog\PickFileWindow.cs" />
+    <Compile Include="PickFileDialog\PickFileWindowContent.xaml.cs">
+      <DependentUpon>PickFileWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PickFileDialog\PickFileWindowViewModel.cs" />
+    <Compile Include="Projects\DotNet4\CsprojProject.cs" />
+    <Compile Include="Projects\DotNetCore\CsprojProject.cs" />
+    <Compile Include="Projects\DotNetCore\JsonProject.cs" />
+    <Compile Include="Projects\ProjectParser.cs" />
+    <Compile Include="PublishDialog\Steps\Choice\ChoiceStepContent.xaml.cs">
+      <DependentUpon>ChoiceStepContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PublishDialog\Steps\Flex\FlexStepContent.xaml.cs">
+      <DependentUpon>FlexStepContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PublishDialog\Steps\Flex\FlexStepViewModel.cs" />
+    <Compile Include="PublishDialog\Steps\Gce\GceStepViewModel.cs" />
+    <Compile Include="PublishDialog\Steps\Gce\GceStepContent.xaml.cs">
+      <DependentUpon>GceStepContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PublishDialog\Steps\Gke\GkeStepContent.xaml.cs">
+      <DependentUpon>GkeStepContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PublishDialog\Steps\Gke\GkeStepViewModel.cs" />
+    <Compile Include="PublishDialog\IPublishDialog.cs" />
+    <Compile Include="PublishDialog\Steps\IPublishDialogStep.cs" />
+    <Compile Include="PublishDialog\Steps\PublishDialogStepBase.cs" />
+    <Compile Include="PublishDialog\PublishDialogWindowContent.xaml.cs">
+      <DependentUpon>PublishDialogWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PublishDialog\PublishDialogWindowViewModel.cs" />
+    <Compile Include="GenerateConfigurationCommand\GenerateConfigurationContextMenuCommand.cs" />
+    <Compile Include="PublishDialog\PublishProjectContextMenuCommand.cs" />
+    <Compile Include="PublishDialog\PublishProjectMainMenuCommand.cs" />
+    <Compile Include="ProgressDialog\ProgressDialogWindow.cs" />
+    <Compile Include="ProgressDialog\ProgressDialogWindowContent.xaml.cs">
+      <DependentUpon>ProgressDialogWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ProgressDialog\ProgressDialogWindowViewModel.cs" />
+    <Compile Include="Utils\ProcessExtensions.cs" />
+    <Compile Include="Utils\ProcessUtils.cs" />
+    <Compile Include="Utils\ProtectedAsyncCommand.cs" />
+    <Compile Include="Utils\ProtectedCommandBase.cs" />
+    <Compile Include="Utils\StringUtils.cs" />
+    <Compile Include="Utils\ValidateGitDependencyHelper.cs" />
+    <Compile Include="Utils\Validation\StringValidationResult.cs" />
+    <Compile Include="Utils\Validation\ValidatingViewModelBase.cs" />
+    <Compile Include="Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Accounts\CurrentAccountProjectSettings.cs" />
+    <Compile Include="SolutionUtils\SolutionUserOptions.cs" />
+    <Compile Include="SolutionUtils\ProjectHelper.cs" />
+    <Compile Include="SolutionUtils\ProjectSourceFile.cs" />
+    <Compile Include="SolutionUtils\SolutionSettingKeyAttribute.cs" />
+    <Compile Include="SolutionUtils\SolutionHelper.cs" />
+    <Compile Include="SourceBrowsing\FileNotFoundException.cs" />
+    <Compile Include="SourceBrowsing\OpenGitFile.cs" />
+    <Compile Include="SplitTrafficManagement\SplitTrafficWindow.cs" />
+    <Compile Include="SplitTrafficManagement\SplitTrafficModel.cs" />
+    <Compile Include="SplitTrafficManagement\SplitTrafficViewModel.cs" />
+    <Compile Include="SplitTrafficManagement\SplitTrafficWindowContent.xaml.cs">
+      <DependentUpon>SplitTrafficWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\FixBackgroundComboBox.cs" />
+    <Compile Include="StackdriverErrorReporting\BarChart\TimedCountBarChartControl.cs" />
+    <Compile Include="StackdriverErrorReporting\BarChart\TimeCountItem.cs" />
+    <Compile Include="StackdriverErrorReporting\SourceNavigation\StackControl.xaml.cs">
+      <DependentUpon>StackControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StackdriverErrorReporting\SourceNavigation\StackFrameControl.xaml.cs">
+      <DependentUpon>StackFrameControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StackdriverErrorReporting\SourceNavigation\ParserUtils.cs" />
+    <Compile Include="StackdriverErrorReporting\TimeRangeEnumExtensions.cs" />
+    <Compile Include="StackdriverErrorReporting\BarChart\XLineItem.cs" />
+    <Compile Include="StackdriverErrorReporting\ErrorReportingDetailToolWindow.cs" />
+    <Compile Include="StackdriverErrorReporting\ErrorReportingDetailToolWindowControl.xaml.cs">
+      <DependentUpon>ErrorReportingDetailToolWindowControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StackdriverErrorReporting\ErrorReportingDetailViewModel.cs" />
+    <Compile Include="StackdriverErrorReporting\ErrorReportingException.cs" />
+    <Compile Include="StackdriverErrorReporting\ErrorGroupItem.cs" />
+    <Compile Include="StackdriverErrorReporting\ErrorReportingToolWindow.cs" />
+    <Compile Include="StackdriverErrorReporting\ErrorReportingToolWindowCommand.cs" />
+    <Compile Include="StackdriverErrorReporting\ErrorReportingToolWindowControl.xaml.cs">
+      <DependentUpon>ErrorReportingToolWindowControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StackdriverErrorReporting\EventItem.cs" />
+    <Compile Include="StackdriverErrorReporting\SourceNavigation\ErrorFrameTooltipControl.xaml.cs">
+      <DependentUpon>ErrorFrameTooltipControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SourceBrowsing\ActiveTagData.cs" />
+    <Compile Include="StackdriverErrorReporting\SourceNavigation\ErrorFrameTooltipViewModel.cs" />
+    <Compile Include="StackdriverErrorReporting\SourceNavigation\ParsedException.cs" />
+    <Compile Include="SourceBrowsing\ShowTooltipUtils.cs" />
+    <Compile Include="StackdriverErrorReporting\SourceNavigation\StackFrame.cs" />
+    <Compile Include="StackdriverErrorReporting\ErrorReportingViewModel.cs" />
+    <Compile Include="StackdriverErrorReporting\TimeRangeButtons\TimeRangeButtons.cs" />
+    <Compile Include="StackdriverErrorReporting\TimeRangeButtons\TimeRangeItem.cs" />
+    <Compile Include="StackdriverLogsViewer\AdvancedFilterExtension.cs" />
+    <Compile Include="StackdriverLogsViewer\DateTimePicker.xaml.cs">
+      <DependentUpon>DateTimePicker.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StackdriverLogsViewer\DateTimePickerViewModel.cs" />
+    <Compile Include="StackdriverLogsViewer\LogsViewerStates.cs" />
+    <Compile Include="StackdriverLogsViewer\SourceNavigation\LoggerTooltipViewModel.cs" />
+    <Compile Include="StackdriverLogsViewer\SourceNavigation\LoggerTooltipControl.xaml.cs">
+      <DependentUpon>LoggerTooltipControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StackdriverLogsViewer\LogIdsList.cs" />
+    <Compile Include="StackdriverLogsViewer\LogItem.cs" />
+    <Compile Include="StackdriverLogsViewer\LogSeverity.cs" />
+    <Compile Include="StackdriverLogsViewer\LogSeverityItem.cs" />
+    <Compile Include="StackdriverLogsViewer\LogsViewerToolWindow.cs" />
+    <Compile Include="StackdriverLogsViewer\LogsViewerToolWindowCommand.cs" />
+    <Compile Include="StackdriverLogsViewer\LogsViewerToolWindowControl.xaml.cs">
+      <DependentUpon>LogsViewerToolWindowControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StackdriverLogsViewer\LogsViewerViewModel.cs" />
+    <Compile Include="SourceBrowsing\StackdriverHighlightFormat.cs" />
+    <Compile Include="SourceBrowsing\StackdriverTagger.cs" />
+    <Compile Include="StackdriverLogsViewer\SearchMenuItem\MenuItemViewModel.cs" />
+    <Compile Include="StackdriverLogsViewer\SearchMenuItem\ResourceTypeMenuViewModel.cs" />
+    <Compile Include="StackdriverLogsViewer\SearchMenuItem\ResourceTypeNameConsts.cs" />
+    <Compile Include="StackdriverLogsViewer\SearchMenuItem\ResourceValueItemViewModel.cs" />
+    <Compile Include="StackdriverLogsViewer\SearchMenuItem\ResourceTypeItemViewModel.cs" />
+    <Compile Include="Controls\SearchMenuItem.cs" />
+    <Compile Include="SourceBrowsing\StackdriverTaggerProvider.cs" />
+    <Compile Include="StackdriverLogsViewer\SourceNavigation\LogWritterNameConsts.cs" />
+    <Compile Include="SourceBrowsing\SourceVersionUtils.cs" />
+    <Compile Include="StackdriverLogsViewer\TreeViewConverters\JArrayNode.cs" />
+    <Compile Include="StackdriverLogsViewer\TreeViewConverters\JObjectNode.cs" />
+    <Compile Include="StackdriverLogsViewer\TreeViewConverters\LogEntryNode.cs" />
+    <Compile Include="StackdriverLogsViewer\TreeViewConverters\ObjectNodeTree.cs" />
+    <Compile Include="StackdriverLogsViewer\TreeViewConverters\TypeUtil.cs" />
+    <Compile Include="PickProjectDialog\PickProjectIdViewModel.cs" />
+    <Compile Include="PickProjectDialog\PickProjectIdWindowContent.xaml.cs">
+      <DependentUpon>PickProjectIdWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TemplateWizards\GoogleProjectTemplateWizard.cs" />
+    <Compile Include="TerminalServer\TerminalServerManager.cs" />
+    <Compile Include="Theming\CommonImageResources.cs" />
+    <Compile Include="Utils\DataGridUtils.cs" />
+    <Compile Include="Utils\StringFormatUtils.cs" />
+    <Compile Include="Utils\GaeUtils.cs" />
+    <Compile Include="Utils\PackageUtils.cs" />
+    <Compile Include="Utils\GCloudWrapperUtils.cs" />
+    <Compile Include="Utils\GcpPublishStepsUtils.cs" />
+    <Compile Include="Utils\ProgressBarHelper.cs" />
+    <Compile Include="Utils\ProtectedCommand.cs" />
+    <Compile Include="Utils\ShellUtils.cs" />
+    <Compile Include="Utils\StatusbarHelper.cs" />
+    <Compile Include="Theming\ButtonsList.cs" />
+    <Compile Include="Theming\ButtonTemplateSelector.cs" />
+    <Compile Include="Theming\CommonDialogWindowBaseContent.cs" />
+    <Compile Include="UserPrompt\UserPromptWindow.cs" />
+    <Compile Include="UserPrompt\UserPromptWindowContent.xaml.cs">
+      <DependentUpon>UserPromptWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserPrompt\UserPromptWindowViewModel.cs" />
+    <Compile Include="Utils\ErrorHandlerUtils.cs" />
+    <Compile Include="Utils\ToolWindowCommandUtils.cs" />
+    <Compile Include="VsVersion\VS14\ToolsPathProvider.cs" />
+    <Compile Include="VsVersion\ToolsPathProviderBase.cs" />
+    <Compile Include="VsVersion\VS15\ToolsPathProvider.cs" />
+    <Compile Include="VsVersion\VS16\ToolsPathProvider.cs" />
+    <Compile Include="VsVersion\VsVersionUtils.cs" />
+    <Compile Include="WindowsCredentialsChooser\WindowsCredentialsChooserViewModel.cs" />
+    <Compile Include="WindowsCredentialsChooser\WindowsCredentialsChooserWindow.cs" />
+    <Compile Include="WindowsCredentialsChooser\WindowsCredentialsChooserWindowContent.xaml.cs">
+      <DependentUpon>WindowsCredentialsChooserWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Theming\ThemeManager.cs" />
+    <Compile Include="Utils\LinkInfo.cs" />
+    <Compile Include="LinkPrompt\LinkPromptDialogWindow.cs" />
+    <Compile Include="LinkPrompt\LinkPromptDialogWindowContent.xaml.cs">
+      <DependentUpon>LinkPromptDialogWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="LinkPrompt\LinkPromptDialogWindowViewModel.cs" />
+    <Compile Include="Theming\CommonDialogWindowBase.cs" />
+    <Compile Include="Theming\DialogButtonInfo.cs" />
+    <Compile Include="AddWindowsCredential\AddWindowsCredentialViewModel.cs" />
+    <Compile Include="AddWindowsCredential\AddWindowsCredentialWindow.cs" />
+    <Compile Include="AddWindowsCredential\AddwindowsCredentialWindowContent.xaml.cs">
+      <DependentUpon>AddwindowsCredentialWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ShowPassword\ShowPasswordViewModel.cs" />
+    <Compile Include="ShowPassword\ShowPasswordWindow.cs" />
+    <Compile Include="ShowPassword\ShowPasswordWindowContent.xaml.cs">
+      <DependentUpon>ShowPasswordWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Options\AnalyticsOptions.cs" />
+    <Compile Include="Utils\ActivityLogUtils.cs" />
+    <Compile Include="Utils\GcpOutputWindow.cs" />
+    <Compile Include="GoogleCloudExtensionPackage.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils\LocalizedCategoryAttribute.cs" />
+    <Compile Include="Utils\LocalizedDescriptionAttribute.cs" />
+    <Compile Include="Utils\LocalizedDisplayNameAttribute.cs" />
+    <Compile Include="Utils\PropertyWindowItemBase.cs" />
+    <Compile Include="Utils\ResourceUtils.cs" />
+    <Compile Include="Utils\SelectionUtils.cs" />
+    <Compile Include="Services\UserPromptService.cs" />
+    <Compile Include="Utils\ViewModelBase.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Include="vs-threading.MembersRequiringMainThread.txt" />
+    <Resource Include="Theming\Resources\refresh.png" />
+    <Resource Include="Theming\Resources\ic_error_red_14px.png" />
+    <Resource Include="StackdriverErrorReporting\Resources\back_icon.png" />
+    <Resource Include="StackdriverErrorReporting\Resources\back_icon_12.png" />
+    <Resource Include="StackdriverErrorReporting\Resources\eReport_menu_icon.png" />
+    <Resource Include="StackdriverErrorReporting\Resources\pause_icon.png" />
+    <Resource Include="StackdriverErrorReporting\Resources\play_icon.png" />
+    <Resource Include="StackdriverErrorReporting\Resources\show_less_icon.png" />
+    <Resource Include="StackdriverErrorReporting\Resources\show_more_icon.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\back_icon_12.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_any_12.png" />
+    <Resource Include="PublishDialog\Steps\Choice\Resources\ContainerEngine_128px_Retina.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\search.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_debug_12.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_error_12.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_fatal_12.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_info_12.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_warning_12.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\refresh_mouse_over.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\logging_menu_icon_16.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\refresh_mouse_down.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\refresh.png" />
+    <Resource Include="Theming\Resources\ic_help_black_14px.png" />
+    <Resource Include="PublishDialog\Steps\Choice\Resources\AppEngine_128px_Retina.png" />
+    <Resource Include="PublishDialog\Steps\Choice\Resources\ComputeEngine_128px_Retina.png" />
+    <Resource Include="Theming\Resources\ic_copy_blue_14px.png" />
+    <Resource Include="Theming\Resources\ic_hide_blue_14px.png" />
+    <Resource Include="Theming\Resources\ic_inspect_blue_14px.png" />
+    <Resource Include="Utils\Resources\ic_error_red_24px.png" />
+    <Resource Include="Theming\Resources\ic_copy_black_14px.png" />
+    <Resource Include="Theming\Resources\ic_hide_black_14px.png" />
+    <Resource Include="Theming\Resources\ic_inspect_black_14px.png" />
+    <Resource Include="Utils\Resources\ic_warning_yellow_24px.png" />
+    <Resource Include="Theming\Resources\GCP_logo_horizontal.png" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="GoogleCloudExtension.ruleset" />
+    <None Include="Key.snk" />
+    <Resource Include="CloudExplorerSources\Gae\Resources\instance_icon_running.png" />
+    <Resource Include="CloudExplorerSources\Gae\Resources\instance_icon_stopped.png" />
+    <Resource Include="CloudExplorerSources\Gae\Resources\instance_icon_transition.png" />
+    <Resource Include="CloudExplorerSources\Gae\Resources\service_icon.png" />
+    <Resource Include="CloudExplorer\Resources\warning_icon.png" />
+    <Resource Include="Controls\Resources\step_10_dark.png" />
+    <Resource Include="Controls\Resources\step_11_dark.png" />
+    <Resource Include="Controls\Resources\step_12_dark.png" />
+    <Resource Include="Controls\Resources\step_1_dark.png" />
+    <Resource Include="Controls\Resources\step_2_dark.png" />
+    <Resource Include="Controls\Resources\step_3_dark.png" />
+    <Resource Include="Controls\Resources\step_4_dark.png" />
+    <Resource Include="Controls\Resources\step_5_dark.png" />
+    <Resource Include="Controls\Resources\step_6_dark.png" />
+    <Resource Include="Controls\Resources\step_7_dark.png" />
+    <Resource Include="Controls\Resources\step_8_dark.png" />
+    <Resource Include="Controls\Resources\step_9_dark.png" />
+    <Resource Include="Theming\Resources\logo_cloud.png" />
+    <Content Include="Licenses.txt">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <None Include="source.extension.vsixmanifest">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <VSCTCompile Include="GoogleCloudExtension.vsct">
+      <ResourceName>Menus.ctmenu</ResourceName>
+    </VSCTCompile>
+    <Resource Include="CloudExplorer\Resources\refresh.png" />
+    <Resource Include="Controls\Resources\step_1.png" />
+    <Resource Include="Controls\Resources\step_10.png" />
+    <Resource Include="Controls\Resources\step_11.png" />
+    <Resource Include="Controls\Resources\step_12.png" />
+    <Resource Include="Controls\Resources\step_2.png" />
+    <Resource Include="Controls\Resources\step_3.png" />
+    <Resource Include="Controls\Resources\step_4.png" />
+    <Resource Include="Controls\Resources\step_5.png" />
+    <Resource Include="Controls\Resources\step_6.png" />
+    <Resource Include="Controls\Resources\step_7.png" />
+    <Resource Include="Controls\Resources\step_8.png" />
+    <Resource Include="Controls\Resources\step_9.png" />
+    <Resource Include="CloudExplorer\Resources\error_icon.png" />
+    <Resource Include="CloudExplorerSources\Gce\Resources\zone_icon.png" />
+    <Resource Include="CloudExplorerSources\Gce\Resources\instance_icon_running.png" />
+    <Resource Include="CloudExplorerSources\Gce\Resources\instance_icon_stopped.png" />
+    <Resource Include="CloudExplorerSources\Gce\Resources\instance_icon_transition.png" />
+    <Content Include="License.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="logo_cloud_128.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="logo_cloud_512.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="PresentationFramework.AeroLite" />
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VSPackage.resx">
+      <MergeWithCTO>true</MergeWithCTO>
+      <ManifestResourceName>VSPackage</ManifestResourceName>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="AddTrafficSplit\AddTrafficSplitWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Analytics\AnalyticsOptInDialog\AnalyticsOptInWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AppEngineManagement\AppEngineManagementWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AttachDebuggerDialog\AttachDebuggerWindowContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="AttachDebuggerDialog\EnablePortStepContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="AttachDebuggerDialog\HelpStepContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="AttachDebuggerDialog\InstallStartRemoteToolStepContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="AttachDebuggerDialog\ListProcessStepContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="AttachDebuggerDialog\SetCredentialStepContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CloudExplorer\CloudExplorerToolWindowControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CloudSourceRepositories\CsrAddRepoWindowContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CloudSourceRepositories\CsrCloneWindowContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CloudSourceRepositories\CsrGitSetupWarningContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CloudSourceRepositories\CsrReposContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CloudSourceRepositories\CsrSectionControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CloudSourceRepositories\CsrSectionStyles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CloudSourceRepositories\CsrUnconnectedContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\DotsProgressIndicatorResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\TimeBoxResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\ProgressIndicator.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CopyablePrompt\CopyablePromptDialogWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FirewallManagement\PortManagerWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MenuBarControls\GcpMenuBarPopupControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ManageWindowsCredentials\ManageWindowsCredentialsWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ManageAccounts\ManageAccountsWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MenuBarControls\GcpMenuBarControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="OauthLoginFlow\OauthLoginFlowWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="LinkPrompt\LinkPromptDialogWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Options\GeneralOptionsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PickFileDialog\PickFileWindowContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PublishDialog\PublishDialogWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PublishDialog\Steps\Choice\ChoiceStepContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PublishDialog\Steps\CoreGceWarning\CoreGceWarningStepContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PublishDialog\Steps\Flex\FlexStepContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PublishDialog\Steps\Flex\GaeInputsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PublishDialog\Steps\Flex\NeedAppCreatedControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PublishDialog\Steps\Gce\GceInputsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PublishDialog\Steps\Gce\GceStepContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PublishDialog\Steps\GeneralErrorControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PublishDialog\Steps\Gke\GkeInputsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PublishDialog\Steps\Gke\GkeStepContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PublishDialog\PublishDialogWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PublishDialog\Steps\LoadingProjectDataControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PublishDialog\Steps\NeedApiEnabledControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PublishDialog\Steps\PublishDialogStepHeaderControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SplitTrafficManagement\SplitTrafficWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Resource Include="StackdriverLogsViewer\LogsViewerResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Resource>
+    <Resource Include="StackdriverErrorReporting\BarChart\TimedCountBarChart.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="StackdriverErrorReporting\BarChart\TimedCountMiniBarChart.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Page Include="StackdriverErrorReporting\ErrorReportingDetailToolWindowControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="StackdriverErrorReporting\ErrorReportingToolWindowControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="StackdriverErrorReporting\SourceNavigation\ErrorFrameTooltipControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Resource Include="StackdriverErrorReporting\ErrorReportingResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Resource>
+    <Page Include="StackdriverErrorReporting\SourceNavigation\StackControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="StackdriverErrorReporting\SourceNavigation\StackFrameControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="StackdriverErrorReporting\TimeRangeButtons\TimeRangeButtonsResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="StackdriverLogsViewer\DateTimePicker.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="StackdriverLogsViewer\SourceNavigation\LoggerTooltipControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="StackdriverLogsViewer\LogsViewerToolWindowControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\SearchMenuItemResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PickProjectDialog\PickProjectIdWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TemplateWizards\Dialogs\TemplateChooserDialog\AppTypeSelectorControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TemplateWizards\Dialogs\TemplateChooserDialog\AspNetTemplateChooserWindowContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="TemplateWizards\Dialogs\TemplateChooserDialog\AspNetCoreTemplateChooserWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TemplateWizards\Dialogs\TemplateChooserDialog\FrameworkTypeResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Theming\CommonDataTemplates.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Theming\DefaultStylesResource.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TitleBar\TitleBar.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="WindowsCredentialsChooser\WindowsCredentialsChooserWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Resource Include="Theming\ThemingResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Resource>
+    <Resource Include="Theming\CommonResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Resource>
+    <Page Include="ProgressDialog\ProgressDialogWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserPrompt\UserPromptWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AddWindowsCredential\AddwindowsCredentialWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ShowPassword\ShowPasswordWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GoogleCloudExtension.DataSources\GoogleCloudExtension.DataSources.csproj">
+      <Project>{3988aac1-3b20-4ba1-9627-ed7d3c80145f}</Project>
+      <Name>GoogleCloudExtension.DataSources</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GoogleAnalyticsUtils\GoogleAnalyticsUtils.csproj">
+      <Project>{a2d9ac4e-9621-4385-a175-316832f7bfdc}</Project>
+      <Name>GoogleAnalyticsUtils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GoogleCloudExtension.Deployment\GoogleCloudExtension.Deployment.csproj">
+      <Project>{92c6e0d0-41d8-4ecc-87e1-ae72fca891fc}</Project>
+      <Name>GoogleCloudExtension.Deployment</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GoogleCloudExtension.GCloud\GoogleCloudExtension.GCloud.csproj">
+      <Project>{95efac7e-4f6e-46f0-bcc8-90ee1487e1e1}</Project>
+      <Name>GoogleCloudExtension.GCloud</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GoogleCloudExtension.Interop\GoogleCloudExtension.Interop.csproj">
+      <Project>{856B9F2E-441F-405A-9D5C-AF5DC5653902}</Project>
+      <Name>GoogleCloudExtension.Interop</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GoogleCloudExtension.OAuth\GoogleCloudExtension.OAuth.csproj">
+      <Project>{ad8b672d-7f0a-4c7f-9774-a9458a99a061}</Project>
+      <Name>GoogleCloudExtension.OAuth</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GoogleCloudExtension.TeamExplorerExtension.v14\GoogleCloudExtension.TeamExplorerExtension.v14.csproj">
+      <Project>{3febb10a-adaf-4807-b741-030b1f722d35}</Project>
+      <Name>GoogleCloudExtension.TeamExplorerExtension.v14</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GoogleCloudExtension.TeamExplorerExtension\GoogleCloudExtension.TeamExplorerExtension.csproj">
+      <Project>{6faf35a5-0ff6-4f72-b8ee-02a948a6c563}</Project>
+      <Name>GoogleCloudExtension.TeamExplorerExtension</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GoogleCloudExtension.TemplateWizards\GoogleCloudExtension.TemplateWizards.csproj">
+      <Project>{43DF89C4-AF9A-4F61-AFD5-E167E28FC649}</Project>
+      <Name>GoogleCloudExtension.TemplateWizards</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
+    </ProjectReference>
+    <ProjectReference Include="..\GoogleCloudExtension.PowerShellUtils\GoogleCloudExtension.PowerShellUtils.csproj">
+      <Project>{d94a10b2-5adc-4708-ae7b-49b70381ab91}</Project>
+      <Name>GoogleCloudExtension.PowerShellUtils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GoogleCloudExtension.Utils\GoogleCloudExtension.Utils.csproj">
+      <Project>{21501704-9d0c-442f-ad39-292b3da4bc57}</Project>
+      <Name>GoogleCloudExtension.Utils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GoogleCloudExtensions.TeamExplorerExtension.v15\GoogleCloudExtension.TeamExplorerExtension.v15.csproj">
+      <Project>{ce5a8fde-6b69-475f-8c2f-3c2af45bc6ef}</Project>
+      <Name>GoogleCloudExtension.TeamExplorerExtension.v15</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GoogleCloudExtensions.TeamExplorerExtension.v16\GoogleCloudExtension.TeamExplorerExtension.v16.csproj">
+      <Project>{A101420B-04F8-4480-838A-C2397B36C55A}</Project>
+      <Name>GoogleCloudExtension.TeamExplorerExtension.v16</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
+    </ProjectReference>
+    <ProjectReference Include="..\ProjectTemplates\GcpProjectTemplate\GcpProjectTemplate.csproj">
+      <Project>{ED3E1DFF-4736-4FE6-95CA-B67C9B1002AA}</Project>
+      <Name>GcpProjectTemplate</Name>
+      <VSIXSubPath>ProjectTemplates</VSIXSubPath>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="BouncyCastle">
+      <Version>1.8.2</Version>
+    </PackageReference>
+    <PackageReference Include="Google.Apis.Appengine.v1">
+      <Version>1.33.1.1226</Version>
+    </PackageReference>
+    <PackageReference Include="Google.Apis.Clouderrorreporting.v1beta1">
+      <Version>1.33.1.1219</Version>
+    </PackageReference>
+    <PackageReference Include="Google.Apis.CloudResourceManager.v1">
+      <Version>1.33.1.1229</Version>
+    </PackageReference>
+    <PackageReference Include="Google.Apis.CloudSourceRepositories.v1">
+      <Version>1.33.1.1223</Version>
+    </PackageReference>
+    <PackageReference Include="Google.Apis.Compute.v1">
+      <Version>1.33.1.1231</Version>
+    </PackageReference>
+    <PackageReference Include="Google.Apis.Container.v1">
+      <Version>1.33.1.1219</Version>
+    </PackageReference>
+    <PackageReference Include="Google.Apis.Logging.v2">
+      <Version>1.33.1.1227</Version>
+    </PackageReference>
+    <PackageReference Include="Google.Apis.Plus.v1">
+      <Version>1.33.1.1222</Version>
+    </PackageReference>
+    <PackageReference Include="Google.Apis.ServiceManagement.v1">
+      <Version>1.33.1.1230</Version>
+    </PackageReference>
+    <PackageReference Include="log4net">
+      <Version>2.0.8</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.PowerShell.3.ReferenceAssemblies">
+      <Version>1.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.SDK">
+      <Version>17.0.31902.203</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VSSDK.BuildTools">
+      <Version>17.0.5232</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="System.Collections.Immutable">
+      <Version>5.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Management.Automation.dll">
+      <Version>10.0.10586</Version>
+    </PackageReference>
+    <PackageReference Include="System.Net.Http">
+      <Version>4.3.4</Version>
+    </PackageReference>
+    <PackageReference Include="System.Security.Cryptography.Algorithms">
+      <Version>4.3.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.Security.Cryptography.X509Certificates">
+      <Version>4.3.2</Version>
+    </PackageReference>
+    <PackageReference Include="System.ValueTuple">
+      <Version>4.4.0</Version>
+    </PackageReference>
+    <PackageReference Include="YamlDotNet.Signed">
+      <Version>4.3.1</Version>
+    </PackageReference>
+    <PackageReference Include="Zlib.Portable.Signed">
+      <Version>1.11.0</Version>
+    </PackageReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Target BeforeTargets="ValidateVsixParts" Name="AddSuppressedReferences">
+    <ItemGroup>
+      <VSIXSourceItem Include="$(OutputPath)Newtonsoft.Json.dll" />
+      <VSIXSourceItem Include="$(OutputPath)YamlDotNet.dll" />
+    </ItemGroup>
+  </Target>
+</Project>

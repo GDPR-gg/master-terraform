@@ -1,0 +1,11 @@
+{
+  "baseBranches": [
+    "v1"
+  ],
+  "extends": [
+    "config:base"
+  ],
+  "lockFileMaintenance": { 
+    "enabled": true 
+  }
+}

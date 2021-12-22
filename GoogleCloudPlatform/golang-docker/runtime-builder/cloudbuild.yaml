@@ -1,0 +1,20 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: [
+    'build', 
+    '-t', 'gcr.io/${_PROJECT_ID}/go1-builder:${_BUILD_TAG}',
+    '--build-arg', 'go_version=${_GO_VERSION}',
+    '--build-arg', 'base_digest=${_BASE_DIGEST}',
+    '--build-arg', 'build_tag=${_BUILD_TAG}',
+    '--no-cache',
+    '.'
+  ]
+
+- name: 'gcr.io/gcp-runtimes/structure_test'
+  args: [
+    '-i', 'gcr.io/${_PROJECT_ID}/go1-builder:${_BUILD_TAG}',
+    '-v',
+    '--config', '/workspace/tests/structure/test_config.yaml'
+  ]
+
+images: ['gcr.io/${_PROJECT_ID}/go1-builder:${_BUILD_TAG}']

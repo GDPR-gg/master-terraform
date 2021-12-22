@@ -1,0 +1,13 @@
+{
+    "title": "Secure Consul with Vault Workshop",
+    "description": "Secure Consul with Vault workshop",
+    "courses": [
+      {
+        "pathway_id": "hashicorp",
+        "title": "Generate Consul Tokens with HashiCorp Vault",
+        "id": "consul-secure-acl-vault-hashiconf",
+        "course_id": "consul-secure-acl-vault-hashiconf",
+        "description": "Use Vault's Consul secrets engine to generate Consul ACL tokens"
+      }
+    ]
+  }

@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+main() {
+  local FAILED; FAILED=0
+
+  while [[ $# != 0 ]]; do
+    lint_file "${1}"
+    shift 1
+  done
+
+  if [[ "${FAILED}" -eq 1 ]]; then
+    false
+  fi
+}
+
+get_all_variables() {
+  local FILE; FILE="${1}"
+  local VARIABLE_PATTERN; VARIABLE_PATTERN="[[:space:]][A-Z0-9_\-]\+="
+  cat "${FILE}" | grep -o "${VARIABLE_PATTERN}" | uniq
+}
+
+should_skip() {
+  local VARIABLE; VARIABLE="$1"
+  if [[ "${VARIABLE}" = "IFS" || "${VARIABLE}" = "TZ" 
+  || "${VARIABLE}" = "KUBECONFIG" || "${VARIABLE}" = "HTTPS_PROXY" ]]; then
+    true
+    return
+  fi
+  false
+}
+
+lint_file() {
+  local FILE; FILE="${1}"
+
+  if [[ ! -f "${FILE}" ]]; then
+    echo "FAILED: ${FILE}: No such file or directory"
+    exit 1
+  fi
+
+  while read -r VARIABLE; do
+    VARIABLE=${VARIABLE%=}
+    if [[ -z "${VARIABLE}" ]]; then continue; fi
+    if ! grep -Eq "local([[:space:]A-Za-z0-9_\-]+)?${VARIABLE}(;|$|=|[[:space:]])" "${FILE}" \
+    && ! grep -Eq "readonly ${VARIABLE}(;|$)" "${FILE}" && ! should_skip "${VARIABLE}"; then
+      echo "FAILED: ${VARIABLE} in ${FILE} is not marked as local or readonly!"
+      FAILED=1
+    fi
+  done <<EOF
+$(get_all_variables "${FILE}")
+EOF
+}
+
+main "$@"

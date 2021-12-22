@@ -1,0 +1,165 @@
+<% wrap_layout :inner do %>
+    <% content_for :sidebar do %>
+        <div class="docs-sidebar hidden-print affix-top" role="complementary">
+            <a href="#" class="subnav-toggle">(Expand/collapse all)</a>
+
+            <ul class="nav docs-sidenav">
+                <li<%= sidebar_current("docs-home") %>>
+                    <a href="/docs/providers/index.html">All Providers</a>
+                </li>
+                <li<%= sidebar_current("docs-mongodbatlas-index") %>>
+                    <a href="/docs/providers/mongodbatlas/index.html">MongoDB Atlas Provider</a>
+                </li>
+                
+                <li<%= sidebar_current("docs-mongodbatlas-guides") %>>
+                    <a href="#">Guides</a>
+                     <ul class="nav nav-visible">
+                     <li<%= sidebar_current("docs-mongodbatlas-guides-060-upgrade-guide") %>>
+                         <a href="/docs/providers/mongodbatlas/guides/0.6.0-upgrade-guide.html">MongoDB Atlas Provider 0.6.0: Upgrade Guide</a>
+                    </li>
+                  </ul>
+                 </li>
+
+                <li<%= sidebar_current("docs-mongodbatlas-datasource") %>>
+                    <a href="#">Data Sources</a>                    
+                    <ul class="nav">
+                    <li<%= sidebar_current("docs-mongodbatlas-datasource-database-user") %>>
+                       <a href="/docs/providers/mongodbatlas/d/database_user.html">mongodbatlas_database_user</a>
+                    </li>
+                    <li<%= sidebar_current("docs-mongodbatlas-datasource-project-ip-whitelist") %>>
+                        <a href="/docs/providers/mongodbatlas/d/project_ip_whitelist.html">mongodbatlas_project_ip_whitelist</a>
+                    </li>
+                    <li<%= sidebar_current("docs-mongodbatlas-datasource-database-users") %>>
+                       <a href="/docs/providers/mongodbatlas/d/database_users.html">mongodbatlas_database_users</a>
+                    </li>
+                    <li<%= sidebar_current("docs-mongodbatlas-datasource-project") %>>
+                       <a href="/docs/providers/mongodbatlas/d/project.html">mongodbatlas_project</a>
+                    </li>
+                    <li<%= sidebar_current("docs-mongodbatlas-datasource-projects") %>>
+                       <a href="/docs/providers/mongodbatlas/d/projects.html">mongodbatlas_projects</a>
+                    </li>
+                    <li<%= sidebar_current("docs-mongodbatlas-datasource-cluster") %>>
+                       <a href="/docs/providers/mongodbatlas/d/cluster.html">mongodbatlas_cluster</a>
+                    </li>
+                    <li<%= sidebar_current("docs-mongodbatlas-datasource-clusters") %>>
+                       <a href="/docs/providers/mongodbatlas/d/clusters.html">mongodbatlas_clusters</a>
+                    </li>
+                    <li<%= sidebar_current("docs-mongodbatlas-datasource-cloud_provider_snapshot") %>>
+                       <a href="/docs/providers/mongodbatlas/d/cloud_provider_snapshot.html">mongodbatlas_cloud_provider_snapshot</a>
+                    </li>
+                    <li<%= sidebar_current("docs-mongodbatlas-datasource-cloud_provider_snapshots") %>>
+                       <a href="/docs/providers/mongodbatlas/d/cloud_provider_snapshots.html">mongodbatlas_cloud_provider_snapshots</a>
+                    </li>
+                    <li<%= sidebar_current("docs-mongodbatlas-datasource-cloud_provider_snapshot_restore_job") %>>
+                       <a href="/docs/providers/mongodbatlas/d/cloud_provider_snapshot_restore_job.html">mongodbatlas_cloud_provider_snapshot_restore_job</a>
+                    </li>
+                    <li<%= sidebar_current("docs-mongodbatlas-datasource-cloud_provider_snapshot_restore_jobs") %>>
+                       <a href="/docs/providers/mongodbatlas/d/cloud_provider_snapshot_restore_jobs.html">mongodbatlas_cloud_provider_snapshot_restore_jobs</a>
+                    </li>
+                    <li<%= sidebar_current("docs-mongodbatlas-datasource-network-container") %>>
+                      <a href="/docs/providers/mongodbatlas/d/network_container.html">mongodbatlas_network_container</a>
+                    </li>
+                    <li<%= sidebar_current("docs-mongodbatlas-datasource-network-containers") %>>
+                      <a href="/docs/providers/mongodbatlas/d/network_containers.html">mongodbatlas_network_containers</a>
+                    </li>
+                    <li<%= sidebar_current("docs-mongodbatlas-datasource-network-peering") %>>
+                      <a href="/docs/providers/mongodbatlas/d/network_peering.html">mongodbatlas_network_peering</a>
+                    </li>
+                    <li<%= sidebar_current("docs-mongodbatlas-datasource-network-peerings") %>>
+                        <a href="/docs/providers/mongodbatlas/d/network_peerings.html">mongodbatlas_network_peerings</a>
+                    </li>
+                    <li<%= sidebar_current("docs-mongodbatlas-maintenance-window") %>>
+                        <a href="/docs/providers/mongodbatlas/d/maintenance_window.html">mongodbatlas_maintenance_window</a>
+                    <li<%= sidebar_current("docs-mongodbatlas-datasource-auditing") %>>
+                        <a href="/docs/providers/mongodbatlas/d/auditing.html">mongodbatlas_auditing</a>
+                    </li>
+                    <li<%= sidebar_current("docs-mongodbatlas-custom-db-roles") %>>
+                        <a href="/docs/providers/mongodbatlas/d/custom_db_roles.html">mongodbatlas_custom_db_roles</a>
+                    <li<%= sidebar_current("docs-mongodbatlas-datasource-alert-configuration") %>>
+                        <a href="/docs/providers/mongodbatlas/d/alert_configuration.html">mongodbatlas_alert_configuration</a>
+                    </li>
+                    <li<%= sidebar_current("docs-mongodbatlas-datasource-team") %>>
+                    <a href="/docs/providers/mongodbatlas/d/team.html">mongodbatlas_team</a>
+                </li>
+                    <li<%= sidebar_current("docs-mongodbatlas-private-endpoint") %>>
+                        <a href="/docs/providers/mongodbatlas/d/private_endpoint.html">mongodbatlas_private_endpoint</a>
+                    </li>
+                    <li<%= sidebar_current("docs-mongodbatlas-private-endpoint-interface-link") %>>
+                        <a href="/docs/providers/mongodbatlas/d/private_endpoint_interface_link.html">mongodbatlas_private_endpoint_interface_link</a>
+                    </li>
+                    <li<%= sidebar_current("docs-mongodbatlas-x509-authentication-database-user") %>>
+                        <a href="/docs/providers/mongodbatlas/d/x509_authentication_database_user.html">mongodbatlas_x509_authentication_database_user</a>
+                    </li>
+                    <li<%= sidebar_current("docs-mongodbatlas-cloud-provider-snapshot-backup-policy") %>>
+                        <a href="/docs/providers/mongodbatlas/d/cloud_provider_snapshot_backup_policy.html">mongodbatlas_cloud_provider_snapshot_backup_policy</a>
+                    </li>
+                  </ul>
+                </li>
+
+                <li<%= sidebar_current("docs-mongodbatlas-resource") %>>
+                  <a href="#">Resources</a>
+                  <ul class="nav nav-visible">
+                    <li<%= sidebar_current("docs-mongodbatlas-resource-database-user") %>>
+                        <a href="/docs/providers/mongodbatlas/r/database_user.html">mongodbatlas_database_user</a>
+                    </li>
+                    <li<%= sidebar_current("docs-mongodbatlas-resource-project-ip-whitelist") %>>
+                        <a href="/docs/providers/mongodbatlas/r/project_ip_whitelist.html">mongodbatlas_project_ip_whitelist</a>
+                    </li>
+                    <li<%= sidebar_current("docs-mongodbatlas-resource-cluster") %>>
+                        <a href="/docs/providers/mongodbatlas/r/cluster.html">mongodbatlas_cluster</a>
+                    </li>
+                    <li<%= sidebar_current("docs-mongodbatlas-resource-network-container") %>>
+                        <a href="/docs/providers/mongodbatlas/r/network_container.html">mongodbatlas_network_container</a>
+                    </li>
+                    <li<%= sidebar_current("docs-mongodbatlas-resource-project") %>>
+                        <a href="/docs/providers/mongodbatlas/r/project.html">mongodbatlas_project</a>
+                    </li>
+                    <li<%= sidebar_current("docs-mongodbatlas-resource-cloud_provider_snapshot") %>>
+                        <a href="/docs/providers/mongodbatlas/r/cloud_provider_snapshot.html">mongodbatlas_cloud_provider_snapshot</a>
+                    </li>
+                    <li<%= sidebar_current("docs-mongodbatlas-resource-cloud_provider_snapshot") %>>
+                        <a href="/docs/providers/mongodbatlas/r/cloud_provider_snapshot_restore_job.html">mongodbatlas_cloud_provider_snapshot_restore_job</a>
+                    </li>
+                    <li<%= sidebar_current("docs-mongodbatlas-resource-encryption_at_rest") %>>
+                        <a href="/docs/providers/mongodbatlas/r/encryption_at_rest.html">mongodbatlas_encryption_at_rest</a>
+                    </li>
+                    <li<%= sidebar_current("docs-mongodbatlas-resource-network-peering") %>>
+                        <a href="/docs/providers/mongodbatlas/r/network_peering.html">mongodbatlas_network_peering</a>
+                    </li>
+                    <li<%= sidebar_current("docs-mongodbatlas-resource-private-ip-mode") %>>
+                        <a href="/docs/providers/mongodbatlas/r/private_ip_mode.html">mongodbatlas_private_ip_mode</a>
+                    </li>
+                    <li<%= sidebar_current("docs-mongodbatlas-resource-maintenance-window") %>>
+                        <a href="/docs/providers/mongodbatlas/r/maintenance_window.html">mongodbatlas_maintenance_window</a>
+                    <li<%= sidebar_current("docs-mongodbatlas-resource-auditing") %>>
+                        <a href="/docs/providers/mongodbatlas/r/auditing.html">mongodbatlas_auditing</a>
+                    <li<%= sidebar_current("docs-mongodbatlas-resource-team") %>>
+                        <a href="/docs/providers/mongodbatlas/r/team.html">mongodbatlas_team</a>
+                    </li>
+                    <li<%= sidebar_current("docs-mongodbatlas-custom-db-role") %>>
+                        <a href="/docs/providers/mongodbatlas/r/custom_db_role.html">mongodbatlas_custom_db_role</a>
+                    <li<%= sidebar_current("docs-mongodbatlas-resource-global-cluster-config") %>>
+                        <a href="/docs/providers/mongodbatlas/r/global_cluster_config.html">mongodbatlas_global_cluster_config</a>
+                    <li<%= sidebar_current("docs-mongodbatlas-resource-alert-configuration") %>>
+                        <a href="/docs/providers/mongodbatlas/r/alert_configuration.html">mongodbatlas_alert_configuration</a>
+                    </li>
+                    <li<%= sidebar_current("docs-mongodbatlas-resource-private-endpoint") %>>
+                        <a href="/docs/providers/mongodbatlas/r/private_endpoint.html">mongodbatlas_private_endpoint</a>
+                    </li>
+                    <li<%= sidebar_current("docs-mongodbatlas-resource-private-endpoint-interface-link") %>>
+                        <a href="/docs/providers/mongodbatlas/r/private_endpoint_interface_link.html">mongodbatlas_private_endpoint_interface_link</a>
+                    </li>
+                    <li<%= sidebar_current("docs-mongodbatlas-resource-x509-authentication-database-user") %>>
+                        <a href="/docs/providers/mongodbatlas/r/x509_authentication_database_user.html">mongodbatlas_x509_authentication_database_user</a>
+                    </li>
+                    <li<%= sidebar_current("docs-mongodbatlas-resource-cloud-provider-snapshot-backup-policy") %>>
+                        <a href="/docs/providers/mongodbatlas/r/cloud_provider_snapshot_backup_policy.html">mongodbatlas_cloud_provider_snapshot_backup_policy</a>
+                    </li>
+                  </ul>
+                </li>
+            </ul>
+        </div>
+    <% end %>
+
+    <%= yield %>
+<% end %>

@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2016 Google Inc. All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.google.cloud.runtimes</groupId>
+    <artifactId>openjdk-parent</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+  <name>Google App Engine Image for OpenJDK (openjdk8)</name>
+  <artifactId>openjdk8</artifactId>
+  <packaging>pom</packaging>
+
+  <properties>
+    <openjdk.version.major>8</openjdk.version.major>
+    <openjdk.version.minor></openjdk.version.minor> <!-- leave empty for latest JDK update -->
+    <openjdk.version>${openjdk.version.major}${openjdk.version.minor}</openjdk.version>
+    <docker.appengine.image>gcr.io/google-appengine/debian9</docker.appengine.image>
+    <docker.image.name>${docker.image.baseName}:${docker.tag.long}</docker.image.name>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.google.cloud.runtimes</groupId>
+      <artifactId>openjdk-common</artifactId>
+      <version>${project.version}</version>
+      <type>tar.gz</type>
+    </dependency>
+    <dependency>
+      <groupId>com.google.cloud.runtimes</groupId>
+      <artifactId>openjdk-test-common</artifactId>
+      <version>${project.version}</version>
+      <type>tar.gz</type>
+    </dependency>
+    <dependency>
+      <groupId>com.google.cloud.runtimes</groupId>
+      <artifactId>test-spring-application</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack-openjdk-common</id>
+            <phase>generate-resources</phase>
+          </execution>
+          <execution>
+            <id>unpack-openjdk-test-common</id>
+            <phase>generate-test-resources</phase>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>io.fabric8</groupId>
+        <artifactId>docker-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>docker-build</id>
+            <phase>package</phase>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <!-- Bind inherited executions from parent module -->
+        <executions>
+          <execution>
+            <id>common-structure-test</id>
+            <phase>integration-test</phase>
+          </execution>
+          <execution>
+            <id>local-shutdown-test</id>
+            <phase>integration-test</phase>
+          </execution>
+          <!-- Execute structure tests specific to this module -->
+          <execution>
+            <id>openjdk8-structure-test</id>
+            <phase>integration-test</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>${project.parent.basedir}/scripts/structure_test.sh</executable>
+              <workingDirectory>${project.basedir}</workingDirectory>
+              <arguments>
+                <argument>${docker.image.name}</argument>
+                <argument>${project.build.testOutputDirectory}</argument>
+                <argument>${project.build.testOutputDirectory}/openjdk8-structure.yaml</argument>
+              </arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>generate-test-resources</id>
+            <phase>generate-test-resources</phase>
+            <goals>
+              <goal>testResources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.testOutputDirectory}</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${basedir}/src/test/resources</directory>
+                  <filtering>true</filtering>
+                  <includes>
+                    <include>**</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-resources</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${docker.staging.dir}</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${basedir}/src/main/docker</directory>
+                  <filtering>true</filtering>
+                  <includes>
+                    <include>**</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>filter-test-resources</id>
+            <phase>process-test-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.testOutputDirectory}/openjdk-test-common-out</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${project.build.testOutputDirectory}/openjdk-test-common</directory>
+                  <filtering>true</filtering>
+                  <includes>
+                    <include>**</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

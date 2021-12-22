@@ -1,0 +1,27 @@
+plugins {
+    id 'java-gradle-plugin' 
+    id 'com.gradle.plugin-publish' version '0.11.0' 
+}
+
+dependencies {
+	compile gradleApi()
+	compile group: 'com.google.auth', name: 'google-auth-library-oauth2-http', version: '1.0.0'
+}
+
+pluginBundle {
+    website = 'https://github.com/GoogleCloudPlatform/artifact-registry-maven-tools' 
+    vcsUrl = 'https://github.com/GoogleCloudPlatform/artifact-registry-maven-tools' 
+    tags = ['artifactregistry', 'gcp'] 
+}
+
+gradlePlugin {
+    plugins { 
+        artifactRegistryPlugin {
+            id = 'com.google.cloud.artifactregistry.gradle-plugin'
+            displayName = 'Artifact Registry Gradle Plugin'
+            description = 'A Gradle plugin used to connect to Artifact Registry Maven repositories.'
+            implementationClass = 'com.google.cloud.artifactregistry.gradle.plugin.ArtifactRegistryGradlePlugin'
+        }
+    }
+}
+

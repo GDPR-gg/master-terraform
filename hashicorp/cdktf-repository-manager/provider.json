@@ -1,0 +1,22 @@
+{
+  "archive": "hashicorp/archive@~> 2.2",
+  "aws": "aws@~> 3.0",
+  "azuread": "hashicorp/azuread@~> 2.0",
+  "azurerm": "azurerm@~> 2.0",
+  "cloudinit": "hashicorp/cloudinit@~> 2.2.0",
+  "datadog": "DataDog/datadog@~> 3.0",
+  "docker": "kreuzwerker/docker@~> 2.12",
+  "external": "external@~> 2.1",
+  "github": "integrations/github@~> 4.0",
+  "google": "google@~> 3.0",
+  "helm": "helm@~> 2.3",
+  "kubernetes": "kubernetes@~> 2.0",
+  "local": "hashicorp/local@~> 2.1",
+  "newrelic": "newrelic/newrelic@~> 2.32",
+  "null": "null@~> 2.0",
+  "opentelekomcloud": "opentelekomcloud/opentelekomcloud@~> 1.26",
+  "pagerduty": "PagerDuty/pagerduty@~> 1.10",
+  "postgresql": "cyrilgdn/postgresql@~> 1.14",
+  "random": "hashicorp/random@~> 3.1",
+  "tls": "hashicorp/tls@~> 3.1"
+}

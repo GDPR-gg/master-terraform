@@ -1,0 +1,213 @@
+﻿<Configuration>
+  <ViewDefinitions>
+    <View>
+      <Name>Google Cloud Storage Bucket Table</Name>
+      <ViewSelectedBy>
+        <TypeName>Google.Apis.Storage.v1.Data.Bucket</TypeName>
+      </ViewSelectedBy>
+      <GroupBy>
+        <Label>ParentPath</Label>
+        <ScriptBlock>
+          $_.PSParentPath.Replace("Google.PowerShell\GoogleCloudStorage::", "").Replace("\", "/")
+        </ScriptBlock>
+      </GroupBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label>Name</Label>
+          </TableColumnHeader>
+          <TableColumnHeader/>
+          <TableColumnHeader/>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <ScriptBlock>($_.PSChildName, $_.Name -ne $null)[0]</ScriptBlock>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>TimeCreated</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Updated</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+    <View>
+      <Name>Google Cloud Storage Object Table</Name>
+      <ViewSelectedBy>
+        <TypeName>Google.Apis.Storage.v1.Data.Object</TypeName>
+      </ViewSelectedBy>
+      <GroupBy>
+        <Label>ParentPath</Label>
+        <ScriptBlock>
+          $_.PSParentPath.Replace("Google.PowerShell\GoogleCloudStorage::", "").Replace("\", "/")
+        </ScriptBlock>
+      </GroupBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label>Name</Label>
+          </TableColumnHeader>
+          <TableColumnHeader/>
+          <TableColumnHeader/>
+          <TableColumnHeader/>
+          <TableColumnHeader/>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <ScriptBlock>($_.PSChildName, $_.Name -ne $null)[0]</ScriptBlock>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Size</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>ContentType</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>TimeCreated</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Updated</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+    <View>
+      <Name>Google Compute Engine Instance</Name>
+      <ViewSelectedBy>
+        <TypeName>Google.Apis.Compute.v1.Data.Instance</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader/>
+          <TableColumnHeader/>
+          <TableColumnHeader>
+            <Label>MachineType</Label>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Zone</Label>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>TimeCreated</Label>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>Name</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>CpuPlatform</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <ScriptBlock>
+                    if ($_.MachineType -match "https:.*/zones/[^/]*/machineTypes/([^/]*)") {
+                        $Matches[1]
+                    } else {
+                        $_.MachineType;
+                    }
+                </ScriptBlock>
+              </TableColumnItem>
+              <TableColumnItem>
+                <ScriptBlock>
+                    if ($_.Zone -match "https:.*/zones/([^/]*)") {
+                        $Matches[1]
+                    } else {
+                        $_.Zone;
+                    }
+                </ScriptBlock>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>CreationTimestamp</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+    <View>
+      <Name>Google Cloud IAM Policy</Name>
+      <ViewSelectedBy>
+        <TypeName>Google.Apis.CloudResourceManager.v1.Data.Binding</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label>Role</Label>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Members</Label>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>Role</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <ScriptBlock>$_.Members -Join ", "</ScriptBlock>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+    <View>
+      <Name>BigQuery Data Row</Name>
+      <ViewSelectedBy>
+        <TypeName>Google.Cloud.BigQuery.V2.BigQueryRow</TypeName>
+      </ViewSelectedBy>
+      <ListControl>
+        <ListEntries>
+          <ListEntry>
+            <ListItems>
+              <ListItem>
+                <Label>BigQueryRow</Label>
+                <ScriptBlock>
+                  ForEach ($field in $_.RawRow.F) {
+                    $outstr = $outstr + $field.V.ToString() + ", "
+                  }
+                  $outstr.Substring(0,$outstr.Length-2)
+                </ScriptBlock>
+              </ListItem>
+            </ListItems>
+          </ListEntry>
+        </ListEntries>
+      </ListControl>
+    </View>
+    <View>
+      <Name>BigQuery TableSchema</Name>
+      <ViewSelectedBy>
+        <TypeName>Google.Apis.Bigquery.v2.Data.TableSchema</TypeName>
+      </ViewSelectedBy>
+      <ListControl>
+        <ListEntries>
+          <ListEntry>
+            <ListItems>
+              <ListItem>
+                <Label>Schema</Label>
+                <ScriptBlock>
+                  $outstr = ""
+                  ForEach ($field in $_.Fields) {
+                    $outstr = $outstr + $field.Name + ", "
+                  }
+                  $outstr.Substring(0,$outstr.Length-2)
+                </ScriptBlock>
+              </ListItem>
+            </ListItems>
+          </ListEntry>
+        </ListEntries>
+      </ListControl>
+    </View>
+  </ViewDefinitions>
+</Configuration>

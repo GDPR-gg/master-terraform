@@ -1,0 +1,16 @@
+{
+  "name": "service1",
+  "port": 8080,
+  "connect": {
+    "proxy": {
+      "config": {
+        "upstreams": [
+          {
+            "destination_name": "service2",
+            "local_bind_port": 9191
+          }
+        ]
+      }
+    }
+  }
+}

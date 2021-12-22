@@ -1,0 +1,8 @@
+**/.DS_Store
+**/*.iml
+**/idea
+**/venv
+**/__pycache__/
+**/temp*
+**/.private
+**/.terraform

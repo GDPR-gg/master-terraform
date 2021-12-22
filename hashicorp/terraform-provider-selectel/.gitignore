@@ -1,0 +1,10 @@
+*.tf
+*.tfstate
+*.tfstate.backup
+*.log
+*.json
+*.yaml
+.terraform/
+terraform-provider-selectel
+.idea
+.DS_Store

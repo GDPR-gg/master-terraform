@@ -1,0 +1,55 @@
+<script>
+  window.pricing = {{ site.data.pricing | jsonify }}
+</script>
+<script src="{{ site.assets_base_url }}js/main.js"></script>
+{% if page.custom_js %} {% for js_file in page.custom_js %}
+<script src="/assets/js/{{ js_file }}.js" type="text/javascript"></script>
+{% endfor %} {% elsif layout.custom_js %} {% for js_file in layout.custom_js %}
+<script src="/assets/js/{{ js_file }}.js" type="text/javascript"></script>
+{% endfor %} {% endif %} {% if site.gtm_id %}
+
+<!-- HubSpot Embed Code per https://knowledge.hubspot.com/reports/install-the-hubspot-tracking-code -->
+<script type="text/javascript" id="hs-script-loader" async defer src="//js.hs-scripts.com/8376079.js"></script>
+
+<!-- Google Tag Manager (noscript) -->
+<noscript>
+  <iframe
+    src="https://www.googletagmanager.com/ns.html?id={{ site.gtm_id }}"
+    height="0"
+    width="0"
+    style="display:none;visibility:hidden"
+  >
+  </iframe>
+</noscript>
+<!-- End Google Tag Manager (noscript) -->
+<script
+  async
+  src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js"
+></script>
+
+{% if site.enable_hotjar %}
+<!-- Hotjar Tracking Code for gruntwork.io -->
+<script>
+  (function(h, o, t, j, a, r) {
+    h.hj =
+      h.hj ||
+      function() {
+        (h.hj.q = h.hj.q || []).push(arguments);
+      };
+    h._hjSettings = { hjid: 974926, hjsv: 6 };
+    a = o.getElementsByTagName("head")[0];
+    r = o.createElement("script");
+    r.async = 1;
+    r.src = t + h._hjSettings.hjid + j + h._hjSettings.hjsv;
+    a.appendChild(r);
+  })(window, document, "https://static.hotjar.com/c/hotjar-", ".js?sv=");
+</script>
+{% endif %}
+
+{% if page.use_recaptcha %}
+<!-- recaptcha v3 by Google -->
+<script src="https://www.google.com/recaptcha/api.js?render={{ site.recaptchaApiKey }}"></script>
+{% endif %}
+<!-- Cookie Policy Notification -->
+<script src="{{ site.assets_base_url }}js/cookie.js" async></script>
+{% endif %}

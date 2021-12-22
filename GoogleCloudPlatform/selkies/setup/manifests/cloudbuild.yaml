@@ -1,0 +1,43 @@
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+timeout: 3600s
+substitutions:
+  _INFRA_NAME: broker
+  _REGION: us-west1
+tags:
+  - kube-app-launcher-setup
+  - kube-app-launcher-manifests
+steps:
+  ###
+  # Waits for the cluster to become ready.
+  ###
+  - name: "gcr.io/${PROJECT_ID}/${_INFRA_NAME}-installer"
+    id: "wait-for-infra"
+    entrypoint: "/workspace/wait_for_clusters.sh"
+    args:
+      - ${_INFRA_NAME}
+      - ${_REGION}
+  ###
+  # Deploys manifests to cluster.
+  ###
+  - name: "gcr.io/${PROJECT_ID}/${_INFRA_NAME}-installer"
+    id: "deploy-manifests"
+    entrypoint: "/workspace/deploy.sh"
+    env:
+      - PROJECT_ID=${PROJECT_ID}
+      - INFRA_NAME=${_INFRA_NAME}
+      - REGION=${_REGION}
+      - NODE_SERVICE_ACCOUNT=broker@${PROJECT_ID}.iam.gserviceaccount.com
+      - ENDPOINT=broker.endpoints.${PROJECT_ID}.cloud.goog

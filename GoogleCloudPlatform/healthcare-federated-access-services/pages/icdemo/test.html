@@ -1,0 +1,62 @@
+<!--
+ Copyright 2019 Google LLC
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<html>
+  <head>
+    <link rel="stylesheet" href="/static/css/icdemo-test.css">
+    <script src="/static/js/icdemo.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <h1>IC Test Page</h1>
+    <div id="error_info" class="error-info hidden">
+      <div id="error" class="error"></div>
+      <div id="error_desc" class="error-desc"></div>
+      <div id="error_hint" class="error-hint"></div>
+    </div>
+    <div class="box">
+      <h3>1. Auth using Hydra</h3>
+      <input id="hydra_url" class="half-width" value="{{.HydraURL}}">
+      <input id="ic_url" class="half-width" value="{{.IcURL}}">
+      <div>
+        <a class="btn blue" id="auth">Login</a>
+        <a class="btn black" id="linkauth">Link Account</a>
+        <a class="btn white" id="default-hydra" data-url="{{.HydraURL}}">Default Hydra</a>
+        <a class="btn white" id="clear">Clear</a>
+      </div>
+    </div>
+    <div class="box">
+      <h3>2. Authentication Code</h3>
+      <textarea id="auth_code" rows="4" class="full-width" readonly></textarea>
+      <div>
+        <a class="btn blue" id="token-exchange">Token Exchange</a>
+      </div>
+    </div>
+    <div class="box">
+      <h3>3. Tokens</h3>
+      Access: <textarea id="access_token" rows="7" class="full-width" readonly></textarea>
+      Refresh: <textarea id="refresh_token" rows="1" class="full-width" readonly></textarea>
+      <div>
+        <a class="btn black" id="userinfo">Token Userinfo</a>
+        <a class="btn black" id="refresh">Refresh Token</a>
+        <a class="btn black" id="account-info">Account Info</a>
+        <a class="btn white" id="debug-jwt">JWT.IO</a>
+      </div>
+    </div>
+
+    <pre id="log"></pre>
+  </body>
+</html>

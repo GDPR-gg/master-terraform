@@ -1,0 +1,28 @@
+# action.yml
+name: 'Tag/Release on Push Action'
+description: 'Creates a Tag/Release on Push. Generates Release Notes. Customizable with Pull Request Labels'
+author: 'rymndhng'
+inputs:
+  bump_version_scheme:
+    description: 'The bumping scheme to use by default. One of minor|major|patch|norelease'
+    required: true
+  release_body:
+    description: "Additional text to insert into the release's body."
+    required: false
+  tag_prefix:
+    description: "Prefix to append to git tags. To unset this, set version_prefix to an empty string."
+    required: false
+    default: 'v'
+outputs:
+  tag_name:
+    description: 'Tag of released version'
+  version:
+    description: 'Version of release'
+  body:
+    description: 'Github Release Body in Text'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+branding:
+  icon: 'award'
+  color: 'blue'

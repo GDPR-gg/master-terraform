@@ -1,0 +1,14 @@
+*.pyc
+*.pyo
+.DS_Store
+.idea
+.cache
+.tox
+.coverage
+*.egg-info
+build
+*.deb
+*.rpm
+
+# emacs backup files
+*.*~

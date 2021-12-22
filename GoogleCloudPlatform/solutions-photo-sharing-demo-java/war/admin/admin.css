@@ -1,0 +1,93 @@
+/*
+ * The main CSS stylesheet for the application.
+ *
+ * Author: Michael Tang (ntang@google.com)
+ */
+.layout-table {
+  width: 1300px;
+  height: 700px;
+  border: 0px;
+}
+
+.header-row {
+  background: white;
+}
+
+.menu-column {
+  width: 200px;
+  vertical-align: top;
+  text-align: left;
+  background: #E6ECDD;
+}
+
+.menu-table {
+  width: 100%;
+}
+
+.menu-item {
+  width: 100%;
+}
+
+.content-column {
+  width: 800px;
+  height: 600px;
+  background: #C2C4BF;
+  vertical-align: top;
+}
+
+.footer-row {
+  text-align: center;
+  background: #E4E4C4;
+}
+
+.content-table {
+  width: 100%;
+  height: 600px;
+  vertical-align: top;
+}
+
+.image-property-column {
+  vertical-align: top;
+  background: #E6ECDD;
+}
+
+.image-property-table {
+  width: 300px;
+  height: 100%;
+  vertical-align: top;
+}
+
+.image-box {
+  width: 800px;
+  height: 100%;
+  overflow: auto;
+}
+
+.comment-text {
+  width: 300px;
+}
+
+.comment-div {
+  width: 100%;
+  overflow: auto;
+}
+
+.comment-table {
+  width: 100%;
+  overflow: auto;
+}
+
+.comment-row-0 {
+  background: #F0F0D9;
+}
+
+.comment-row-1 {
+  background: #E4E4C4;
+}
+
+.comment-suffix {
+  color: gray;
+  font-size: .9em;
+  font-style: italic;
+  font-size: .9em;
+}

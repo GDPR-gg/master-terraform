@@ -1,0 +1,15 @@
+---
+# Pesudo variables to be replaced
+# This allows better test coverage
+replacements:
+  '<TOKEN>': 's.KkNJYWF5g0pomcCLEmDdOVCW'
+  '<your-BIG-IP-mgmt-ip>': '10.1.2.3'
+  '<your-consul-ip>': '10.1.2.4'
+  '<your-BIG-IP-virtual-ip>': '10.1.2.5'
+  '<your-authorization-header>' : 'YWxhZGRpbjpvcGVuc2VzYW1l'
+  '<External endpoint URI for your HCS on Azure datacenter>' : 'https://www.consul.io'
+  '<Your Azure subscription ID>' : '06f0a6e4-ce89-b7a4-8429-4d5f987ff3c1'
+  '<The resource group>' : 'resource_group'
+  '<Your HCS on Azure instance name>' : 'learnlab'
+  '<The Consul datacenter name>' : 'consul-learn-test'
+  '<aks-cluster-name>' : 'learn-hcs-aks-client'

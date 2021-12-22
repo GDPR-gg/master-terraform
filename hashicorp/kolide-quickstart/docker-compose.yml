@@ -1,0 +1,53 @@
+version: '2'
+services:
+  mysql:
+    image: mysql:5.7
+    command: mysqld --datadir=/tmp/mysqldata
+    environment:
+      MYSQL_ROOT_PASSWORD: toor
+      MYSQL_DATABASE: kolide
+      MYSQL_USER: kolide
+      MYSQL_PASSWORD: kolide
+    volumes:
+      - ./mysqldata:/tmp
+    expose:
+      - "3306"
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    expose:
+      - "1025"
+    ports:
+      - "8025:8025"
+
+  redis:
+    image: redis:3.2.4
+    expose:
+      - "6379"
+
+  fleet:
+    image: kolide/fleet:latest
+    command: sh -c "echo '\n' | /usr/bin/fleet prepare db --config=/tmp/kolide.yml && /usr/bin/fleet serve --config=/tmp/kolide.yml"
+    depends_on:
+      - mysql
+      - mailhog
+      - redis
+    volumes:
+      - .:/tmp
+    ports:
+      - "8412:8412"
+
+
+  ubuntu14-osquery:
+    image: "kolide/osquery:latest"
+    volumes:
+      - ./docker_hosts/server.crt:/etc/osquery/kolide.crt
+      - ./docker_hosts/kolide.flags:/etc/osquery/kolide.flags
+      - ./docker_hosts/kolide_secret:/etc/osquery/kolide_secret
+    extra_hosts:
+      - "${KOLIDE_HOST_HOSTNAME}:${KOLIDE_HOST_IP}"
+    command: osqueryd --flagfile=/etc/osquery/kolide.flags
+    ulimits:
+      core:
+        hard:  1000000000
+        soft:  1000000000

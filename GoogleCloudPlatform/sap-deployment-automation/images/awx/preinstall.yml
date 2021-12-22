@@ -1,0 +1,75 @@
+# Copyright 2021 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+- hosts: localhost
+  connection: local
+  gather_facts: false
+  become: false
+  tasks:
+  - name: expand awx installer inventory variables
+    template:
+      src: inventory/host_vars/default.j2
+      dest: '{{ playbook_dir }}/inventory/host_vars/default'
+  - name: modify docker compose template to add volumes for terraform and unzip
+    blockinfile:
+      path: '{{ playbook_dir }}/../../third_party/github.com/ansible/awx/installer/roles/local_docker/templates/docker-compose.yml.j2'
+      # Block gets inserted after last match, which in this case is in the volumes of the task container.
+      insertafter: '^      - rsyslog-config:/var/lib/awx/rsyslog/$'
+      block: |
+        # This comment prevents spaces at the beginning of the next lines from being stripped.
+              - "/usr/local/bin/terraform:/usr/local/bin/terraform"
+              - "/usr/bin/unzip:/usr/bin/unzip"
+              - "/usr/bin/zipinfo:/usr/bin/zipinfo"
+              - "/usr/lib/x86_64-linux-gnu/libbz2.so.1.0:/usr/lib64/libbz2.so.1.0"
+  - name: stat sap-iac repo to get absolute path
+    stat:
+      path: '{{ playbook_dir }}/../..'
+    register: stat_sap_iac
+  - name: define repository path
+    set_fact:
+      sap_iac_path: '{{ stat_sap_iac.stat.path.split("/")[0:-4] | join("/") }}'
+  - name: archive repository for copying to image build machine
+    archive:
+      path:
+      - '{{ sap_iac_path }}/ansible*'
+      - '{{ sap_iac_path }}/stacks'
+      - '{{ sap_iac_path }}/terraform'
+      - '{{ sap_iac_path }}/third_party'
+      dest: '{{ playbook_dir }}/sap-iac.tar.gz'
+      format: gz
+    register: archive_sap_iac
+
+- hosts: all
+  gather_facts: false
+  become: true
+  vars:
+    terraform_url: https://releases.hashicorp.com/terraform/{{ terraform_version }}/terraform_{{ terraform_version }}_linux_amd64.zip
+  tasks:
+  - name: install packages
+    apt:
+      name:
+      - ansible-tower-cli
+      - docker.io
+      - docker-compose
+      - git
+      - python3-docker
+      - python3-venv
+      - unzip
+  # This installs Terraform in /usr/local/bin on the host, which is mounted as a volume
+  # in the AWX task container.
+  - name: download terraform
+    unarchive:
+      src: '{{ terraform_url }}'
+      dest: /usr/local/bin
+      remote_src: true

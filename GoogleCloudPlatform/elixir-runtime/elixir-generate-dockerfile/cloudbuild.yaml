@@ -1,0 +1,10 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['pull', '$_ELIXIR_BASE_IMAGE:$_TAG']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['tag', '$_ELIXIR_BASE_IMAGE:$_TAG', 'elixir-base']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', '$_IMAGE:$_TAG', '.']
+
+images:
+  - '$_IMAGE:$_TAG'

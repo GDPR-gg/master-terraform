@@ -1,0 +1,2096 @@
+<% wrap_layout :inner do %>
+    <% content_for :sidebar do %>
+        <div class="docs-sidebar hidden-print affix-top" role="complementary">
+            <ul class="nav docs-sidenav">
+                <li>
+                    <a href="/docs/providers/index.html">All Providers</a>
+                </li>
+
+                <li>
+                    <a href="/docs/providers/alicloud/index.html">Alicloud Provider</a>
+                </li>
+
+                <li>
+                    <a href="#">Guides</a>
+                    <ul class="nav nav-visible">
+                        <li>
+                            <a href="/docs/providers/alicloud/guides/getting-account.html">Alibaba Cloud Account Guide</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="#">Provider Data Sources</a>
+                    <ul class="nav">
+                        <li>
+                            <a href="/docs/providers/alicloud/d/account.html">alicloud_account</a>
+                        </li>
+                        <li>
+                            <a href="/docs/providers/alicloud/d/caller_identity.html">alicloud_caller_identity</a>
+                        </li>
+                        <li>
+                            <a href="/docs/providers/alicloud/d/file_crc64_checksum.html">alicloud_file_crc64_checksum</a>
+                        </li>
+                        <li>
+                            <a href="/docs/providers/alicloud/d/regions.html">alicloud_regions</a>
+                        </li>
+                        <li>
+                            <a href="/docs/providers/alicloud/d/zones.html">alicloud_zones</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li>
+                  <a href="#">Actiontrail</a>
+                  <ul class="nav">
+                      <li>
+                          <a href="#">Data Sources</a>
+                          <ul class="nav nav-auto-expand">
+                              <li>
+                                <a href="/docs/providers/alicloud/d/actiontrails.html">alicloud_actiontrails</a>
+                              </li>
+                          </ul>
+                      </li>
+                      <li>
+                          <a href="#">Resources</a>
+                          <ul class="nav nav-auto-expand">
+                              <li>
+                                <a href="/docs/providers/alicloud/r/actiontrail.html">alicloud_actiontrail</a>
+                              </li>
+                          </ul>
+                      </li>
+                  </ul>
+                </li>
+
+                <li>
+                  <a href="#">Alikafka</a>
+                  <ul class="nav">
+                      <li>
+                          <a href="#">Data Sources</a>
+                          <ul class="nav nav-auto-expand">
+                            <li>
+                              <a href="/docs/providers/alicloud/d/alikafka_consumer_groups.html">alicloud_alikafka_consumer_groups</a>
+                            </li>
+                            <li>
+                              <a href="/docs/providers/alicloud/d/alikafka_instances.html">alicloud_alikafka_instances</a>
+                            </li>
+                            <li>
+                              <a href="/docs/providers/alicloud/d/alikafka_sasl_acls.html">alicloud_alikafka_sasl_acls</a>
+                            </li>
+                            <li>
+                              <a href="/docs/providers/alicloud/d/alikafka_sasl_users.html">alicloud_alikafka_sasl_users</a>
+                            </li>
+                            <li>
+                              <a href="/docs/providers/alicloud/d/alikafka_topics.html">alicloud_alikafka_topics</a>
+                            </li>
+                          </ul>
+                      </li>
+                      <li>
+                          <a href="#">Resources</a>
+                          <ul class="nav nav-auto-expand">
+                            <li>
+                              <a href="/docs/providers/alicloud/r/alikafka_consumer_group.html">alicloud_alikafka_consumer_group</a>
+                            </li>
+                            <li>
+                              <a href="/docs/providers/alicloud/r/alikafka_instance.html">alicloud_alikafka_instance</a>
+                            </li>
+                            <li>
+                              <a href="/docs/providers/alicloud/r/alikafka_sasl_acl.html">alicloud_alikafka_sasl_acl</a>
+                            </li>
+                            <li>
+                              <a href="/docs/providers/alicloud/r/alikafka_sasl_user.html">alicloud_alikafka_sasl_user</a>
+                            </li>
+                            <li>
+                              <a href="/docs/providers/alicloud/r/alikafka_topic.html">alicloud_alikafka_topic</a>
+                            </li>
+                          </ul>
+                      </li>
+                  </ul>
+                </li>
+
+                <li>
+                  <a href="#">AnalyticDB for MySQL (ADB)</a>
+                  <ul class="nav">
+                      <li>
+                        <a href="#">Data Sources</a>
+                        <ul class="nav nav-auto-expand">
+                            <li>
+                                <a href="/docs/providers/alicloud/d/adb_clusters.html">alicloud_adb_clusters</a>
+                            </li>
+                            <li>
+                              <a href="/docs/providers/alicloud/d/adb_zones.html">alicloud_adb_zones</a>
+                            </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a href="#">Resources</a>
+                        <ul class="nav nav-auto-expand">
+                            <li>
+                                <a href="/docs/providers/alicloud/r/adb_account.html">alicloud_adb_account</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/adb_backup_policy.html">alicloud_adb_backup_policy</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/adb_cluster.html">alicloud_adb_cluster</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/adb_connection.html">alicloud_adb_connection</a>
+                            </li>
+                        </ul>
+                      </li>
+                  </ul>
+                </li>
+
+                <li>
+                  <a href="#">AnalyticDB for PostgreSQL (GPDB)</a>
+                  <ul class="nav">
+                      <li>
+                        <a href="#">Data Sources</a>
+                        <ul class="nav nav-auto-expand">
+                          <li>
+                            <a href="/docs/providers/alicloud/d/gpdb_instances.html">alicloud_gpdb_instances</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/gpdb_instances.html">alicloud_gpdb_instances</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a href="#">Resources</a>
+                        <ul class="nav nav-auto-expand">
+                          <li>
+                            <a href="/docs/providers/alicloud/r/gpdb_connection.html">alicloud_gpdb_connection</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/gpdb_instance.html">alicloud_gpdb_instance</a>
+                          </li>
+                        </ul>
+                      </li>
+                  </ul>
+                </li>
+
+                <li>
+                  <a href="#">API Gateway</a>
+                  <ul class="nav">
+                      <li>
+                        <a href="#">Data Sources</a>
+                        <ul class="nav nav-auto-expand">
+                          <li>
+                            <a href="/docs/providers/alicloud/d/api_gateway_apis.html">alicloud_api_gateway_apis</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/api_gateway_apps.html">alicloud_api_gateway_apps</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/api_gateway_groups.html">alicloud_api_gateway_groups</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li>
+                          <a href="#">Resources</a>
+                          <ul class="nav nav-auto-expand">
+                            <li>
+                              <a href="/docs/providers/alicloud/r/api_gateway_api.html">alicloud_api_gateway_api</a>
+                            </li>
+                            <li>
+                              <a href="/docs/providers/alicloud/r/api_gateway_app.html">alicloud_api_gateway_app</a>
+                            </li>
+                            <li>
+                              <a href="/docs/providers/alicloud/r/api_gateway_app_attachment.html">alicloud_api_gateway_app_attachment</a>
+                            </li>
+                            <li>
+                              <a href="/docs/providers/alicloud/r/api_gateway_group.html">alicloud_api_gateway_group</a>
+                            </li>
+                            <li>
+                              <a href="/docs/providers/alicloud/r/api_gateway_vpc_access.html">alicloud_api_gateway_vpc_access</a>
+                            </li>
+                          </ul>
+                      </li>
+                  </ul>
+                </li>
+
+               <li>
+                 <a href="#">Auto Scaling (ESS)</a>
+                 <ul class="nav">
+                     <li>
+                       <a href="#">Data Sources</a>
+                       <ul class="nav nav-auto-expand">
+                         <li>
+                           <a href="/docs/providers/alicloud/d/ess_alarms.html">alicloud_ess_alarms</a>
+                         </li>
+                         <li>
+                           <a href="/docs/providers/alicloud/d/ess_lifecycle_hooks.html">alicloud_ess_lifecycle_hooks</a>
+                         </li>
+                         <li>
+                           <a href="/docs/providers/alicloud/d/ess_notifications.html">alicloud_ess_notifications</a>
+                         </li>
+                         <li>
+                           <a href="/docs/providers/alicloud/d/ess_scaling_configurations.html">alicloud_ess_scaling_configurations</a>
+                         </li>
+                         <li>
+                           <a href="/docs/providers/alicloud/d/ess_scaling_groups.html">alicloud_ess_scaling_groups</a>
+                         </li>
+                         <li>
+                           <a href="/docs/providers/alicloud/d/ess_scaling_rules.html">alicloud_ess_scaling_rules</a>
+                         </li>
+                         <li>
+                           <a href="/docs/providers/alicloud/d/ess_scheduled_tasks.html">alicloud_ess_scheduled_tasks</a>
+                         </li>
+                       </ul>
+                     </li>
+                     <li>
+                       <a href="#">Resources</a>
+                       <ul class="nav nav-auto-expand">
+                         <li>
+                           <a href="/docs/providers/alicloud/r/ess_alarm.html">alicloud_ess_alarm</a>
+                         </li>
+                         <li>
+                           <a href="/docs/providers/alicloud/r/ess_attachment.html">alicloud_ess_attachment</a>
+                         </li>
+                         <li>
+                           <a href="/docs/providers/alicloud/r/ess_notification.html">alicloud_ess_notification</a>
+                         </li>
+                         <li>
+                           <a href="/docs/providers/alicloud/r/ess_scaling_lifecycle_hook.html">alicloud_ess_lifecycle_hook</a>
+                         </li>
+                         <li>
+                           <a href="/docs/providers/alicloud/r/ess_scaling_configuration.html">alicloud_ess_scaling_configuration</a>
+                         </li>
+                         <li>
+                           <a href="/docs/providers/alicloud/r/ess_scaling_group.html">alicloud_ess_scaling_group</a>
+                         </li>
+                         <li>
+                           <a href="/docs/providers/alicloud/r/ess_scaling_rule.html">alicloud_ess_scaling_rule</a>
+                         </li>
+                         <li>
+                           <a href="/docs/providers/alicloud/r/ess_schedule.html">alicloud_ess_schedule</a>
+                         </li>
+                         <li>
+                           <a href="/docs/providers/alicloud/r/ess_scheduled_task.html">alicloud_ess_scheduled_task</a>
+                         </li>
+                         <li>
+                           <a href="/docs/providers/alicloud/r/ess_scalinggroup_vserver_groups.html">alicloud_ess_scalinggroup_vserver_groups</a>
+                         </li>
+                       </ul>
+                     </li>
+                 </ul>
+               </li>
+
+                <li>
+                  <a href="#">BGP-Line Anti-DDoS Resources</a>
+                  <ul class="nav">
+                      <li>
+                        <a href="#">Data Sources</a>
+                        <ul class="nav nav-auto-expand">
+                          <li>
+                            <a href="/docs/providers/alicloud/d/ddosbgp_instances.html">alicloud_ddosbgp_instances</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/ddoscoo_instances.html">alicloud_ddoscoo_instances</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a href="#">Resources</a>
+                        <ul class="nav nav-auto-expand">
+                          <li>
+                            <a href="/docs/providers/alicloud/r/ddosbgp_instance.html">alicloud_ddosbgp_instance</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/ddoscoo_instance.html">alicloud_ddoscoo_instance</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/ddoscoo_scheduler_rule.html">alicloud_ddoscoo_scheduler_rule</a>
+                          </li>
+                        </ul>
+                      </li>
+                  </ul>
+                </li>
+
+                <li>
+                  <a href="#">CDN</a>
+                  <ul class="nav">
+                      <li>
+                          <a href="#">Resources</a>
+                          <ul class="nav nav-auto-expand">
+                            <li>
+                              <a href="/docs/providers/alicloud/r/cdn_domain.html">alicloud_cdn_domain</a>
+                            </li>
+                            <li>
+                              <a href="/docs/providers/alicloud/r/cdn_domain_config.html">alicloud_cdn_domain_config</a>
+                            </li>
+                            <li>
+                              <a href="/docs/providers/alicloud/r/cdn_domain_new.html">alicloud_cdn_domain_new</a>
+                            </li>
+                          </ul>
+                      </li>
+                  </ul>
+                </li>
+
+                <li>
+                 <a href="#">Cloud Bastionhost</a>
+                 <ul class="nav">
+                    <li>
+                         <a href="#">Data Sources</a>
+                         <ul class="nav nav-auto-expand">
+                             <li>
+                               <a href="/docs/providers/alicloud/d/yundun_bastionhost_instances.html">alicloud_yundun_bastionhost_instances</a>
+                             </li>
+                         </ul>
+                    </li>
+                    <li>
+                         <a href="#">Resources</a>
+                         <ul class="nav nav-auto-expand">
+                             <li>
+                               <a href="/docs/providers/alicloud/r/yundun_bastionhost_instance.html">alicloud_yundun_bastionhost_instance</a>
+                             </li>
+                         </ul>
+                    </li>
+                </ul>
+                </li>
+
+                <li>
+                  <a href="#">Cloud Enterprise Network (CEN)</a>
+                  <ul class="nav">
+                      <li>
+                          <a href="#">Data Sources</a>
+                          <ul class="nav nav-auto-expand">
+                            <li>
+                              <a href="/docs/providers/alicloud/d/cen_bandwidth_limits.html">alicloud_cen_bandwidth_limits</a>
+                            </li>
+                            <li>
+                              <a href="/docs/providers/alicloud/d/cen_bandwidth_packages.html">alicloud_cen_bandwidth_packages</a>
+                            </li>
+                            <li>
+                              <a href="/docs/providers/alicloud/d/cen_flowlogs.html">alicloud_cen_flowlogs</a>
+                            </li>
+                            <li>
+                              <a href="/docs/providers/alicloud/d/cen_instances.html">alicloud_cen_instances</a>
+                            </li>
+                            <li>
+                              <a href="/docs/providers/alicloud/d/cen_private_zones.html">alicloud_cen_private_zones</a>
+                            </li>
+                            <li>
+                              <a href="/docs/providers/alicloud/d/cen_region_route_entries.html">alicloud_cen_region_route_entries</a>
+                            </li>
+                            <li>
+                              <a href="/docs/providers/alicloud/d/cen_route_entries.html">alicloud_cen_route_entries</a>
+                            </li>
+                            <li>
+                              <a href="/docs/providers/alicloud/d/cen_route_maps.html">alicloud_cen_route_maps</a>
+                            </li>
+                          </ul>
+                      </li>
+                      <li>
+                          <a href="#">Resources</a>
+                          <ul class="nav nav-auto-expand">
+                            <li>
+                              <a href="/docs/providers/alicloud/r/cen_bandwidth_limit.html">alicloud_cen_bandwidth_limit</a>
+                            </li>
+                            <li>
+                              <a href="/docs/providers/alicloud/r/cen_bandwidth_package.html">alicloud_cen_bandwidth_package</a>
+                            </li>
+                            <li>
+                              <a href="/docs/providers/alicloud/r/cen_bandwidth_package_attachment.html">alicloud_cen_bandwidth_package_attachment</a>
+                            </li>
+                            <li>
+                              <a href="/docs/providers/alicloud/r/cen_flowlog.html">alicloud_cen_flowlog</a>
+                            </li>
+                            <li>
+                              <a href="/docs/providers/alicloud/r/cen_instance.html">alicloud_cen_instance</a>
+                            </li>
+                            <li>
+                              <a href="/docs/providers/alicloud/r/cen_instance_attachment.html">alicloud_cen_instance_attachment</a>
+                            </li>
+                            <li>
+                              <a href="/docs/providers/alicloud/r/cen_instance_grant.html">alicloud_cen_instance_grant</a>
+                            </li>
+                            <li>
+                              <a href="/docs/providers/alicloud/r/cen_private_zone.html">alicloud_cen_private_zone</a>
+                            </li>
+                            <li>
+                              <a href="/docs/providers/alicloud/r/cen_route_entry.html">alicloud_cen_route_entry</a>
+                            </li>
+                            <li>
+                              <a href="/docs/providers/alicloud/r/cen_route_map.html">alicloud_cen_route_map</a>
+                            </li>
+                            <li>
+                              <a href="/docs/providers/alicloud/r/cen_vbr_health_check.html">alicloud_cen_vbr_health_check</a>
+                            </li>
+                          </ul>
+                      </li>
+                  </ul>
+                </li>
+
+                <li>
+                  <a href="#">Cloud Connect Network</a>
+                  <ul class="nav">
+                      <li>
+                        <a href="#">Data Sources</a>
+                        <ul class="nav nav-auto-expand">
+                          <li>
+                            <a href="/docs/providers/alicloud/d/cloud_connect_networks.html">alicloud_cloud_connect_networks</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a href="#">Resources</a>
+                        <ul class="nav nav-auto-expand">
+                          <li>
+                            <a href="/docs/providers/alicloud/r/cloud_connect_network.html">alicloud_cloud_connect_network</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/cloud_connect_network_attachment.html">alicloud_cloud_connect_network_attachment</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/cloud_connect_network_grant.html">alicloud_cloud_connect_network_grant</a>
+                          </li>
+                        </ul>
+                      </li>
+                  </ul>
+                </li>
+
+                <li>
+                  <a href="#">Cloud DBAudit</a>
+                  <ul class="nav">
+                     <li>
+                         <a href="#">Data Sources</a>
+                         <ul class="nav nav-auto-expand">
+                             <li>
+                                 <a href="/docs/providers/alicloud/d/yundun_dbaudit_instances.html">alicloud_yundun_dbaudit_instances</a>
+                             </li>
+                         </ul>
+                     </li>
+                     <li>
+                         <a href="#">Resources</a>
+                         <ul class="nav nav-auto-expand">
+                             <li>
+                                 <a href="/docs/providers/alicloud/r/yundun_dbaudit_instance.html">alicloud_yundun_dbaudit_instance</a>
+                             </li>
+                         </ul>
+                   </li>
+                  </ul>
+                </li>
+
+                <li>
+                  <a href="#">Cloud Monitor</a>
+                  <ul class="nav">
+                      <li>
+                        <a href="#">Resources</a>
+                        <ul class="nav nav-auto-expand">
+                          <li>
+                            <a href="/docs/providers/alicloud/r/cms_alarm.html">alicloud_cms_alarm</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/cms_site_monitor.html">alicloud_cms_site_monitor</a>
+                          </li>
+                        </ul>
+                      </li>
+                  </ul>
+                </li>
+
+                <li>
+                  <a href="#">Container Service (CS)</a>
+                  <ul class="nav">
+                      <li>
+                        <a href="#">Data Sources</a>
+                        <ul class="nav nav-auto-expand">
+                          <li>
+                            <a href="/docs/providers/alicloud/d/cs_kubernetes_clusters.html">alicloud_cs_kubernetes_clusters</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/cs_managed_kubernetes_clusters.html">alicloud_cs_managed_kubernetes_clusters</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/cs_serverless_kubernetes_clusters.html">alicloud_cs_serverless_kubernetes_clusters</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a href="#">Resources</a>
+                        <ul class="nav nav-auto-expand">
+                          <li>
+                            <a href="/docs/providers/alicloud/r/container_cluster.html">alicloud_container_cluster</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/cs_application.html">alicloud_cs_application</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/cs_kubernetes.html">alicloud_cs_kubernetes</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/cs_kubernetes_autoscaler.html">alicloud_cs_kubernetes_autoscaler</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/cs_managed_kubernetes.html">alicloud_cs_managed_kubernetes</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/cs_serverless_kubernetes.html">alicloud_cs_serverless_kubernetes</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/cs_swarm.html">alicloud_cs_swarm</a>
+                          </li>
+                        </ul>
+                      </li>
+                  </ul>
+                </li>
+
+                <li>
+                  <a href="#">Container Registry (CR)</a>
+                  <ul class="nav">
+                      <li>
+                        <a href="#">Data Sources</a>
+                        <ul class="nav nav-auto-expand">
+                          <li>
+                            <a href="/docs/providers/alicloud/d/cr_namespaces.html">alicloud_cr_namespaces</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/cr_repos.html">alicloud_cr_repos</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/cr_ee_instances.html">alicloud_cr_ee_instances</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/cr_ee_namespaces.html">alicloud_cr_ee_namespaces</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/cr_ee_repos.html">alicloud_cr_ee_repos</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/cr_ee_sync_rules.html">alicloud_cr_ee_sync_rules</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a href="#">Resources</a>
+                        <ul class="nav nav-auto-expand">
+                          <li>
+                            <a href="/docs/providers/alicloud/r/cr_namespace.html">alicloud_cr_namespace</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/cr_repo.html">alicloud_cr_repo</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/cr_ee_namespace.html">alicloud_cr_ee_namespace</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/cr_ee_repo.html">alicloud_cr_ee_repo</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/cr_ee_sync_rule.html">alicloud_cr_ee_sync_rule</a>
+                          </li>
+                        </ul>
+                      </li>
+                  </ul>
+                </li>
+
+                <li>
+                  <a href="#">Cassandra</a>
+                  <ul class="nav">
+                      <li>
+                        <a href="#">Data Sources</a>
+                        <ul class="nav nav-auto-expand">
+                          <li>
+                            <a href="/docs/providers/alicloud/d/cassandra_clusters.html">alicloud_cassandra_clusters</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/cassandra_data_centers.html">alicloud_cassandra_data_centers</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/cassandra_zones.html">alicloud_cassandra_zones</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a href="#">Resources</a>
+                        <ul class="nav nav-auto-expand">
+                          <li>
+                            <a href="/docs/providers/alicloud/r/cassandra_cluster.html">alicloud_cassandra_cluster</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/cassandra_data_center.html">alicloud_cassandra_data_center</a>
+                          </li>
+                        </ul>
+                      </li>
+                  </ul>
+                </li>
+
+                <li>
+                  <a href="#">Datahub Service</a>
+                  <ul class="nav">
+                      <li>
+                        <a href="#">Resources</a>
+                        <ul class="nav nav-auto-expand">
+                          <li>
+                            <a href="/docs/providers/alicloud/r/datahub_project.html">alicloud_datahub_project</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/datahub_subscription.html">alicloud_datahub_subscription</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/datahub_topic.html">alicloud_datahub_topic</a>
+                          </li>
+                        </ul>
+                      </li>
+                  </ul>
+                </li>
+
+                <li>
+                  <a href="#">DCDN</a>
+                  <ul class="nav">
+                      <li>
+                        <a href="#">Data Sources</a>
+                        <ul class="nav nav-auto-expand">
+                          <li>
+                            <a href="/docs/providers/alicloud/d/dcdn_domains.html">alicloud_dcdn_domains</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a href="#">Resources</a>
+                        <ul class="nav nav-auto-expand">
+                          <li>
+                            <a href="/docs/providers/alicloud/r/dcdn_domain.html">alicloud_dcdn_domain</a>
+                           </li>
+                         </ul>
+                       </li>
+                   </ul>
+                </li>
+
+                <li>
+                  <a href="#">Distributed Relational Database Service (DRDS)</a>
+                  <ul class="nav">
+                      <li>
+                        <a href="#">Data Sources</a>
+                        <ul class="nav nav-auto-expand">
+                          <li>
+                            <a href="/docs/providers/alicloud/d/drds_instances.html">alicloud_drds_instances</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a href="#">Resources</a>
+                        <ul class="nav nav-auto-expand">
+                          <li>
+                            <a href="/docs/providers/alicloud/r/drds_instance.html">alicloud_drds_instance</a>
+                          </li>
+                        </ul>
+                      </li>
+                  </ul>
+                </li>
+
+                <li>
+                  <a href="#">DMS-Enterprise</a>
+                  <ul class="nav">
+                      <li>
+                        <a href="#">Data Sources</a>
+                        <ul class="nav nav-auto-expand">
+                          <li>
+                            <a href="/docs/providers/alicloud/d/dms_enterprise_instances.html">alicloud_dms_enterprise_instances</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/dms_enterprise_users.html">alicloud_dms_enterprise_users</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a href="#">Resources</a>
+                        <ul class="nav nav-auto-expand">
+                          <li>
+                            <a href="/docs/providers/alicloud/r/dms_enterprise_instance.html">alicloud_dms_enterprise_instance</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/dms_enterprise_user.html">alicloud_dms_enterprise_user</a>
+                          </li>
+                        </ul>
+                      </li>
+                  </ul>
+                </li>
+
+                <li>
+                  <a href="#">DNS</a>
+                  <ul class="nav">
+                      <li>
+                        <a href="#">Data Sources</a>
+                        <ul class="nav nav-auto-expand">
+                          <li>
+                            <a href="/docs/providers/alicloud/d/alidns_domain_groups.html">alicloud_alidns_domain_groups</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/alidns_records.html">alicloud_alidns_records</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/dns_instances.html">alicloud_dns_instances</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/dns_domain_groups.html">alicloud_dns_domain_groups</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/dns_domain_records.html">alicloud_dns_domain_records</a>
+                          </li>
+                          <li>
+                           <a href="/docs/providers/alicloud/d/dns_domain_txt_guid.html">alicloud_dns_domain_txt_guid</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/dns_domains.html">alicloud_dns_domains</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/dns_groups.html">alicloud_dns_groups</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/dns_records.html">alicloud_dns_records</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/dns_resolution_lines.html">alicloud_resolution_lines</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a href="#">Resources</a>
+                        <ul class="nav nav-auto-expand">
+                          <li>
+                            <a href="/docs/providers/alicloud/r/alidns_domain_group.html">alicloud_alidns_domain_group</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/alidns_record.html">alicloud_alidns_record</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/dns.html">alicloud_dns</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/dns_domain.html">alicloud_dns_domain</a>
+                          </li>
+                          <li>
+                           <a href="/docs/providers/alicloud/r/dns_domain_attachment.html">alicloud_dns_domain_attachment</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/dns_group.html">alicloud_dns_group</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/dns_instance.html">alicloud_dns_instance</a>
+                           </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/dns_record.html">alicloud_dns_record</a>
+                          </li>
+                        </ul>
+                      </li>
+                  </ul>
+                </li>
+
+                <li>
+                  <a href="#">Elastic Container Instance (ECI)</a>
+                  <ul class="nav">
+                      <li>
+                        <a href="#">Data Sources</a>
+                        <ul class="nav nav-auto-expand">
+                          <li>
+                            <a href="/docs/providers/alicloud/d/eci_image_caches.html">alicloud_eci_image_caches</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a href="#">Resources</a>
+                        <ul class="nav nav-auto-expand">
+                          <li>
+                            <a href="/docs/providers/alicloud/r/eci_image_cache.html">alicloud_eci_image_cache</a>
+                          </li>
+                        </ul>
+                      </li>
+                  </ul>
+                </li>
+
+                <li>
+                  <a href="#">ECS</a>
+                  <ul class="nav">
+                      <li>
+                        <a href="#">Data Sources</a>
+                        <ul class="nav nav-auto-expand">
+                          <li>
+                            <a href="/docs/providers/alicloud/d/disks.html">alicloud_disks</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/ecs_dedicated_hosts.html">alicloud_ecs_dedicated_hosts</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/images.html">alicloud_images</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/instance_type_families.html">alicloud_instance_type_families</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/instance_types.html">alicloud_instance_types</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/instances.html">alicloud_instances</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/key_pairs.html">alicloud_key_pairs</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/network_interfaces.html">alicloud_network_interfaces</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/security_group_rules.html">alicloud_security_group_rules</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/security_groups.html">alicloud_security_groups</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/snapshots.html">alicloud_snapshots</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a href="#">Resources</a>
+                        <ul class="nav nav-auto-expand">
+                           <li>
+                            <a href="/docs/providers/alicloud/r/auto_provisioning_group.html">alicloud_auto_provisioning_group</a>
+                           </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/disk.html">alicloud_disk</a>
+                          </li>
+                           <li>
+                             <a href="/docs/providers/alicloud/r/ecs_dedicated_host.html">alicloud_ecs_dedicated_host</a>
+                           </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/disk_attachment.html">alicloud_disk_attachment</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/image.html">alicloud_image</a>
+                          </li>
+                           <li>
+                             <a href="/docs/providers/alicloud/r/image_export.html">alicloud_image_export</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/image_copy.html">alicloud_image_copy</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/image_import.html">alicloud_image_import</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/image_share_permission.html">alicloud_image_share_permission</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/instance.html">alicloud_instance</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/key_pair.html">alicloud_key_pair</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/key_pair_attachment.html">alicloud_key_pair_attachment</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/network_interface.html">alicloud_network_interface</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/network_interface_attachment.html">alicloud_network_interface_attachment</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/reserved_instance.html">alicloud_reserved_instance</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/security_group.html">alicloud_security_group</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/security_group_rule.html">alicloud_security_group_rule</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/snapshot.html">alicloud_snapshot</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/snapshot_policy.html">alicloud_snapshot_policy</a>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/launch_template.html">alicloud_launch_template</a>
+                          </li>
+                        </ul>
+                      </li>
+                  </ul>
+                </li>
+
+                <li>
+                  <a href="#">EDAS</a>
+                  <ul class="nav">
+                    <li>
+                      <a href="#">Data Sources</a>
+                      <ul class="nav nav-auto-expand">
+                        <li>
+                          <a href="/docs/providers/alicloud/d/edas_applications.html">alicloud_edas_applications</a>
+                        </li>
+                        <li>
+                          <a href="/docs/providers/alicloud/d/edas_clusters.html">alicloud_edas_clusters</a>
+                        </li>
+                        <li>
+                          <a href="/docs/providers/alicloud/d/edas_deploy_groups.html">alicloud_edas_deploy_groups</a>
+                        </li>
+                      </ul>
+                    </li>
+                    <li>
+                      <a href="#">Resources</a>
+                      <ul class="nav nav-auto-expand">
+                        <li>
+                          <a href="/docs/providers/alicloud/r/edas_application.html">alicloud_edas_application</a>
+                        </li>
+                        <li>
+                          <a href="/docs/providers/alicloud/r/edas_application_deployment.html">alicloud_edas_application_deployment</a>
+                        </li>
+                        <li>
+                          <a href="/docs/providers/alicloud/r/edas_application_scale.html">alicloud_edas_application_scale</a>
+                        </li>
+                        <li>
+                          <a href="/docs/providers/alicloud/r/edas_cluster.html">alicloud_edas_cluster</a>
+                        </li>
+                        <li>
+                          <a href="/docs/providers/alicloud/r/edas_deploy_group.html">alicloud_edas_deploy_group</a>
+                        </li>
+                        <li>
+                          <a href="/docs/providers/alicloud/r/edas_instance_cluster_attachment.html">alicloud_edas_instance_cluster_attachment</a>
+                        </li>
+                        <li>
+                          <a href="/docs/providers/alicloud/r/edas_k8s_cluster.html">alicloud_edas_k8s_cluster</a>
+                        </li>
+                        <li>
+                          <a href="/docs/providers/alicloud/r/edas_slb_attachment.html">alicloud_edas_slb_attachment</a>
+                        </li>
+
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+
+                <li>
+                  <a href="#">Elasticsearch</a>
+                  <ul class="nav">
+                      <li>
+                        <a href="#">Data Sources</a>
+                        <ul class="nav nav-auto-expand">
+                          <li>
+                            <a href="/docs/providers/alicloud/d/elasticsearch.html">alicloud_elasticsearch_instances</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/elasticsearch_zones.html">alicloud_elasticsearch_zones</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a href="#">Resources</a>
+                        <ul class="nav nav-auto-expand">
+                          <li>
+                            <a href="/docs/providers/alicloud/r/elasticsearch.html">alicloud_elasticsearch_instance</a>
+                          </li>
+                        </ul>
+                      </li>
+                  </ul>
+                </li>
+
+                <li>
+                  <a href="#">E-MapReduce</a>
+                  <ul class="nav">
+                      <li>
+                        <a href="#">Data Sources</a>
+                        <ul class="nav nav-auto-expand">
+                            <li>
+                                <a href="/docs/providers/alicloud/d/emr_disk_types.html">alicloud_emr_disk_types</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/d/emr_instance_types.html">alicloud_emr_instance_types</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/d/emr_main_versions.html">alicloud_emr_main_versions</a>
+                            </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a href="#">Resources</a>
+                        <ul class="nav nav-auto-expand">
+                          <li>
+                            <a href="/docs/providers/alicloud/r/emr_cluster.html">alicloud_emr_cluster</a>
+                          </li>
+                        </ul>
+                      </li>
+                  </ul>
+                </li>
+
+                <li>
+                  <a href="#">Function Compute Service</a>
+                  <ul class="nav">
+                      <li>
+                        <a href="#">Data Sources</a>
+                        <ul class="nav nav-auto-expand">
+                          <li>
+                            <a href="/docs/providers/alicloud/d/fc_functions.html">alicloud_fc_functions</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/fc_services.html">alicloud_fc_services</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/fc_triggers.html">alicloud_fc_triggers</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/fc_zones.html">alicloud_fc_zones</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a href="#">Resources</a>
+                        <ul class="nav nav-auto-expand">
+                          <li>
+                            <a href="/docs/providers/alicloud/r/fc_function.html">alicloud_fc_function</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/fc_service.html">alicloud_fc_service</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/fc_trigger.html">alicloud_fc_trigger</a>
+                          </li>
+                        </ul>
+                      </li>
+                  </ul>
+                </li>
+
+                <li>
+                  <a href="#">HBase</a>
+                  <ul class="nav">
+                      <li>
+                        <a href="#">Data Sources</a>
+                        <ul class="nav nav-auto-expand">
+                          <li>
+                            <a href="/docs/providers/alicloud/d/hbase_instances.html">alicloud_hbase_instances</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/hbase_zones.html">alicloud_hbase_zones</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a href="#">Resources</a>
+                        <ul class="nav nav-auto-expand">
+                          <li>
+                            <a href="/docs/providers/alicloud/r/hbase_instance.html">alicloud_hbase_instance</a>
+                          </li>
+                        </ul>
+                      </li>
+                  </ul>
+                </li>
+
+                <li>
+                  <a href="#">KMS</a>
+                  <ul class="nav">
+                      <li>
+                        <a href="#">Data Sources</a>
+                        <ul class="nav nav-auto-expand">
+                          <li>
+                             <a href="/docs/providers/alicloud/d/kms_aliases.html">alicloud_kms_aliases</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/kms_ciphertext.html">alicloud_kms_ciphertext</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/kms_keys.html">alicloud_kms_keys</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/kms_key_versions.html">alicloud_kms_key_versions</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/kms_plaintext.html">alicloud_kms_plaintext</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/kms_secrets.html">alicloud_kms_secrets</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/kms_secret_versions.html">alicloud_kms_secret_versions</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a href="#">Resources</a>
+                        <ul class="nav nav-auto-expand">
+                          <li>
+                            <a href="/docs/providers/alicloud/r/kms_alias.html">alicloud_kms_alias</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/kms_ciphertext.html">alicloud_kms_ciphertext</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/kms_key.html">alicloud_kms_key</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/kms_key_version.html">alicloud_kms_key_version</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/kms_secret.html">alicloud_kms_secret</a>
+                          </li>
+                        </ul>
+                      </li>
+                  </ul>
+                </li>
+
+                <li>
+                  <a href="#">Log Service (SLS)</a>
+                  <ul class="nav">
+                      <li>
+                        <a href="#">Resources</a>
+                        <ul class="nav nav-auto-expand">
+                          <li>
+                            <a href="/docs/providers/alicloud/r/log_alert.html">alicloud_log_alert</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/log_audit.html">alicloud_log_audit</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/log_dashboard.html">alicloud_log_dashboard</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/log_machine_group.html">alicloud_log_machine_group</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/log_project.html">alicloud_log_project</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/log_store.html">alicloud_log_store</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/log_store_index.html">alicloud_log_store_index</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/logtail_attachment.html">alicloud_logtail_attachment</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/logtail_config.html">alicloud_logtail_config</a>
+                          </li>
+                        </ul>
+                      </li>
+                  </ul>
+                </li>
+
+                <li>
+                  <a href="#">Market Place</a>
+                  <ul class="nav">
+                      <li>
+                        <a href="#">Data Sources</a>
+                        <ul class="nav nav-auto-expand">
+                          <li>
+                            <a href="/docs/providers/alicloud/d/market_product.html">alicloud_market_product</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/market_products.html">alicloud_market_products</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a href="#">Resources</a>
+                        <ul class="nav nav-auto-expand">
+                          <li>
+                            <a href="/docs/providers/alicloud/r/market_order.html">alicloud_market_order</a>
+                          </li>
+                        </ul>
+                      </li>
+                  </ul>
+                </li>
+
+                <li>
+                  <a href="#">Message Notification Service (MNS)</a>
+                  <ul class="nav">
+                      <li>
+                        <a href="#">Data Sources</a>
+                        <ul class="nav nav-auto-expand">
+                          <li>
+                            <a href="/docs/providers/alicloud/d/mns_queues.html">alicloud_mns_queues</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/mns_topic_subscriptions.html">alicloud_mns_topic_subscriptions</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/mns_topics.html">alicloud_mns_topics</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a href="#">Resources</a>
+                        <ul class="nav nav-auto-expand">
+                          <li>
+                            <a href="/docs/providers/alicloud/r/mns_queue.html">alicloud_mns_queue</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/mns_topic_subscription.html">alicloud_mns_topic_subscription</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/mns_topic.html">alicloud_mns_topic</a>
+                          </li>
+                        </ul>
+                      </li>
+                  </ul>
+                </li>
+
+                <li>
+                  <a href="#">MongoDB</a>
+                  <ul class="nav">
+                      <li>
+                        <a href="#">Data Sources</a>
+                        <ul class="nav nav-auto-expand">
+                            <li>
+                                <a href="/docs/providers/alicloud/d/mongodb_instances.html">alicloud_mongodb_instances</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/d/mongodb_zones.html">alicloud_mongodb_zones</a>
+                             </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a href="#">Resources</a>
+                        <ul class="nav nav-auto-expand">
+                            <li>
+                                <a href="/docs/providers/alicloud/r/mongodb_instance.html">alicloud_mongodb_instance</a>
+                            </li>
+                            <li>
+                              <a href="/docs/providers/alicloud/r/mongodb_sharding_instance.html">mongodb_sharding_instance</a>
+                            </li>
+                        </ul>
+                      </li>
+                  </ul>
+                </li>
+                 <li>
+                   <a href="#">Microservice Engine (MSE)</a>
+                   <ul class="nav">
+                       <li>
+                         <a href="#">Data Sources</a>
+                         <ul class="nav nav-auto-expand">
+                             <li>
+                                 <a href="/docs/providers/alicloud/d/mse_clusters.html">alicloud_mse_clusters</a>
+                             </li>
+                         </ul>
+                       </li>
+                       <li>
+                         <a href="#">Resources</a>
+                         <ul class="nav nav-auto-expand">
+                             <li>
+                                 <a href="/docs/providers/alicloud/r/mse_cluster.html">alicloud_mse_cluster</a>
+                             </li>
+                         </ul>
+                       </li>
+                   </ul>
+                 </li>
+
+                <li<%= sidebar_current("docs-alicloud-resource-maxcompute") %>>
+                    <a href="#">MaxCompute Resources</a>
+                    <ul class="nav">
+                        <li<%= sidebar_current("docs-alicloud-resource-maxcompute-project") %>>
+                            <a href="/docs/providers/alicloud/r/maxcompute_project.html">alicloud_maxcompute_project</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                  <a href="#">Network Attached Storage (NAS)</a>
+                  <ul class="nav">
+                      <li>
+                        <a href="#">Data Sources</a>
+                        <ul class="nav nav-auto-expand">
+                            <li>
+                                <a href="/docs/providers/alicloud/d/nas_access_groups.html">alicloud_nas_access_groups</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/d/nas_access_rules.html">alicloud_nas_access_rules</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/d/nas_file_systems.html">alicloud_nas_file_systems</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/d/nas_mount_targets.html">alicloud_nas_mount_targets</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/d/nas_protocols.html">alicloud_nas_protocols</a>
+                            </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a href="#">Resources</a>
+                        <ul class="nav nav-auto-expand">
+                            <li>
+                                <a href="/docs/providers/alicloud/r/nas_access_group.html">alicloud_nas_access_group</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/nas_access_rule.html">alicloud_nas_access_rule</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/nas_file_system.html">alicloud_nas_file_system</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/nas_mount_target.html">alicloud_nas_mount_target</a>
+                            </li>
+                        </ul>
+                      </li>
+                  </ul>
+                </li>
+
+                <li>
+                  <a href="#">OOS</a>
+                  <ul class="nav">
+                      <li>
+                        <a href="#">Data Sources</a>
+                        <ul class="nav nav-auto-expand">
+                            <li>
+                                <a href="/docs/providers/alicloud/d/oos_executions.html">alicloud_oos_executions</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/d/oos_templates.html">alicloud_oos_templates</a>
+                            </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a href="#">Resources</a>
+                        <ul class="nav nav-auto-expand">
+                          <li>
+                            <a href="/docs/providers/alicloud/r/oos_execution.html">alicloud_oos_execution</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/oos_template.html">alicloud_oos_template</a>
+                          </li>
+                        </ul>
+                      </li>
+                  </ul>
+                </li>
+
+                <li>
+                  <a href="#">OSS</a>
+                  <ul class="nav">
+                      <li>
+                        <a href="#">Data Sources</a>
+                        <ul class="nav nav-auto-expand">
+                            <li>
+                                <a href="/docs/providers/alicloud/d/oss_bucket_objects.html">alicloud_oss_bucket_objects</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/d/oss_buckets.html">alicloud_oss_buckets</a>
+                            </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a href="#">Resources</a>
+                        <ul class="nav nav-auto-expand">
+                          <li>
+                            <a href="/docs/providers/alicloud/r/oss_bucket.html">alicloud_oss_bucket</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/oss_bucket_object.html">alicloud_oss_bucket_object</a>
+                          </li>
+                        </ul>
+                      </li>
+                  </ul>
+                </li>
+
+                <li>
+                  <a href="#">Table Store (OTS)</a>
+                  <ul class="nav">
+                      <li>
+                        <a href="#">Data Sources</a>
+                        <ul class="nav nav-auto-expand">
+                            <li>
+                              <a href="/docs/providers/alicloud/d/ots_instance_attachments.html">alicloud_ots_instance_attachments</a>
+                            </li>
+                            <li>
+                              <a href="/docs/providers/alicloud/d/ots_instances.html">alicloud_ots_instances</a>
+                            </li>
+                            <li>
+                              <a href="/docs/providers/alicloud/d/ots_tables.html">alicloud_ots_tables</a>
+                            </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a href="#">Resources</a>
+                        <ul class="nav nav-auto-expand">
+                            <li>
+                              <a href="/docs/providers/alicloud/r/ots_instance.html">alicloud_ots_instance</a>
+                            </li>
+                            <li>
+                              <a href="/docs/providers/alicloud/r/ots_instance_attachment.html">alicloud_ots_instance_attachment</a>
+                            </li>
+                            <li>
+                              <a href="/docs/providers/alicloud/r/ots_table.html">alicloud_ots_table</a>
+                            </li>
+                        </ul>
+                      </li>
+                  </ul>
+                </li>
+
+                <li>
+                  <a href="#">Private Zone</a>
+                  <ul class="nav">
+                      <li>
+                        <a href="#">Data Sources</a>
+                        <ul class="nav nav-auto-expand">
+                            <li>
+                                <a href="/docs/providers/alicloud/d/pvtz_zone_records.html">alicloud_pvtz_zone_records</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/d/pvtz_zones.html">alicloud_pvtz_zones</a>
+                            </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a href="#">Resources</a>
+                        <ul class="nav nav-auto-expand">
+                            <li>
+                                <a href="/docs/providers/alicloud/r/pvtz_zone.html">alicloud_pvtz_zone</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/pvtz_zone_attachment.html">alicloud_pvtz_zone_attachment</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/pvtz_zone_record.html">alicloud_pvtz_zone_record</a>
+                            </li>
+                        </ul>
+                      </li>
+                  </ul>
+                </li>
+
+                <li>
+                  <a href="#">PolarDB</a>
+                  <ul class="nav">
+                      <li>
+                        <a href="#">Data Sources</a>
+                        <ul class="nav nav-auto-expand">
+                            <li>
+                                <a href="/docs/providers/alicloud/d/polardb_accounts.html">alicloud_polardb_accounts</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/d/polardb_clusters.html">alicloud_polardb_clusters</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/d/polardb_databases.html">alicloud_polardb_databases</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/d/polardb_endpoints.html">alicloud_polardb_endpoints</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/d/polardb_node_classes.html">alicloud_polardb_node_classes</a>
+                            </li>
+                            <li>
+                              <a href="/docs/providers/alicloud/d/polardb_zones.html">alicloud_polardb_zones</a>
+                            </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a href="#">Resources</a>
+                        <ul class="nav nav-auto-expand">
+                            <li>
+                                <a href="/docs/providers/alicloud/r/polardb_account.html">alicloud_polardb_account</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/polardb_account_privilege.html">alicloud_polardb_account_privilege</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/polardb_backup_policy.html">alicloud_polardb_backup_policy</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/polardb_cluster.html">alicloud_polardb_cluster</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/polardb_database.html">alicloud_polardb_database</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/polardb_endpoint.html">alicloud_polardb_endpoint</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/polardb_endpoint_address.html">alicloud_polardb_endpoint_address</a>
+                            </li>
+                        </ul>
+                      </li>
+                  </ul>
+                </li>
+
+                <li>
+                  <a href="#">Redis And Memcache (KVStore)</a>
+                  <ul class="nav">
+                      <li>
+                        <a href="#">Data Sources</a>
+                        <ul class="nav nav-auto-expand">
+                          <li>
+                            <a href="/docs/providers/alicloud/d/kvstore_instances.html">alicloud_kvstore_instances</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/kvstore_instance_classes.html">alicloud_kvstore_instance_classes</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/kvstore_instance_engines.html">alicloud_kvstore_instance_engines</a>
+                          </li>
+                          <li>
+                             <a href="/docs/providers/alicloud/d/kvstore_zones.html">alicloud_kvstore_zones</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a href="#">Resources</a>
+                        <ul class="nav nav-auto-expand">
+                          <li>
+                            <a href="/docs/providers/alicloud/r/kvstore_account.html">alicloud_kvstore_account</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/kvstore_backup_policy.html">alicloud_kvstore_backup_policy</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/r/kvstore_instance.html">alicloud_kvstore_instance</a>
+                          </li>
+                        </ul>
+                      </li>
+                  </ul>
+                </li>
+
+                <li>
+                  <a href="#">RocketMQ</a>
+                  <ul class="nav">
+                      <li>
+                        <a href="#">Data Sources</a>
+                        <ul class="nav nav-auto-expand">
+                          <li>
+                            <a href="/docs/providers/alicloud/d/ons_groups.html">alicloud_ons_groups</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/ons_instances.html">alicloud_ons_instances</a>
+                          </li>
+                          <li>
+                            <a href="/docs/providers/alicloud/d/ons_topics.html">alicloud_ons_topics</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a href="#">Resources</a>
+                        <ul class="nav nav-auto-expand">
+                            <li>
+                                <a href="/docs/providers/alicloud/r/ons_group.html">alicloud_ons_group</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/ons_instance.html">alicloud_ons_instance</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/ons_topic.html">alicloud_ons_topic</a>
+                            </li>
+                        </ul>
+                      </li>
+                  </ul>
+                </li>
+
+                <li>
+                  <a href="#">RAM</a>
+                  <ul class="nav">
+                      <li>
+                        <a href="#">Data Sources</a>
+                        <ul class="nav nav-auto-expand">
+                            <li>
+                                <a href="/docs/providers/alicloud/d/ram_alias.html">alicloud_ram_account_alias</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/d/ram_account_aliases.html">alicloud_ram_account_aliases</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/d/ram_groups.html">alicloud_ram_groups</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/d/ram_policies.html">alicloud_ram_policies</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/d/ram_roles.html">alicloud_ram_roles</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/d/ram_users.html">alicloud_ram_users</a>
+                            </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a href="#">Resources</a>
+                        <ul class="nav nav-auto-expand">
+                            <li>
+                                <a href="/docs/providers/alicloud/r/ram_access_key.html">alicloud_ram_access_key</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/ram_account_alias.html">alicloud_ram_account_alias</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/ram_account_password_policy.html">alicloud_ram_account_password_policy</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/ram_alias.html">alicloud_ram_alias</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/ram_group.html">alicloud_ram_group</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/ram_group_membership.html">alicloud_ram_group_membership</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/ram_group_policy_attachment.html">alicloud_ram_group_policy_attachment</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/ram_login_profile.html">alicloud_ram_login_profile</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/ram_policy.html">alicloud_ram_policy</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/ram_role.html">alicloud_ram_role</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/ram_role_attachment.html">alicloud_ram_role_attachment</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/ram_role_policy_attachment.html">alicloud_ram_role_policy_attachment</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/ram_user.html">alicloud_ram_user</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/ram_user_policy_attachment.html">alicloud_ram_user_policy_attachment</a>
+                            </li>
+                        </ul>
+                      </li>
+                  </ul>
+                </li>
+
+                <li>
+                  <a href="#">RDS</a>
+                  <ul class="nav">
+                      <li>
+                        <a href="#">Data Sources</a>
+                        <ul class="nav nav-auto-expand">
+                            <li>
+                                <a href="/docs/providers/alicloud/d/db_instance_classes.html">alicloud_db_instance_classes</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/d/db_instance_engines.html">alicloud_db_instance_engines</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/d/db_instances.html">alicloud_db_instances</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/d/db_zones.html">alicloud_db_zones</a>
+                             </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a href="#">Resources</a>
+                        <ul class="nav nav-auto-expand">
+                            <li>
+                                <a href="/docs/providers/alicloud/r/db_account.html">alicloud_db_account</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/db_account_privilege.html">alicloud_db_account_privilege</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/db_backup_policy.html">alicloud_db_backup_policy</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/db_connection.html">alicloud_db_connection</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/db_database.html">alicloud_db_database</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/db_instance.html">alicloud_db_instance</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/db_read_write_splitting_connection.html">alicloud_db_read_write_splitting_connection</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/db_readonly_instance.html">alicloud_db_readonly_instance</a>
+                            </li>
+                        </ul>
+                      </li>
+                  </ul>
+                </li>
+
+                <li>
+                  <a href="#">Resource Manager</a>
+                  <ul class="nav">
+                     <li>
+                        <a href="#">Data Sources</a>
+                        <ul class="nav nav-auto-expand">
+                            <li>
+                               <a href="/docs/providers/alicloud/d/resource_manager_accounts.html">alicloud_resource_manager_accounts</a>
+                            </li>
+                            <li>
+                               <a href="/docs/providers/alicloud/d/resource_manager_folders.html">alicloud_resource_manager_folders</a>
+                            </li>
+                            <li>
+                               <a href="/docs/providers/alicloud/d/resource_manager_handshakes.html">alicloud_resource_manager_handshakes</a>
+                            </li>
+                            <li>
+                               <a href="/docs/providers/alicloud/d/resource_manager_policies.html">alicloud_resource_manager_policies</a>
+                            </li>
+                            <li>
+                               <a href="/docs/providers/alicloud/d/resource_manager_policy_attachments.html">alicloud_resource_manager_policy_attachments</a>
+                            </li>
+                            <li>
+                               <a href="/docs/providers/alicloud/d/resource_manager_policy_versions.html">alicloud_resource_manager_policy_versions</a>
+                            </li>
+                            <li>
+                               <a href="/docs/providers/alicloud/d/resource_manager_roles.html">alicloud_resource_manager_roles</a>
+                            </li>
+                            <li>
+                               <a href="/docs/providers/alicloud/d/resource_manager_resource_directories.html">alicloud_resource_manager_resource_directories</a>
+                            </li>
+                            <li>
+                               <a href="/docs/providers/alicloud/d/resource_manager_resource_groups.html">alicloud_resource_manager_resource_groups</a>
+                            </li>
+                        </ul>
+                     </li>
+                     <li>
+                        <a href="#">Resources</a>
+                        <ul class="nav nav-auto-expand">
+                            <li>
+                               <a href="/docs/providers/alicloud/r/resource_manager_account.html">alicloud_resource_manager_account</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/resource_manager_folder.html">alicloud_resource_manager_folder</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/resource_manager_handshake.html">alicloud_resource_manager_handshake</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/resource_manager_policy.html">alicloud_resource_manager_policy</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/resource_manager_policy_attachment.html">alicloud_resource_manager_policy_attachment</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/resource_manager_policy_version.html">alicloud_resource_manager_policy_version</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/resource_manager_role.html">alicloud_resource_manager_role</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/resource_manager_resource_directory.html">alicloud_resource_manager_resource_directory</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/resource_manager_resource_group.html">alicloud_resource_manager_resource_group</a>
+                            </li>
+                        </ul>
+                     </li>
+                  </ul>
+                </li>
+
+                <li>
+                  <a href="#">Server Load Balancer (SLB)</a>
+                  <ul class="nav">
+                      <li>
+                        <a href="#">Data Sources</a>
+                        <ul class="nav nav-auto-expand">
+                            <li>
+                                <a href="/docs/providers/alicloud/d/slb_acls.html">alicloud_slb_acls</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/d/slb_attachments.html">alicloud_slb_attachments</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/d/slb_backend_servers.html">alicloud_slb_backend_servers</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/d/slb_ca_certificates.html">alicloud_slb_ca_certificates</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/d/slb_listeners.html">alicloud_slb_listeners</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/d/slb_master_slave_server_groups.html">alicloud_slb_master_slave_server_groups</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/d/slb_rules.html">alicloud_slb_rules</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/d/slb_server_certificates.html">alicloud_slb_server_certificates</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/d/slb_server_groups.html">alicloud_slb_server_groups</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/d/slbs.html">alicloud_slbs</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/d/slb_domain_extensions.html">alicloud_slb_domain_extensions</a>
+                            </li>
+                            <li>
+                              <a href="/docs/providers/alicloud/d/slb_zones.html">alicloud_slb_zones</a>
+                            </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a href="#">Resources</a>
+                        <ul class="nav nav-auto-expand">
+                            <li>
+                                <a href="/docs/providers/alicloud/r/slb.html">alicloud_slb</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/slb_acl.html">alicloud_slb_acl</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/slb_attachment.html">alicloud_slb_attachment</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/slb_backend_server.html">alicloud_slb_backend_server</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/slb_ca_certificate.html">alicloud_slb_ca_certificate</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/slb_listener.html">alicloud_slb_listener</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/slb_master_slave_server_group.html">alicloud_slb_master_slave_server_group</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/slb_rule.html">alicloud_slb_rule</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/slb_server_certificate.html">alicloud_slb_server_certificate</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/slb_server_group.html">alicloud_slb_server_group</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/slb_domain_extension.html">alicloud_slb_domain_extension</a>
+                            </li>
+                        </ul>
+                      </li>
+                  </ul>
+                </li>
+
+                <li>
+                  <a href="#">Smart Access Gateway</a>
+                  <ul class="nav">
+                      <li>
+                        <a href="#">Data Sources</a>
+                        <ul class="nav nav-auto-expand">
+                            <li>
+                                <a href="/docs/providers/alicloud/d/sag_acls.html">alicloud_sag_acls</a>
+                            </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a href="#">Resources</a>
+                        <ul class="nav nav-auto-expand">
+                            <li>
+                                <a href="/docs/providers/alicloud/r/sag_acl.html">alicloud_sag_acl</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/sag_acl_rule.html">alicloud_sag_acl_rule</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/sag_client_user.html">alicloud_sag_client_user</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/sag_dnat_entry.html">alicloud_sag_dnat_entry</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/sag_qos.html">alicloud_sag_qos</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/sag_qos_car.html">alicloud_sag_qos_car</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/sag_qos_policy.html">alicloud_sag_qos_policy</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/sag_snat_entry.html">alicloud_sag_snat_entry</a>
+                            </li>
+                        </ul>
+                      </li>
+                  </ul>
+                </li>
+
+                <li>
+                  <a href="#">SSL Certificates</a>
+                  <ul class="nav">
+                      <li>
+                          <a href="#">Data Sources</a>
+                          <ul class="nav nav-auto-expand">
+                            <li>
+                              <a href="/docs/providers/alicloud/d/cas_certificates.html">alicloud_cas_certificates</a>
+                            </li>
+                          </ul>
+                      </li>
+                      <li>
+                          <a href="#">Resources</a>
+                          <ul class="nav nav-auto-expand">
+                            <li>
+                                <a href="/docs/providers/alicloud/r/cas_certificate.html">alicloud_cas_certificate</a>
+                            </li>
+                          </ul>
+                      </li>
+                  </ul>
+                </li>
+
+                <li>
+                  <a href="#">VPC</a>
+                  <ul class="nav">
+                      <li>
+                        <a href="#">Data Sources</a>
+                        <ul class="nav nav-auto-expand">
+                            <li>
+                              <a href="/docs/providers/alicloud/d/common_bandwidth_packages.html">alicloud_common_bandwidth_packages</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/d/eips.html">alicloud_eips</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/d/nat_gateways.html">alicloud_nat_gateways</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/d/route_entries.html">alicloud_route_entries</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/d/route_tables.html">alicloud_route_tables</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/d/router_interfaces.html">alicloud_router_interfaces</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/d/snat_entries.html">alicloud_snat_entries</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/d/vpcs.html">alicloud_vpcs</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/d/vswitches.html">alicloud_vswitches</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/d/forward_entries.html">alicloud_forward_entries</a>
+                            </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a href="#">Resources</a>
+                        <ul class="nav nav-auto-expand">
+                            <li>
+                                <a href="/docs/providers/alicloud/r/common_bandwidth_package.html">alicloud_common_bandwidth_package</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/common_bandwidth_package_attachment.html">alicloud_common_bandwidth_package_attachment</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/eip.html">alicloud_eip</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/eip_association.html">alicloud_eip_association</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/forward_entry.html">alicloud_forward_entry</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/nat_gateway.html">alicloud_nat_gateway</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/network_acl.html">alicloud_network_acl</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/network_acl_attachment.html">alicloud_network_acl_attachment</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/network_acl_entries.html">alicloud_network_acl_entries</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/route_entry.html">alicloud_route_entry</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/route_table.html">alicloud_route_table</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/route_table_attachment.html">alicloud_route_table_attachment</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/router_interface.html">alicloud_router_interface</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/router_interface_connection.html">alicloud_router_interface_connection</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/snat.html">alicloud_snat_entry</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/vpc.html">alicloud_vpc</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/vswitch.html">alicloud_vswitch</a>
+                            </li>
+                        </ul>
+                      </li>
+                  </ul>
+                </li>
+
+                <li>
+                  <a href="#">VPN</a>
+                  <ul class="nav">
+                      <li>
+                        <a href="#">Data Sources</a>
+                        <ul class="nav nav-auto-expand">
+                            <li>
+                                <a href="/docs/providers/alicloud/d/ssl_vpn_client_certs.html">alicloud_ssl_vpn_client_certs</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/d/ssl_vpn_servers.html">alicloud_ssl_vpn_servers</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/d/vpn_connections.html">alicloud_vpn_connections</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/d/vpn_customer_gateways.html">alicloud_vpn_customer_gateways</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/d/vpn_gateways.html">alicloud_vpn_gateways</a>
+                            </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a href="#">Resources</a>
+                        <ul class="nav nav-auto-expand">
+                            <li>
+                                <a href="/docs/providers/alicloud/r/ssl_vpn_client_cert.html">alicloud_ssl_vpn_client_cert</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/ssl_vpn_server.html">alicloud_ssl_vpn_server</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/vpn_connection.html">alicloud_vpn_connection</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/vpn_customer_gateway.html">alicloud_vpn_customer_gateway</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/vpn_gateway.html">alicloud_vpn_gateway</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/vpn_route_entry.html">alicloud_vpn_route_entry</a>
+                            </li>
+                        </ul>
+                      </li>
+                  </ul>
+                </li>
+                <li>
+                  <a href="#">Web Application Firewall(WAF)</a>
+                  <ul class="nav">
+                      <li>
+                        <a href="#">Data Sources</a>
+                        <ul class="nav nav-auto-expand">
+                            <li>
+                                <a href="/docs/providers/alicloud/d/waf_domains.html">alicloud_waf_domains</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/d/waf_instances.html">alicloud_waf_instances</a>
+                            </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a href="#">Resources</a>
+                        <ul class="nav nav-auto-expand">
+                            <li>
+                                <a href="/docs/providers/alicloud/r/waf_domain.html">alicloud_waf_domain</a>
+                            </li>
+                            <li>
+                                <a href="/docs/providers/alicloud/r/waf_instance.html">alicloud_waf_instance</a>
+                            </li>
+                        </ul>
+                      </li>
+                  </ul>
+                </li>
+            </ul>
+        </div>
+    <% end %>
+    <%= yield %>
+<% end %>

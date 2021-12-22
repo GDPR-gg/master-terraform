@@ -1,0 +1,86 @@
+name: Bump version
+on:
+  pull_request:
+    branches:
+      - 'release/*'
+    types: [closed]
+jobs:
+  bump-plugin-version-dry-run:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    outputs:
+      new_tag: ${{ steps.version-bump.outputs.new_tag }}
+    steps:
+    - name: Checkout
+      id: checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: '0'
+    - name: Bump version and push tag.
+      id: version-bump
+      uses: sarahethompson/github-tag-action@fix-default-bump-none
+      env:
+        GITHUB_TOKEN: ${{ secrets.HC_GITHUB_TEAM_SECURE_VAULT_ECOSYSTEM_GITHUB_TOKEN }}
+        WITH_V: true
+        DRY_RUN: true
+        DEFAULT_BUMP: none
+        TAG_CONTEXT: branch
+        RELEASE_BRANCHES: release/.*
+    - name: Slack Notification
+      uses: rtCamp/action-slack-notify@v2
+      env:
+        SLACK_COLOR: ${{ job.status }}
+        SLACK_ICON: https://ibb.co/jv6xRLp
+        SLACK_MESSAGE: |
+          Tag authorization needed for release ${{ steps.version-bump.outputs.new_tag }} of ${{ github.repository }}.
+          Tag will be pushed to: https://github.com/${{ github.repository }}/commit/${{ github.sha }} on branch: ${{github.base_ref}}
+          Please approve here - https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}.
+        SLACK_TITLE: Plugin Release - ${{ github.repository }}
+        SLACK_USERNAME: vault-eco-bot
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+    - name: Slack failure
+      uses: act10ns/slack@v1
+      id: slack-failure
+      if: failure()
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      with:
+        status: ${{ job.status }}
+    
+  bump-plugin-version:
+    needs: bump-plugin-version-dry-run
+    environment: tag_authorization
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      id: checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: '0'
+    - name: Bump version and push tag.
+      id: version-bump
+      uses: sarahethompson/github-tag-action@fix-default-bump-none
+      env:
+        GITHUB_TOKEN: ${{ secrets.HC_GITHUB_TEAM_SECURE_VAULT_ECOSYSTEM_GITHUB_TOKEN }}
+        CUSTOM_TAG: ${{needs.bump-plugin-version-dry-run.outputs.new_tag}}
+        RELEASE_BRANCHES: release/.*
+    - name: Slack tag creation
+      id: slack-tag
+      uses: Ilshidur/action-slack@master
+      with:
+        args: 'A new tag has been pushed - {{ NEW_TAG }} - https://github.com/{{ EVENT_PAYLOAD.repository.full_name }}/tags.'
+      if: steps.version-bump.outputs.new_tag != ''
+      env:
+        NEW_TAG: ${{ steps.version-bump.outputs.new_tag }}
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+        SLACK_AVATAR: repository
+    - name: Slack failure
+      uses: act10ns/slack@v1
+      id: slack-failure
+      if: failure()
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      with:
+        status: ${{ job.status }}
+

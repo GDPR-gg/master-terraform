@@ -1,0 +1,15 @@
+.DS_Store
+*.env
+*.pem
+*.tar.gz
+cluster-2
+istio_master.yaml
+istio-1*
+istio-2*
+istio-master.yaml
+istio-remote.yaml
+istio.yaml
+kubeconfig
+kubectx
+kubemci*
+region-tag-adder

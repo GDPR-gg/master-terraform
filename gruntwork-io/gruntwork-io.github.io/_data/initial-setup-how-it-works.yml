@@ -1,0 +1,40 @@
+- title: Choose your architecture options
+  description: |
+    <p>Customize your architecture and complete a few setup steps:</p>
+    <ul>
+      <li>Create several AWS accounts (logs, security, shared, dev, stage, and prod)</li>
+      <li>Choose a region</li>
+      <li>Set up domains in DNS</li>
+      <li>Run services on Docker using EKS (Kubernetes) or ECS, or directly on EC2 Instances using ASGs</li>
+      <li>PostgreSQL, MySQL, SQL Server, Aurora, or other relational database</li>
+      <li>Redis or Memcached</li>
+      <li>CircleCI, GitLab, or Jenkins</li>
+      <li>Bastion Host or OpenVPN</li>
+      <li>Static content storage and serving</li>
+      <li>Serverless functions</li>
+      <li>DNS, TLS</li>
+      <li>Monitoring, Alerting, Log Aggregation</li>
+    </ul>
+
+- title: We build your architecture
+  description: |
+    <p>
+      We generate the architecture using Terragrunt, Terraform, Bash, Python and Go. We deploy the resources to your
+      AWS accounts. We validate the configuration, then we push the code to your git repository. For AWS, this
+      takes about one day.
+    </p>
+
+- title: Learn how to use it
+  description: |
+    <p>
+      Use our <a href="/training/">DevOps Training Library</a> to learn how to use your new architecture with a series of
+      micro-videos that do an in-depth walkthrough of all the most common uses cases. Need to learn Terraform, Docker,
+      or Packer? We have courses on those, too!
+    </p>
+
+- title: Get support
+  description: |
+    <p>
+      If you run into a snag, ask a question on our community support channel via Slack.
+      Or sign up for <a href="/support/">Professional Support</a> to chat directly with Gruntwork engineers via a private shared Slack channel or email, and guarantee a timely response.
+    </p>

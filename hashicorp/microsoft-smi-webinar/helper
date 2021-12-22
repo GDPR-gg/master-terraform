@@ -1,0 +1,83 @@
+#!/bin/bash
+UNAME=$(uname)
+
+# set specific commands for Linux and MacOS
+if [[ "$UNAME" == "Linux" ]]; then
+  OPEN=xdg-open
+  CLIP="| xclip -selection cls"
+else
+  OPEN=open
+  CLIP="| pbcopy"
+fi
+
+function get_k8s_config {
+  cd terraform 
+  export cluster_ca_certificate="$(terraform output cluster_ca_certificate)"
+  export client_certificate="$(terraform output client_certificate)"
+  export client_key="$(terraform output client_key)"
+  export user="$(terraform output user)"
+  export password="$(terraform output password)"
+  export host="$(terraform output host)"
+  export name="consul-aks"
+  #export name="$(terraform output host | sed -E -n 's/https:\/\/([^.]*).*/\1/p')"
+
+  cat << EOF > ../kube_config.yml
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: ${cluster_ca_certificate}
+    server: ${host}
+  name: ${name}
+contexts:
+- context:
+    cluster: ${name}
+    user: ${user}
+  name: ${name}
+current-context: ${name}
+kind: Config
+preferences: {}
+users:
+- name: ${user}
+  user:
+    client-certificate-data: ${client_certificate}
+    client-key-data: ${client_key}
+    token: ${password}
+EOF
+  
+  export KUBECONFIG=$(pwd)/kube_config.yml
+}
+
+function open_service {
+  kubectl port-forward --namespace=$5 --address 0.0.0.0 svc/$3 $1:$2 & echo $! > .pid_$3
+
+  echo " "
+	echo "Opening $3, To quit, press Ctrl-C"
+	sleep 5
+  eval $OPEN "$4://localhost:$1$6"
+	trap "pkill -F .pid_$3" SIGINT SIGTERM ERR EXIT; sleep 20000
+  echo " "
+}
+
+function get_consul_acl_token {
+  token=$(kubectl get secrets consul-consul-bootstrap-acl-token -o yaml | sed -E -n 's/ *token: *(.*)/\1/p' | base64 -D)
+
+  echo ACL Token for Accessing Consul: ${token}
+  echo ""
+}
+
+case "$1" in
+  consul)
+    get_consul_acl_token
+    open_service 8180 80 consul-consul-ui http default
+    ;;
+  get_k8s_config)
+    echo Fetching Kubernetes configuration
+    get_k8s_config
+    ;;
+  *)
+    echo "Usage:"
+    echo "dashboard        - Open the Kubernetes dashboard"
+    echo "consul           - Open the Consul UI"
+    echo "get_k8s_config   - Fetch Kubernetes config from the remote state"
+    exit 1
+esac

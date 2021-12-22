@@ -1,0 +1,15 @@
+{
+  "extends": [
+    "config:base"
+  ],
+  "packageRules": [
+    {
+      "updateTypes": ["minor", "patch", "pin", "digest"],
+      "automerge": true
+    }
+  ],
+  "pinVersions": false,
+  "schedule": [
+    "every 3 months on the first day of the month"
+  ]
+}

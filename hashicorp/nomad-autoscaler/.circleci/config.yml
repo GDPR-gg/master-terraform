@@ -1,0 +1,48 @@
+version: 2.1
+
+executors:
+  go-linux:
+    resource_class: medium
+    docker:
+      - image: docker.mirror.hashicorp.services/golang:1.16.5
+    shell: /usr/bin/env bash -euo pipefail -c
+    environment:
+      GO111MODULE: "on"
+    working_directory: /go/src/github.com/hashicorp/nomad-autoscaler
+
+jobs:
+  check-deps-go:
+    executor: go-linux
+    steps:
+      - checkout
+      - run: make generate-tools
+      - run: make check
+
+  lint-go:
+    executor: go-linux
+    steps:
+      - checkout
+      - run: make lint-tools
+      - run: make generate-tools
+      - run: make lint
+
+  linux-build-go:
+    executor: go-linux
+    steps:
+      - checkout
+      - run: make build
+
+  linux-test-go:
+    executor: go-linux
+    steps:
+      - checkout
+      - run: make test-tools
+      - run: make test
+
+workflows:
+  ci:
+    jobs:
+      - check-deps-go
+      - lint-go
+      - linux-build-go
+      - linux-test-go

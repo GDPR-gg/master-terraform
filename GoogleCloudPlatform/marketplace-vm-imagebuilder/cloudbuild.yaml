@@ -1,0 +1,58 @@
+timeout: 600s
+options:
+  workerPool: projects/${PROJECT_ID}/locations/us-central1/workerPools/gcb-workers-pool-e2
+steps:
+
+- id: Build imagebuilder
+  name: gcr.io/cloud-builders/docker
+  args:
+  - build
+  - --tag=imagebuilder
+  - .
+
+- id: Download Service Account Key
+  name: gcr.io/cloud-builders/gsutil
+  waitFor:
+  - '-'
+  args:
+  - cp
+  - ${_SERVICE_ACCOUNT_JSON_GCS}
+  - service-account.json
+
+- id: Build sample-app
+  name: gcr.io/cloud-builders/docker
+  waitFor:
+  - Build imagebuilder
+  - Download Service Account Key
+  args:
+  - run
+  - --env=PROJECT=${PROJECT_ID}
+  - --env=BUCKET=${_LOGS_BUCKET}
+  - --env=SOLUTION_NAME=sample-app
+  - --env=RUN_TESTS=true
+  - --env=ATTACH_LICENSE=true
+  - --env=LICENSE_PROJECT_NAME=${PROJECT_ID}
+  - --env=USE_INTERNAL_IP=true
+  - --volume=/workspace/examples/chef:/chef:ro
+  - --volume=/workspace/examples/packer:/packer:ro
+  - --volume=/workspace/examples/tests:/tests:ro
+  - --volume=/workspace/service-account.json:/service-account.json:ro
+  - imagebuilder
+
+- id: Add latest Tag
+  name: gcr.io/cloud-builders/docker
+  args:
+  - tag
+  - imagebuilder
+  - gcr.io/${PROJECT_ID}/vm/imagebuilder:latest
+
+- id: Add COMMIT_SHA Tag
+  name: gcr.io/cloud-builders/docker
+  args:
+  - tag
+  - imagebuilder
+  - gcr.io/${PROJECT_ID}/vm/imagebuilder:sha_${COMMIT_SHA}
+
+images:
+- gcr.io/${PROJECT_ID}/vm/imagebuilder:latest
+- gcr.io/${PROJECT_ID}/vm/imagebuilder:sha_${COMMIT_SHA}

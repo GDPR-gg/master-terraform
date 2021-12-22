@@ -1,0 +1,17 @@
+# Intellij metadata
+.idea
+ubbagent.iml
+
+# Makefile artifacts
+.GOPATH/
+
+# Bazel directories
+bazel-*
+
+# Dependencies - we don't currently commit vendor/
+vendor/
+/.GOPATH
+/bin
+
+# VSCode metadata
+.vscode

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Smart Expenses — New expense report</title>
+  <script type="module">
+    document.documentElement.classList.remove('no-js');
+    document.documentElement.classList.add('js');
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.0.0-beta.51/dist/themes/light.css">
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.0.0-beta.51/dist/shoelace.js"></script>
+
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+<span id="request">
+<h1><sl-icon slot="prefix" name="file-earmark-plus-fill"></sl-icon> Expense report: {{reportId}}</h1>
+
+<sl-breadcrumb>
+    <sl-breadcrumb-item href="/">
+        <sl-icon slot="prefix" name="house"></sl-icon>
+        Home
+    </sl-breadcrumb-item>
+    <sl-breadcrumb-item>
+        New expense report
+    </sl-breadcrumb-item>
+</sl-breadcrumb>
+<br>
+
+<sl-form id="formFiles">
+<input type="hidden" accept="image/*" name="reportId" v-model="reportId">
+
+<div v-if="images">
+    <sl-tooltip v-for="img in images" :content="img.title">
+        <img :src="img.src" :title="img.title" class="thumbnail"/>
+    </sl-tooltip>
+</div>
+<input id="filesInput" type="file"  @change="onFileChange" multiple style="display: none;">
+
+<br>
+<sl-button id="addBtn" size="large" type="primary" pill @click="clickFileChooser" :disabled="status != 'NOT_SUBMITTED'">
+    <sl-icon slot="prefix" name="file-earmark-plus-fill"></sl-icon>
+    Select receipts
+</sl-button>
+
+<br>
+<br>
+<sl-alert :type.prop="alert" open>
+    <sl-icon slot="icon" :name.prop="icon"></sl-icon>
+    <strong>{{ title }}</strong><br>
+    {{ description }}
+</sl-alert>
+
+<br>
+
+<sl-button submit id="submitBtn" size="large" type="success" pill :disabled="status != 'NOT_SUBMITTED' || images.length == 0">
+    <sl-icon slot="prefix" name="arrow-right-circle-fill"></sl-icon>
+    Submit report
+</sl-button>
+</span>
+
+</sl-form>
+
+<script src="https://www.gstatic.com/firebasejs/8.9.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.9.0/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.9.0/firebase-storage.js"></script>
+
+<script type="module" src="/js/common.js"></script>
+<script type="module" src="/js/request.js"></script>
+</body>
+</html>

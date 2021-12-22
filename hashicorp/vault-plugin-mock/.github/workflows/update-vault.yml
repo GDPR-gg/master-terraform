@@ -1,0 +1,50 @@
+name: update-vault-branches
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  set-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - id: set-matrix
+        env:
+          BASE_BRANCH: ${{ github.event.base_ref }}
+        run: >
+          echo "::set-output name=matrix::{\"include\":[{\"branch\":\"master\",\"update-strategy\":\"latest\"},
+          {\"branch\":\""${BASE_BRANCH/refs\/heads\//}\"",\"update-strategy\":\""${BASE_BRANCH/refs\/heads\//}\""}]}"
+
+  update-vault:
+    needs: set-matrix
+    if: startsWith(github.event.base_ref,'refs/heads/release/') != false
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{fromJson(needs.set-matrix.outputs.matrix)}}
+    steps:
+      - name: Get the tag version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+      - uses: sarahethompson/go-update-mod-dependencies@v2
+        id: update-vault-release-branch
+        env:
+          GOPRIVATE: "github.com/hashicorp/*"
+          GITHUB_TOKEN: ${{ secrets.HC_GITHUB_TEAM_SECURE_VAULT_ECOSYSTEM_GITHUB_TOKEN }}
+          VERSION: ${{ steps.get_version.outputs.VERSION }}
+          ACTOR: ${{ github.event.head_commit.author.username }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        with:
+          branch: ${{ matrix.branch }}
+          update-strategy: ${{ matrix.update-strategy }}
+          target-repo: "github.com/sarahethompson/vault"
+      - name: Slack failure
+        uses: act10ns/slack@v1
+        id: slack-failure
+        if: failure()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        with:
+          status: ${{ job.status }}

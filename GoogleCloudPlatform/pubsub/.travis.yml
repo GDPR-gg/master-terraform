@@ -1,0 +1,13 @@
+language: java
+
+matrix:
+  include:
+    - os: linux
+      jdk: oraclejdk9
+      dist: trusty
+    - os: linux
+      jdk: openjdk9
+
+script:
+  - mvn -q -B -f kafka-connector/pom.xml clean verify
+  - mvn -q -B -f load-test-framework/pom.xml clean verify

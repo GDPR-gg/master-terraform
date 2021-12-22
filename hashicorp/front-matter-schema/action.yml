@@ -1,0 +1,26 @@
+---
+name: Check Front Matter Schema
+description: Check changed files against markdown schema
+
+runs:
+  using: docker
+  image: Dockerfile
+
+branding:
+  icon: edit-2
+  color: orange
+
+inputs:
+  files:
+    description: The files to enumeration use with changed files action
+    required: true
+  directories:
+    description: The directories to watch for changes
+    required: true
+  schema:
+    description: JSON encoded string of https://github.com/flatiron/revalidator
+    required: true
+
+outputs:
+  changed:
+    description: "The changed files"

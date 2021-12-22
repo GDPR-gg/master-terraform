@@ -1,0 +1,36 @@
+{
+  "regions": [
+    {
+      "short": "westus2",
+      "friendly": "West US"
+    },
+    {
+      "short": "westeurope",
+      "friendly": "West Europe"
+    },
+    {
+      "short": "eastus",
+      "friendly": "East US"
+    },
+    {
+      "short": "northeurope",
+      "friendly": "North Euripe"
+    },
+    {
+      "short": "centralus",
+      "friendly": "Central US"
+    },
+    {
+      "short": "eastus2",
+      "friendly": "East US 2"
+    },
+    {
+      "short": "francecentral",
+      "friendly": "France Central"
+    },
+    {
+      "short": "uksouth",
+      "friendly": "UK South"
+    }
+  ]
+}

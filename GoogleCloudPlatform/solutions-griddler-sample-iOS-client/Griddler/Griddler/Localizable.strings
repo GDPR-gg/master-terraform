@@ -1,0 +1,53 @@
+//
+//  Localizable.strings
+//  Griddler
+//
+//  Copyright 2013 Google Inc. All Rights Reserved.
+//
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+//
+//  http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+
+"OPPONENTS_TITLE" = "Choose Opponent";
+"OPPONENTS_UNABLE_CANCEL" = "Unable to cancel because the invitee has accepted the challenge";
+"SETTINGS_TITLE" = "Settings";
+"LANDING_YOUVE_WON" = "You've won %1$i out of %2$i games";
+"LANDING_NO_GAMES_YET" = "Race against the clock to solve riddles!";
+"SUMMARY_YOU_WON" = "You won!";
+"SUMMARY_YOU_LOST" = "You lost!";
+"SUMMARY_YOU_GOT_CORRECT" = "You got %1$i out of %2$i questions.";
+"SUMMARY_TIMES_UP" = "Time's up!";
+"SUMMARY_PERFECT" = "Perfect!";
+"SUMMARY_HEADER_YOU" = "You";
+"SUMMARY_FINISHED_BEFORE_YOU" = "%1$@ finished before you.";
+"SUMMARY_YOU_FINISHED_BEFORE" = "You finished before %1$@.";
+"SUMMARY_NUM_QUESTIONS" = "You got %1$@ out of %2$@ questions.";
+"SUMMARY_BEAT_SOMEONE" = "%1$@ beat %2$@, %3$i to %4$i";
+"SUMMARY_TIE" = "It's a tie!";
+"LOBBY_BUILDING_GAME_BOARD" = "Building game board...";
+"LOBBY_GET_READY_TO_PLAY_OPPONET" = "Get ready to play %1$@...";
+"LOBBY_GET_READY_TO_PLAY" = "Get ready to play...";
+"INVITATION_SENDING_CHALLENGE" = "Sending a challenge...";
+"INVITATION_DECLINE" = "Decline";
+"INVITATION_ACCEPT" = "Play";
+"INVITATION_CANCEL" = "Cancel";
+"INVITATION_CHALLENGER_CANCELED" = "The challenger has canceled.";
+"INVITATION_STILL_CANCELING" = "Currently canceling your last invitation. Please try again in a moment.";
+"INVITATION_CHALLENGE_DECLINED" = "Challenge Declined";
+"INVITATION_USER_NOT_FOUND" = "The player selcted does not have Griddler installed.";
+"INVITATION_ACCEPTING_CHALLENGE" = "Accepting Challenge...";
+"AUTHENTICATION_GOOGLE_PLUS_ERROR" = "*NOTE TO DEVELOPER* Ensure that Google+ API has been turned on through the API Console's Services section. There was an issue logging you in with Google+. What would you like to do? ";
+"AUTHENTICATION_TRY_AGAIN" = "Try Again";
+"AUTHENTICATION_NO_GPLUS_LOGIN" = "Login without G+";
+"ALERT_DEFAULT_TITLE" = "Griddler";
+"ALERT_DEFAULT_BUTTON" = "OK";
+"NO_OPPONENTS_FOUND" = "No opponents found";

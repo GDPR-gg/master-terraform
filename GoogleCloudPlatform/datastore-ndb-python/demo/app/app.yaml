@@ -1,0 +1,27 @@
+# Demo app.
+runtime: python27
+api_version: 1
+threadsafe: True
+
+handlers:
+- url: /fibo.*
+  script: fibo.app
+
+- url: /hello.*
+  script: hello.app
+
+- url: /home
+  script: main.app
+
+- url: /account
+  script: main.app
+
+- url: /dataviewer.*
+  script: dataviewer.app
+
+- url: /.*
+  script: guestbook.application
+
+builtins:
+- appstats: on
+- remote_api: on

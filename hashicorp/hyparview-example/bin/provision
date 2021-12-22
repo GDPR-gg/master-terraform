@@ -1,0 +1,55 @@
+#!/bin/bash
+set -e
+
+required="DOMAIN BOOTSTRAP STAT_UDP PUBLIC LISTEN"
+
+for e in $required; do
+    [ -z "${!e}" ] && {
+	echo "usage: $required $0" 1>&2
+	exit 2
+    }
+done
+
+cat <<EOF | ssh -T "$1" 'sh -s'
+if [ ! -x /usr/local/bin/consul ]; then
+  wget -q https://releases.hashicorp.com/consul/1.7.0/consul_1.7.0_linux_amd64.zip
+  unzip consul_1.7.0_linux_amd64.zip
+  sudo mv consul /usr/local/bin
+fi
+
+sudo yum -y install go
+sudo yum -y install git
+
+go get github.com/golang/protobuf/protoc-gen-go
+go get golang.org/x/net/context
+go get google.golang.org/grpc
+go get google.golang.org/grpc/credentials
+
+mkdir -p go/src/github.com/hashicorp
+ln -sfn go/src/github.com/hashicorp/hyparview-example h
+cd go/src/github.com/hashicorp
+
+ssh-keyscan github.com >> ~/.ssh/known_hosts
+git clone git@github.com:hashicorp/hyparview
+git clone git@github.com:hashicorp/hyparview-example
+cd hyparview-example || exit
+make
+
+mkdir -p cert env
+EOF
+
+path=go/src/github.com/hashicorp/hyparview-example
+
+for e in $required HTTP_UI LO HI; do
+    echo "${!e}" | ssh -T "$1" "cat >$path/env/$e"
+done
+
+rsync -p cert/test-agent-ca-key.pem cert/test-agent-ca.pem "$1:$path/cert"
+
+rsync -p bin/limits.conf "$1:"
+cat <<EOF | ssh -T "$1" 'sh -s'
+sudo sysctl -w fs.file-max=39040000
+chmod 644 limits.conf
+sudo chown root:root limits.conf
+sudo mv limits.conf /etc/security/limits.d/10-nproc.conf
+EOF

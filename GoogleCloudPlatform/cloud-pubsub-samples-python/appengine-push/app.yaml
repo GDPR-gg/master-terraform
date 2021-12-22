@@ -1,0 +1,22 @@
+runtime: python27
+api_version: 1
+threadsafe: true
+
+handlers:
+- url: /js
+  static_dir: js
+- url: /_ah/push-handlers/.*
+  script: main.APPLICATION
+  login: admin
+- url: /.*
+  script: main.APPLICATION
+
+libraries:
+- name: jinja2
+  version: latest
+- name: webapp2
+  version: latest
+- name: pycrypto
+  version: latest
+- name: ssl
+  version: latest

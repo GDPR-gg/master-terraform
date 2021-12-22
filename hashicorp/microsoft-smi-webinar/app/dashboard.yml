@@ -1,0 +1,43 @@
+# Define a ServiceAccount for the dashboard so that it can use
+# Consul service mesh
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: dashboard
+automountServiceAccountToken: false
+
+# Create a deployment for frontend service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dashboard-deployment
+  labels:
+    app: dashboard
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: dashboard
+  template:
+    metadata:
+      name: dashboard
+      labels:
+        app: dashboard
+      annotations:
+        'consul.hashicorp.com/connect-inject': 'true'
+        "consul.hashicorp.com/connect-service": "dashboard"
+        'consul.hashicorp.com/connect-service-upstreams': 'api:9001'
+    spec:
+      serviceAccountName: dashboard
+      automountServiceAccountToken: true
+      containers:
+        - name: dashboard
+          image: hashicorp/dashboard-service:0.0.3
+          ports:
+            - containerPort: 9002
+              name: http
+          env:
+            - name: COUNTING_SERVICE_URL
+              value: 'http://localhost:9001'

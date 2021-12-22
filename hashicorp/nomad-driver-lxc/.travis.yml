@@ -1,0 +1,16 @@
+language: go
+os: linux
+dist: xenial
+sudo: required
+
+go:
+  - "1.15.x"
+
+before_install:
+  - sudo -E bash ./scripts/travis-linux.sh
+
+install:
+  - make lint-deps
+
+script:
+  - sudo -E "PATH=$PATH" make check test

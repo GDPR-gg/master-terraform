@@ -1,0 +1,57 @@
+/*
+ * Copyright 2021 Google
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+plugins {
+	id "maven-publish"
+	id "com.github.johnrengelman.shadow"
+}
+
+description = 'Auto Exporter for OpenTelemetry'
+
+dependencies {
+	api(libraries.auto_service_annotations)
+	api(libraries.auto_value_annotations)
+	annotationProcessor(libraries.auto_service)
+	annotationProcessor(libraries.auto_value)
+	compileOnly(libraries.opentelemetry_sdk_autoconf)
+	compileOnly(libraries.opentelemetry_sdk)
+	implementation(project(':exporter-metrics')) {
+		exclude group: 'io.opentelemetry'
+	}
+	implementation(project(':exporter-trace')) {
+		exclude group: 'io.opentelemetry'
+	}
+	implementation(project(':detector-resources')) {
+		exclude group: 'io.opentelemetry'
+	}
+}
+
+
+shadowJar{
+	classifier = null
+}
+
+publishing {
+	publications {
+		maven(MavenPublication) { publication ->
+			from project.shadow.component(publication)
+			artifact sourcesJar
+			artifact javadocJar
+			components.java.withVariantsFromConfiguration(configurations.runtimeElements) {
+				skip()
+			}
+		}
+	}
+}

@@ -1,0 +1,146 @@
+[
+  {
+    "repoPath": "https://github.com/GoogleCloudPlatform/cloud-code-samples.git",
+    "directoryPath": "python/python-hello-world",
+    "templatePath": "hello-world",
+    "templateName": "Python (Flask): Hello World",
+    "templateLanguages": ["python"],
+    "runPlatforms": ["kubernetes"]
+  },
+  {
+    "repoPath": "https://github.com/GoogleCloudPlatform/cloud-code-samples.git",
+    "directoryPath": "python/python-guestbook",
+    "templatePath": "guestbook",
+    "templateName": "Python (Flask): Guestbook",
+    "templateLanguages": ["python"],
+    "runPlatforms": ["kubernetes"]
+  },
+  {
+    "repoPath": "https://github.com/GoogleCloudPlatform/cloud-code-samples.git",
+    "directoryPath": "python/cloud-run-python-hello-world",
+    "templatePath": "hello-world",
+    "templateName": "Python (Flask): Cloud Run",
+    "templateLanguages": ["python"],
+    "runPlatforms": ["cloudrun"]
+  },
+  {
+    "repoPath": "https://github.com/GoogleCloudPlatform/cloud-code-samples.git",
+    "directoryPath": "python/django/python-hello-world",
+    "templatePath": "hello-world",
+    "templateName": "Python (Django): Hello World",
+    "templateLanguages": ["python"],
+    "runPlatforms": ["kubernetes"]
+  },
+  {
+    "repoPath": "https://github.com/GoogleCloudPlatform/cloud-code-samples.git",
+    "directoryPath": "python/django/python-guestbook",
+    "templatePath": "guestbook",
+    "templateName": "Python (Django): Guestbook",
+    "templateLanguages": ["python"],
+    "runPlatforms": ["kubernetes"]
+  },
+  {
+    "repoPath": "https://github.com/GoogleCloudPlatform/cloud-code-samples.git",
+    "directoryPath": "python/cloud-run-django-hello-world",
+    "templatePath": "hello-world",
+    "templateName": "Python (Django): Cloud Run",
+    "templateLanguages": ["python"],
+    "runPlatforms": ["cloudrun"]
+  },
+  {
+    "repoPath": "https://github.com/GoogleCloudPlatform/cloud-code-samples.git",
+    "directoryPath": "golang/go-hello-world",
+    "templatePath": "hello-world",
+    "templateName": "Go: Hello World",
+    "templateLanguages": ["go"],
+    "runPlatforms": ["kubernetes"]
+  },
+  {
+    "repoPath": "https://github.com/GoogleCloudPlatform/cloud-code-samples.git",
+    "directoryPath": "golang/go-cloud-run-hello-world",
+    "templatePath": "hello-world",
+    "templateName": "Go: Cloud Run",
+    "runPlatforms": ["cloudrun"],
+    "templateLanguages": ["go"]
+  },
+  {
+    "repoPath": "https://github.com/GoogleCloudPlatform/cloud-code-samples.git",
+    "directoryPath": "golang/go-guestbook",
+    "templatePath": "guestbook",
+    "templateName": "Go: Guestbook",
+    "templateLanguages": ["go"],
+    "runPlatforms": ["kubernetes"]
+  },
+  {
+    "repoPath": "https://github.com/GoogleCloudPlatform/cloud-code-samples.git",
+    "directoryPath": "nodejs/nodejs-hello-world",
+    "templatePath": "hello-world",
+    "templateName": "Node.js: Hello World",
+    "templateLanguages": ["nodejs"],
+    "runPlatforms": ["kubernetes"]
+  },
+  {
+    "repoPath": "https://github.com/GoogleCloudPlatform/cloud-code-samples.git",
+    "directoryPath": "nodejs/nodejs-cloud-run-hello-world",
+    "templatePath": "hello-world",
+    "templateName": "Node.js: Cloud Run",
+    "runPlatforms": ["cloudrun"],
+    "templateLanguages": ["nodejs"]
+  },
+  {
+    "repoPath": "https://github.com/GoogleCloudPlatform/cloud-code-samples.git",
+    "directoryPath": "nodejs/nodejs-guestbook",
+    "templatePath": "guestbook",
+    "templateName": "Node.js: Guestbook",
+    "templateLanguages": ["nodejs"],
+    "runPlatforms": ["kubernetes"]
+  },
+  {
+    "repoPath": "https://github.com/GoogleCloudPlatform/cloud-code-samples.git",
+    "directoryPath": "java/java-hello-world",
+    "templatePath": "hello-world",
+    "templateName": "Java: Hello World",
+    "templateLanguages": ["java"],
+    "runPlatforms": ["kubernetes"]
+  },
+  {
+    "repoPath": "https://github.com/GoogleCloudPlatform/cloud-code-samples.git",
+    "directoryPath": "java/java-cloud-run-hello-world",
+    "templatePath": "hello-world",
+    "templateName": "Java: Cloud Run",
+    "templateLanguages": ["java"],
+    "runPlatforms": ["cloudrun"]
+  },
+  {
+    "repoPath": "https://github.com/GoogleCloudPlatform/cloud-code-samples.git",
+    "directoryPath": "java/java-guestbook",
+    "templatePath": "guestbook",
+    "templateName": "Java: Guestbook",
+    "templateLanguages": ["java"],
+    "runPlatforms": ["kubernetes"]
+  },
+  {
+    "repoPath": "https://github.com/GoogleCloudPlatform/cloud-code-samples.git",
+    "directoryPath": "dotnet/dotnet-hello-world",
+    "templatePath": "hello-world",
+    "templateName": ".NET: Hello World",
+    "templateLanguages": ["csharp"],
+    "runPlatforms": ["kubernetes"]
+  },
+  {
+    "repoPath": "https://github.com/GoogleCloudPlatform/cloud-code-samples.git",
+    "directoryPath": "dotnet/dotnet-guestbook",
+    "templatePath": "guestbook",
+    "templateName": ".NET: Guestbook",
+    "templateLanguages": ["csharp"],
+    "runPlatforms": ["kubernetes"]
+  },
+  {
+    "repoPath": "https://github.com/GoogleCloudPlatform/cloud-code-samples.git",
+    "directoryPath": "dotnet/dotnet-cloud-run-hello-world",
+    "templatePath": "hello-world",
+    "templateName": ".NET: Cloud Run",
+    "templateLanguages": ["csharp"],
+    "runPlatforms": ["cloudrun"]
+  }
+]

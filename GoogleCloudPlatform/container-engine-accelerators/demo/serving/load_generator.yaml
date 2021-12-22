@@ -1,0 +1,37 @@
+# Copyright 2018 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# An example k8s batch job that generates prediction requests to a tensorflow
+# serving instance serving inception v3 model.
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: tensorflow-serving-load-generator
+spec:
+  template:
+    spec:
+      containers:
+      - name: inception-client
+        image: gcr.io/vishnuk-cloud/tf-serving-client@sha256:869467cd5d22c14a024493327e323c69887f71476790a0e5762f2884b8e5773a
+        args: ["inception_profiler.py", "--server=tensorflow-service", "--port=9000", "-n", "1000000", "./cat_sample.jpg"]
+        resources:
+          requests:
+            cpu: 0.2
+            memory: 100Mi
+      restartPolicy: OnFailure
+  backoffLimit: 4
+  completions: 100
+  parallelism: 30
+

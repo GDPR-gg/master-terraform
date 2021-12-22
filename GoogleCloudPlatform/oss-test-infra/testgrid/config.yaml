@@ -1,0 +1,29 @@
+# Dashboards need to be specified here to be created on TestGrid
+# A prow annotation will be invalid if it references a dashboard that doesn't exist
+dashboards:
+- name: googleoss-gcp-guest
+- name: googleoss-gcp-guest-import-export
+- name: googleoss-test-infra
+- name: googleoss-esp-v2-presubmit
+- name: googleoss-esp-v2-postsubmit
+- name: googleoss-esp-v2-periodic
+- name: googleoss-kubeflow-pipelines
+- name: googleoss-kubeflow-gcp-blueprints
+- name: googleoss-grpc-transcoder
+- name: googleoss-http-pattern-matcher
+
+dashboard_groups:
+  - name: googleoss
+    dashboard_names:
+    - googleoss-gcp-guest
+    - googleoss-gcp-guest-import-export
+    - googleoss-test-infra
+    - googleoss-esp-v2-presubmit
+    - googleoss-esp-v2-postsubmit
+    - googleoss-esp-v2-periodic
+    - googleoss-grpc-transcoder
+    - googleoss-http-pattern-matcher
+  - name: googleoss-kubeflow
+    dashboard_names:
+    - googleoss-kubeflow-pipelines
+    - googleoss-kubeflow-gcp-blueprints

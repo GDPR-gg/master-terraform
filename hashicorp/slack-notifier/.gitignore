@@ -1,0 +1,9 @@
+.DS_Store
+Gemfile.lock
+.rvmrc
+.ruby-version
+.ruby-gemset
+.env
+*.gem
+coverage
+spec/examples.txt

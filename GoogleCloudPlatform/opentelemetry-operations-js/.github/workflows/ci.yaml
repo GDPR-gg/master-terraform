@@ -1,0 +1,48 @@
+on:
+  push:
+    branches: [main]
+  pull_request:
+name: ci
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [10, 12, 14, 16]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node }}
+      - run: node --version
+      - run: npm install --ignore-scripts
+      - run: npx lerna bootstrap --no-ci
+      - run: npm test
+      - run: npm run codecov
+        if: matrix.node == 14
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 15
+      - run: npm install
+      - run: npm run lint
+
+  # Verify npm package-lock.json files use lockfileVersion 2
+  verify-package-lock-v2:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          for f in $(git ls-files "**package-lock.json")
+          do
+            lockfileVersion=$(jq ".lockfileVersion" $f)
+            if [ $lockfileVersion -ne 2 ]
+            then
+              >&2 echo "package-lock.json files should have lockfileVersion 2, but $f has version $lockfileVersion"
+              exit 1
+            fi
+          done

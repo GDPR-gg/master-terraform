@@ -1,0 +1,243 @@
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Pre-requisites to running with cloud build
+# export PROJECT_ID=$(gcloud config get-value core/project 2>/dev/null)
+# gcloud services enable --project $PROJECT_ID compute.googleapis.com container.googleapis.com cloudbuild.googleapis.com cloudresourcemanager.googleapis.com servicemanagement.googleapis.com serviceusage.googleapis.com monitoring.googleapis.com secretmanager.googleapis.com iap.googleapis.com
+# export CLOUDBUILD_SA=$(gcloud projects describe $PROJECT_ID --format='value(projectNumber)')@cloudbuild.gserviceaccount.com
+# gcloud projects add-iam-policy-binding $PROJECT_ID --member serviceAccount:$CLOUDBUILD_SA --role roles/owner
+# gcloud projects add-iam-policy-binding $PROJECT_ID --member serviceAccount:$CLOUDBUILD_SA --role roles/iam.serviceAccountTokenCreator
+
+timeout: 3600s
+substitutions:
+  _ACTION: apply
+  _NAME: broker
+  _OAUTH_APP_NAME: App Launcher
+  _REGION:
+  _USER:
+  _BUILD_IMAGES: "true"
+  _ENABLE_COS_GPU: "true"
+  _ENABLE_UBUNTU_GPU: "false"
+  _WAIT_FOR_IAP: "true"
+tags:
+  - kube-app-launcher-deploy
+steps:
+  ###
+  # Cleanup any existing sub-jobs to prevent overlapping executions.
+  ###
+  - name: "gcr.io/cloud-builders/gcloud"
+    id: cleanup-sub-jobs
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        gcloud builds list --ongoing --filter='tags[]~kube-app-launcher-setup' --format='value(id)' | \
+          xargs --no-run-if-empty gcloud builds cancel
+  ###
+  # Build images
+  ###
+  - name: "gcr.io/cloud-builders/gcloud"
+    id: "build-images"
+    dir: "images"
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        [[ "${_BUILD_IMAGES}" == "false" ]] && exit 0
+        exec gcloud builds submit
+    waitFor: ["-"]
+
+  ###
+  # Create OAuth client and store in Secret Manager
+  ###
+  - name: "gcr.io/cloud-builders/gcloud"
+    id: "create-oauth-client"
+    entrypoint: "bash"
+    args:
+      - -exc
+      - |
+        count=0
+        while [[ $$count -lt 10 ]]; do
+          eval $$(./setup/scripts/create_oauth_client.sh "${_OAUTH_APP_NAME}")
+          [[ $? -eq 0 ]] && break
+          ((count=count+1))
+          sleep 2
+        done
+
+        (gcloud secrets versions access 1 --secret broker-oauth2-client-id) || \
+          gcloud secrets create broker-oauth2-client-id \
+            --replication-policy=automatic \
+            --data-file <(echo -n $${CLIENT_ID})
+
+        (gcloud secrets versions access 1 --secret broker-oauth2-client-secret) || \
+          gcloud secrets create broker-oauth2-client-secret \
+              --replication-policy=automatic \
+              --data-file <(echo -n $${CLIENT_SECRET})
+    waitFor: ["-"]
+  ###
+  # Generate broker cookie secret and store in Secret Manager
+  ###
+  - name: "gcr.io/cloud-builders/gcloud"
+    id: "generate-broker-cookie-secret"
+    entrypoint: "bash"
+    args:
+      - -exc
+      - |
+        export COOKIE_SECRET=$$(openssl rand -base64 15)
+        (gcloud secrets versions access 1 --secret broker-cookie-secret) || \
+          gcloud secrets create broker-cookie-secret \
+            --replication-policy=automatic \
+            --data-file <(echo -n $${COOKIE_SECRET})
+    waitFor: ["-"]
+  ###
+  # Deploy base infrastructure
+  ###
+  - name: "gcr.io/cloud-builders/gcloud"
+    id: "deploy-infra-base"
+    dir: "setup"
+    args:
+      - "builds"
+      - "submit"
+      - "--substitutions=_NAME=${_NAME},_ACTION=${_ACTION}"
+    waitFor:
+      - create-oauth-client
+      - generate-broker-cookie-secret
+  ###
+  # Add user to the IAP authorized web users role
+  ###
+  - name: "gcr.io/${PROJECT_ID}/${_NAME}-installer"
+    id: "iap-user-authorization"
+    entrypoint: "bash"
+    args:
+      - -exc
+      - |
+        ./setup/scripts/add_iap_user.sh user \
+          ${_USER} ${PROJECT_ID}
+    waitFor: ["deploy-infra-base"]
+  ###
+  # Deploy the cluster to the region
+  ###
+  - name: "gcr.io/cloud-builders/gcloud"
+    id: "deploy-cluster-region"
+    dir: "setup/infra/cluster"
+    args:
+      - "builds"
+      - "submit"
+      - "--substitutions=_NAME=${_NAME},_ACTION=${_ACTION},_REGION=${_REGION}"
+    waitFor:
+      - deploy-infra-base
+  ###
+  # Create node pool for apps
+  ###
+  - name: "gcr.io/cloud-builders/gcloud"
+    id: "deploy-node-pool-apps"
+    dir: "setup/infra/node-pool-apps"
+    args:
+      - "builds"
+      - "submit"
+      - "--substitutions=_NAME=${_NAME},_ACTION=${_ACTION},_REGION=${_REGION}"
+    waitFor:
+      - deploy-cluster-region
+  ###
+  # Create node pool for gpus
+  ###
+  - name: "gcr.io/cloud-builders/gcloud"
+    id: "deploy-node-pool-gpu"
+    dir: "setup/infra/node-pool-gpu"
+    args:
+      - "builds"
+      - "submit"
+      - "--substitutions=_NAME=${_NAME},_ACTION=${_ACTION},_REGION=${_REGION},_COS=${_ENABLE_COS_GPU},_UBUNTU=${_ENABLE_UBUNTU_GPU}"
+    waitFor:
+      - deploy-node-pool-apps
+  ###
+  # Create workload identity bindings
+  ###
+  - name: "gcr.io/cloud-builders/gcloud"
+    id: "create-workload-identity-bindings"
+    dir: "setup/infra/wi-sa"
+    args:
+      - "builds"
+      - "submit"
+      - "--substitutions=_NAME=${_NAME},_ACTION=${_ACTION}"
+    waitFor:
+      - deploy-cluster-region
+  ###
+  # Deploy manifests to the region
+  ###
+  - name: "gcr.io/cloud-builders/gcloud"
+    id: "deploy-cluster-manifests-region"
+    dir: "setup/manifests"
+    args:
+      - "builds"
+      - "submit"
+      - "--substitutions=_INFRA_NAME=${_NAME},_REGION=${_REGION}"
+    waitFor:
+      - build-images
+      - create-workload-identity-bindings
+  ###
+  # Wait for IAP and GCLB to stabilize - phase 1
+  ###
+  - name: "gcr.io/${PROJECT_ID}/${_NAME}-installer"
+    id: "wait-for-iap-1"
+    entrypoint: "bash"
+    args:
+      - -xc
+      - |
+        [[ "${_WAIT_FOR_IAP}" == "false" ]] && exit 0
+        CLIENT_ID=$$(gcloud secrets versions access 1 --secret broker-oauth2-client-id)
+        ENDPOINT="https://${_NAME}.endpoints.${PROJECT_ID}.cloud.goog/broker/"
+        # Wait up to 10 minutes for LB to stabilize
+        rm -f /workspace/iap_timeout
+        timeout 600 bash ./setup/scripts/wait_for_iap.sh broker@${PROJECT_ID}.iam.gserviceaccount.com $${CLIENT_ID} $${ENDPOINT}
+        if [[ $? -ne 0 ]]; then
+          echo "timeout" > /workspace/iap_timeout
+        fi
+    waitFor:
+      - deploy-cluster-manifests-region
+  ###
+  # Check for phase 1 timeout, if timeout then run fix_autoneg script
+  ###
+  - name: "gcr.io/${PROJECT_ID}/${_NAME}-installer"
+    id: "fix-autoneg"
+    entrypoint: "bash"
+    args:
+      - -exc
+      - |
+        [[ ! -f /workspace/iap_timeout ]] && echo "echo: IAP is ready, skipping fix-autoneg" && exit 0
+
+        gcloud container clusters get-credentials --region ${_REGION} ${_NAME}-${_REGION}
+        ./setup/scripts/fix_autoneg.sh
+    waitFor:
+      - wait-for-iap-1
+  ###
+  # Wait for IAP and GCLB to stabilize phase 2
+  ###
+  - name: "gcr.io/${PROJECT_ID}/${_NAME}-installer"
+    id: "wait-for-iap-2"
+    entrypoint: "bash"
+    args:
+      - -xc
+      - |
+        [[ "${_WAIT_FOR_IAP}" == "false" ]] && exit 0
+
+        [[ ! -f /workspace/iap_timeout ]] && echo "echo: IAP is ready, skipping wait-for-iap-2" && exit 0
+
+        CLIENT_ID=$$(gcloud secrets versions access 1 --secret broker-oauth2-client-id)
+        ENDPOINT="https://${_NAME}.endpoints.${PROJECT_ID}.cloud.goog/broker/"
+
+        # Wait for up to 20 minutes for IAP.
+        timeout 1200 bash ./setup/scripts/wait_for_iap.sh broker@${PROJECT_ID}.iam.gserviceaccount.com $${CLIENT_ID} $${ENDPOINT}
+    waitFor:
+      - fix-autoneg

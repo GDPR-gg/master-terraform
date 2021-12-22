@@ -1,0 +1,11 @@
+schemaVersion: "2.0.0"
+commandTests:
+  - name: "php-missing"
+    command: "which"
+    args: ["php"]
+    exitCode: 1
+    expectedOutput: [""]
+  - name: "php73-version"
+    command: "cat"
+    args: ["/opt/php73_version"]
+    expectedOutput: ["7\\.3.*"]

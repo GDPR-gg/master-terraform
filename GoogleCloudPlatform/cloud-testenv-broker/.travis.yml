@@ -1,0 +1,25 @@
+language: go
+
+go:
+  - 1.5.3
+
+before_install:
+  - ./install-protobuf.sh
+
+install:
+  - go get github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
+  - go get github.com/grpc-ecosystem/grpc-gateway/runtime
+  - go get github.com/golang/glog
+  - go get github.com/golang/protobuf/protoc-gen-go
+  - go get github.com/golang/protobuf/ptypes
+  - go get golang.org/x/net/http2
+  - go get golang.org/x/net/http2/hpack
+  - go get google.golang.org/grpc
+
+before_script:
+  - export PATH=$PATH:$HOME/protobuf
+  - ./gen-proto.sh
+
+script:
+  # Add vmodule=util=3 to debug issues with grpc-gateway.
+  - go test -v ./... --logtostderr --vmodule=*=1

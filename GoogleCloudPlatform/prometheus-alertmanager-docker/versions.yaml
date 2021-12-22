@@ -1,0 +1,47 @@
+# Copyright 2018 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+_variables:
+  from: &from gcr.io/google-appengine/debian9
+
+versions:
+  - dir: '0/debian9/0.23'
+    repo: prometheus-alertmanager0
+    tags:
+      - '0.23.0-debian9'
+      - '0.23-debian9'
+      - '0-debian9'
+      - '0.23.0'
+      - '0.23'
+      - '0'
+      - 'latest'
+    from: *from
+    packages:
+      alertmanager:
+        version: '0.23.0'
+        sha256: '77793c4d9bb92be98f7525f8bc50cb8adb8c5de2e944d5500e90ab13918771fc'
+  - dir: '0/debian9/0.21'
+    repo: prometheus-alertmanager0
+    tags:
+      - '0.21.0-debian9'
+      - '0.21-debian9'
+      - '0.21.0'
+      - '0.21'
+    from: *from
+    packages:
+      alertmanager:
+        version: '0.21.0'
+        sha256: '9ccd863937436fd6bfe650e22521a7f2e6a727540988eef515dde208f9aef232'
+
+        

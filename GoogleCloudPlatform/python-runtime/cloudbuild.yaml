@@ -1,0 +1,17 @@
+timeout: 10800s
+steps:
+- # Build base runtime image
+  name: gcr.io/cloud-builders/docker:latest
+  args: ['build', '--tag=${_DOCKER_NAMESPACE}/python:${_TAG}',
+         '--no-cache', '/workspace/runtime-image/']
+  id: runtime
+- # Build runtime builder image
+  name: gcr.io/cloud-builders/docker:latest
+  args: ['build', '--tag=${_BUILDER_DOCKER_NAMESPACE}/python/gen-dockerfile:${_TAG}',
+         '--no-cache', '/workspace/builder/gen-dockerfile/']
+  id: gen-dockerfile
+  waitFor: ['runtime']
+images: [
+  '${_DOCKER_NAMESPACE}/python:${_TAG}',
+  '${_BUILDER_DOCKER_NAMESPACE}/python/gen-dockerfile:${_TAG}',
+]

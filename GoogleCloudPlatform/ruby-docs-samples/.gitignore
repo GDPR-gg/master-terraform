@@ -1,0 +1,8 @@
+.ruby-version
+client_secrets.json
+.bundle/
+vendor/
+.vscode/
+sponge_log.xml
+/Gemfile.lock
+.DS_Store

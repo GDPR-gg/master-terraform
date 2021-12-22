@@ -1,0 +1,7 @@
+/_build/
+/cover/
+/deps/
+/doc/
+/tmp/
+/test/tmp
+/elixir-base/Dockerfile

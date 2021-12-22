@@ -1,0 +1,12 @@
+*.egg-info/
+*.py[cod]
+.tox/
+__pycache__/
+build/
+dist/
+.coverage
+.vscode/
+.idea/
+function_output.json
+serverlog_stderr.txt
+serverlog_stdout.txt

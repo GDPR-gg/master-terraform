@@ -1,0 +1,34 @@
+{
+  "name": "@google-cloud/rcloadenv",
+  "description": "Node.js implementation of rcloadenv. Wraps execution of a given command and loads variables from the Google Cloud Runtime Config API into that process.",
+  "version": "0.2.1",
+  "license": "Apache-2.0",
+  "author": "Google Inc.",
+  "engines": {
+    "node": ">=4"
+  },
+  "main": "src/index.js",
+  "bin": {
+    "rcloadenv": "./bin/rcloadenv"
+  },
+  "contributors": [
+    "Daniel Azuma <dazuma@gmail.com>",
+    "Jason Dobry <jason.dobry@gmail.com>",
+    "Tim Swast <swast@google.com>"
+  ],
+  "scripts": {
+    "lint": "repo-tools lint",
+    "generate-scaffolding": "repo-tools generate pkgjson && cd .. && repo-tools generate license pr_template contributors coc -b nodejs",
+    "test": "npm run lint"
+  },
+  "dependencies": {
+    "google-auto-auth": "0.7.2",
+    "got": "7.1.0",
+    "lodash.snakecase": "4.1.1",
+    "yargs": "10.0.3"
+  },
+  "devDependencies": {
+    "@google-cloud/nodejs-repo-tools": "2.0.11",
+    "semistandard": "11.0.0"
+  }
+}

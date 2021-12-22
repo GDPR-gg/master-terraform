@@ -1,0 +1,63 @@
+{
+  "pathwayTitle": "Learn HashiCorp Vault",
+  "title": "[Enterprise] Transform Secrets Engine",
+  "description": "Learn how Transform Secrets Engine works to protect your application data.",
+  "difficulty": "beginner",
+  "time": "15 minutes",
+  "icon": "fa-vault",
+  "details": {
+    "steps": [
+      {
+        "title": "Setup the Transform secrets engine",
+        "text": "step1.md",
+        "code": "terminal.sh",
+        "courseData": "courseBase.sh"
+      },
+      {
+        "title": "Transform secrets",
+        "text": "step2.md"
+      },
+      {
+        "title": "Create custom templates",
+        "text": "step3.md"
+      },
+      {
+        "title": "Create custom alphabets",
+        "text": "step4.md"
+      },
+      {
+        "title": "Data masking",
+        "text": "step5.md"
+      },
+      {
+        "title": "Batch input processing",
+        "text": "step6.md"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "credits": "https://learn.hashicorp.com/vault"
+    },
+    "assets": {
+      "host01": [
+        { "file": "input-multiple.json", "target": "~/" },
+        { "file": "payload-batch.json", "target": "~/" }
+      ]
+    },
+    "finish": {
+      "text": "finish.md",
+      "credits": "https://learn.hashicorp.com/vault"
+    }
+  },
+  "environment": {
+    "showdashboard": true,
+    "uilayout": "terminal",
+    "dashboards": [{ "name": "Vault UI", "port": 8200 }],
+    "uimessage1": "\u001b[32mYour Interactive Bash Terminal. A safe place to learn and execute commands.\u001b[m\r\n"
+  },
+  "backend": {
+    "imageid": "hashicorp-hashistack-ent",
+    "lifetime": 30
+  },
+  "private": true
+}

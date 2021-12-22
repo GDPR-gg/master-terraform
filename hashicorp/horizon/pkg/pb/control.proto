@@ -1,0 +1,237 @@
+syntax = "proto3";
+
+import "defs/gogo.proto";
+import "kv.proto";
+import "label.proto";
+import "account.proto";
+import "ulid.proto";
+import "token.proto";
+import "timestamp.proto";
+import "flow.proto";
+import "network.proto";
+
+package pb;
+
+message ServiceRequest {
+  Account account = 1;
+  ULID hub = 2;
+  ULID id = 3;
+  string type = 4;
+  LabelSet labels = 5;
+  repeated KVPair metadata = 6;
+}
+
+message ServiceResponse {}
+
+message LabelLink {
+  Account account = 1;
+  LabelSet labels = 2;
+  LabelSet target = 3;
+  Account.Limits limits = 4;
+}
+
+message LabelLinks {
+  repeated LabelLink label_links = 1;
+}
+
+message ServiceRoute {
+  ULID hub = 1;
+  ULID id = 2;
+  string type = 3;
+  LabelSet labels = 4;
+}
+
+message AccountServices {
+  Account account = 1;
+  repeated ServiceRoute services = 2;
+}
+
+message ActivityEntry {
+  AccountServices route_added = 1;
+  ULID route_removed = 2;
+}
+
+message ConfigRequest {
+  ULID stable_id = 1;
+  ULID instance_id = 2;
+  repeated NetworkLocation locations = 3;
+}
+
+message ConfigResponse {
+  bytes tls_key = 1;
+  bytes tls_cert = 2;
+  bytes token_pub = 3;
+
+  string s3_access_key = 4;
+  string s3_secret_key = 5;
+  string s3_bucket = 6;
+
+  string image_tag = 7;
+}
+
+message HubChange {
+  ULID old_id = 1;
+  ULID new_id = 2;
+}
+
+message CentralActivity {
+  repeated AccountServices account_services = 1;
+  bool request_stats = 2;
+  LabelLinks new_label_links = 3;
+  HubChange hub_change = 4;
+}
+
+message HubActivity {
+  message HubRegistration {
+    ULID hub = 1;
+    ULID stable_hub = 2;
+    repeated NetworkLocation locations = 3;
+  }
+
+  HubRegistration hub_reg = 1;
+
+  Timestamp sent_at = 2;
+  message HubStats {
+    int64 agent_connections = 1;
+    int64 accounts_seen = 2;
+    int64 accounts_cached = 3;
+    int64 cached_bytes = 4;
+    Timestamp last_successful_update = 5;
+    Timestamp last_attempted_update = 6;
+  }
+
+  HubStats stats = 3;
+
+  repeated FlowRecord flow = 4;
+}
+
+message HubInfo {
+  ULID id = 1;
+  repeated NetworkLocation locations = 2;
+}
+
+message ListOfHubs {
+  repeated HubInfo hubs = 1;
+}
+
+message HubSync {
+  ULID id = 1;
+  ULID stable_id = 2;
+  repeated ServiceRequest services = 3;
+}
+
+message HubSyncResponse {
+  int64 service_count = 1;
+}
+
+message HubRegisterRequest {
+  ULID stable_id = 1;
+  ULID instance_id = 2;
+  repeated NetworkLocation locations = 3;
+}
+
+message HubRegisterResponse {
+  Timestamp control_time = 1;
+}
+
+message HubDisconnectRequest {
+  ULID stable_id = 1;
+  ULID instance_id = 2;
+}
+
+message ServiceTokenRequest {
+  string namespace = 1;
+}
+
+message ServiceTokenResponse {
+  string token = 1;
+}
+
+message ListServicesRequest {
+  Account account = 1;
+}
+
+message ListServicesResponse {
+  repeated Service services = 1;
+}
+
+message Service {
+  ULID id = 1;
+  ULID hub = 2;
+  string type = 3;
+  LabelSet labels = 4;
+  repeated KVPair metadata = 5;
+}
+
+service ControlServices {
+  rpc AddService(ServiceRequest) returns (ServiceResponse) {}
+  rpc RemoveService(ServiceRequest) returns (ServiceResponse) {}
+  rpc ListServices(ListServicesRequest) returns (ListServicesResponse) {}
+  rpc FetchConfig(ConfigRequest) returns (ConfigResponse) {}
+  rpc StreamActivity(stream HubActivity) returns (stream CentralActivity) {}
+  rpc SyncHub(HubSync) returns (HubSyncResponse) {}
+  rpc HubDisconnect(HubDisconnectRequest) returns (Noop) {}
+  rpc AllHubs(Noop) returns (ListOfHubs) {}
+  rpc RequestServiceToken(ServiceTokenRequest) returns (ServiceTokenResponse) {}
+}
+
+message AddAccountRequest {
+  Account account = 1;
+  Account.Limits limits = 2;
+}
+
+message AddLabelLinkRequest {
+  LabelSet labels = 1;
+  Account account = 2;
+  LabelSet target = 3;
+}
+
+message Noop {}
+
+message RemoveLabelLinkRequest {
+  LabelSet labels = 1;
+  Account account = 2;
+}
+
+message CreateTokenRequest {
+  Account account = 1;
+  repeated TokenCapability capabilities = 2 [(gogoproto.nullable) = false];
+  Timestamp valid_duration = 3;
+}
+
+message CreateTokenResponse {
+  string token = 1;
+}
+
+message ControlRegister {
+  string namespace = 1;
+}
+
+message ControlToken {
+  string token = 1;
+}
+
+message TokenInfo {
+  bytes public_key = 1;
+}
+
+message ListAccountsRequest {
+  int32 limit = 1;
+  bytes marker = 2;
+}
+
+message ListAccountsResponse {
+  repeated Account accounts = 1;
+  bytes next_marker = 2;
+}
+
+service ControlManagement {
+  rpc Register(ControlRegister) returns (ControlToken) {}
+  rpc AddAccount(AddAccountRequest) returns (Noop) {}
+  rpc AddLabelLink(AddLabelLinkRequest) returns (Noop) {}
+  rpc RemoveLabelLink(RemoveLabelLinkRequest) returns (Noop) {}
+  rpc CreateToken(CreateTokenRequest) returns (CreateTokenResponse) {}
+  rpc IssueHubToken(Noop) returns (CreateTokenResponse) {}
+  rpc GetTokenPublicKey(Noop) returns (TokenInfo) {}
+  rpc ListAccounts(ListAccountsRequest) returns (ListAccountsResponse) {}
+}

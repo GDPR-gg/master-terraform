@@ -1,0 +1,91 @@
+---
+componentName: TextSplits
+---
+
+Display an array of `text-split` components, automatically switching to the appropriate component for each array item.
+
+<LiveComponent>{`
+<TextSplits
+  textSplits={[
+    {
+      textSplit: {
+        heading: 'Example with Logo Grid',
+        content:
+          'Donec ullamcorper nulla non metus auctor fringilla. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.',
+      },
+      logoGrid: [
+         {
+          "url": "https://www.datocms-assets.com/2885/1566919170-aws.svg",
+          "alt": "AWS",
+          "linkUrl": "/integrations/aws"
+        },
+        {
+          "url": "https://www.datocms-assets.com/2885/1539799149-azure-stacked-color.svg",
+          "alt": "Microsoft Azure",
+          "linkUrl": "/integrations/microsoft"
+        },
+        {
+          "url": "https://www.datocms-assets.com/2885/1513617132-google-cloud.svg",
+          "alt": "Google Cloud",
+          "linkUrl": "/integrations/google-cloud"
+        },
+        {
+          "url": "https://www.datocms-assets.com/2885/1566919186-oracle.svg",
+          "alt": "Oracle",
+          "linkUrl": "/integrations/oracle"
+        },
+        {
+          "url": "https://www.datocms-assets.com/2885/1521842502-alibaba.png",
+          "alt": "Alibaba Cloud",
+          "linkUrl": "/integrations/alibaba"
+        },
+        {
+          "url": "https://www.datocms-assets.com/2885/1616772767-vmware.png",
+          "alt": "Vmware",
+          "linkUrl": "/integrations/vmware"
+        },
+        {
+          "url": "https://www.datocms-assets.com/2885/1540418681-kubernetes.png",
+          "alt": "Kubernetes"
+        },
+        {
+          "url": "https://www.datocms-assets.com/2885/1566919172-datadog.svg",
+          "alt": "Datadog"
+        },
+        {
+          "url": "https://www.datocms-assets.com/2885/1550621046-openstacklogovertical.svg",
+          "alt": "Openstack"
+        }
+      ],
+    },
+    {
+      textSplit: {
+        heading: 'Example with Code Block',
+        content:
+          'Donec ullamcorper nulla non metus auctor fringilla. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.',
+        textSide: 'right',
+      },
+      codeBlock: {
+        options: { showWindowBar: true },
+        code: \`task <span class="token string">"webservice"</span> <span class="token punctuation">{</span>\n\t<span class="token property">driver</span> <span class="token punctuation">=</span> <span class="token string">"docker"</span>\n  \n\t<span class="token keyword">config</span> <span class="token punctuation">{</span>\n\t\t<span class="token property">image</span> <span class="token punctuation">=</span> <span class="token string">"redis:3.2"</span>\n\t\t<span class="token keyword">labels</span> <span class="token punctuation">{</span>\n\t\t\t<span class="token property">group</span> <span class="token punctuation">=</span> <span class="token string">"webservice-cache"</span>\n\t  <span class="token punctuation">}</span>\n\t<span class="token punctuation">}</span>\n<span class="token punctuation">}</span>\n\`,
+        language: 'hcl',
+      },
+    },
+    {
+      textSplit: {
+        heading: 'Example with Image',
+        content:
+          'Donec ullamcorper nulla non metus auctor fringilla. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.',
+      },
+      image: {
+        url: 'https://www.datocms-assets.com/2885/1508522484-share.jpg',
+        alt: 'My special alt text',
+      },
+    },
+  ]}
+/>
+`}</LiveComponent>
+
+### Props
+
+<PropsTable props={componentProps} />

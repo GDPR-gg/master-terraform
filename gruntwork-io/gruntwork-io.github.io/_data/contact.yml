@@ -1,0 +1,25 @@
+email:
+  label: "Email"
+  url: "info@gruntwork.io"
+blog:
+  label: "Blog"
+  url: "https://blog.gruntwork.io"
+twitter:
+  label: "Twitter"
+  url: "https://twitter.com/gruntwork_io"
+  username: "gruntwork_io"
+linkedin:
+  label: "LinkedIn"
+  url: "https://www.linkedin.com/company/gruntwork"
+facebook:
+  label: "Facebook"
+  url: "https://www.facebook.com/gruntworkio"
+google:
+  label: "Google"
+  url: "https://plus.google.com/110908043390336994091"
+github:
+  label: "GitHub"
+  url: "https://github.com/gruntwork-io/"
+careers:
+  label: "Careers"
+  url: "https://blog.gruntwork.io/gruntwork-is-hiring-devops-engineers-c268513a0b5a"

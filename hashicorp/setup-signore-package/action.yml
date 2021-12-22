@@ -1,0 +1,40 @@
+name: install signore
+description: installs the signore client from a GitHub Packages docker image
+inputs:
+  signer:
+    description: the signer to add to the signore config (optional)
+  token:
+    description: |
+      GITHUB_TOKEN with access to the signore package
+      Not required if the calling repository is in the `hashicorp` GitHub organization
+    default: ${{ github.token }}
+  version:
+    description: signore cli version to install (semver supported)
+    required: true
+    default: v0
+outputs:
+  version:
+    description: the version of the signore CLI that was installed
+    value: ${{ steps.get-version.outputs.installed-version }}
+runs:
+  using: composite
+  steps:
+    - name: login to ghcr, copy from image
+      shell: bash
+      run: |
+        echo "${{ inputs.token }}" | docker login -u ${{ github.actor }} --password-stdin ghcr.io
+        docker pull ghcr.io/hashicorp/signore:${{ inputs.version }}
+        CONTAINER_ID=$(docker create ghcr.io/hashicorp/signore:${{ inputs.version }})
+        docker cp $CONTAINER_ID:/usr/bin/signore /usr/local/bin/signore
+        docker rm -f $CONTAINER_ID
+    - name: template signore config
+      shell: bash
+      run: |
+        mkdir -p ~/.signore || true
+        touch ~/.signore/config.yaml || true
+        [ -n "${{ inputs.signer }}" ] && echo "signer: ${{ inputs.signer }}" >> ~/.signore/config.yaml || true
+    - id: get-version
+      shell: bash
+      run: |
+        SIGNORE_VERSION=$(signore version)
+        echo "::set-output name=installed-version::$SIGNORE_VERSION"

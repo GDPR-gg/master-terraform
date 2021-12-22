@@ -1,0 +1,369 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.google.appengine.tck</groupId>
+        <artifactId>appengine-tck</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <artifactId>appengine-tck-core</artifactId>
+    <packaging>pom</packaging>
+    <name>GAE TCK Core</name>
+    <url>https://developers.google.com/appengine/</url>
+    <description>Google AppEngine Test Compatability Kit</description>
+
+    <modules>
+        <!-- External -->
+        <module>benchmark</module>
+        <module>byteman</module>
+        <module>endpoints</module>
+        <module>misc</module>
+        <module>sockets</module>
+        <module>sql</module>
+    </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.google.appengine</groupId>
+            <artifactId>appengine-api-1.0-sdk</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.appengine.tck</groupId>
+            <artifactId>appengine-tck-base</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.arquillian.junit</groupId>
+            <artifactId>arquillian-junit-container</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <!-- Default, compile tests, but not run -->
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <skipTests>true</skipTests>
+            </properties>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jboss.maven.plugins</groupId>
+                        <artifactId>code-coverage-maven-plugin</artifactId>
+                        <version>${version.org.jboss.maven.coverage.plugin}</version>
+                        <executions>
+                            <execution>
+                                <id>api-coverage</id>
+                                <goals>
+                                    <goal>coverage</goal>
+                                </goals>
+                                <phase>process-test-classes</phase>
+                                <configuration>
+                                    <module>tests</module>
+                                    <repositoryUser>GoogleCloudPlatform</repositoryUser>
+                                    <repositoryProject>appengine-tck</repositoryProject>
+                                    <coverageTitle>GAE API</coverageTitle>
+                                    <javadocRoot>http://developers.google.com/appengine/docs/java/javadoc/</javadocRoot>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+
+            <dependencies>
+                <dependency>
+                    <groupId>org.jboss.maven.plugins</groupId>
+                    <artifactId>code-coverage-maven-plugin</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <!-- GAE -->
+        <profile>
+            <id>sdk</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>sdk</name>
+                </property>
+            </activation>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                            <includes>
+                                <include>com/google/appengine/tck/**/*Test.java</include>
+                            </includes>
+                            <systemProperties>
+                                <appengine.test.datastore.default_high_rep_job_policy_unapplied_job_pct>20</appengine.test.datastore.default_high_rep_job_policy_unapplied_job_pct>
+                            </systemProperties>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+
+            <dependencies>
+                <dependency>
+                    <groupId>com.google.appengine.tck</groupId>
+                    <artifactId>sdk-env</artifactId>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.jboss.arquillian.container</groupId>
+                    <artifactId>arquillian-gae-local</artifactId>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <!-- GAE remote - AppSpot -->
+        <profile>
+            <id>appspot</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>appspot</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                            <includes>
+                                <include>com/google/appengine/tck/**/*Test.java</include>
+                            </includes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+            <dependencies>
+                <dependency>
+                    <groupId>com.google.appengine.tck</groupId>
+                    <artifactId>appspot-env</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>org.jboss.arquillian.container</groupId>
+                    <artifactId>arquillian-gae-tools</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>com.google.appengine</groupId>
+                    <artifactId>appengine-tools-sdk</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <!-- GAE gcloud -->
+        <profile>
+            <id>gcloud</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>gcloud</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                            <includes>
+                                <include>com/google/appengine/tck/**/*Test.java</include>
+                            </includes>
+                            <systemProperties>
+                                <appengine.vm>true</appengine.vm>
+                            </systemProperties>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+            <dependencies>
+                <dependency>
+                    <groupId>com.google.appengine.tck</groupId>
+                    <artifactId>gcloud-env</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>org.jboss.arquillian.container</groupId>
+                    <artifactId>arquillian-gae-gcloud</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <!-- CapeDwarf -->
+        <profile>
+            <id>capedwarf</id>
+            <activation>
+                <property>
+                    <name>capedwarf</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                            <includes>
+                                <include>com/google/appengine/tck/**/*Test.java</include>
+                            </includes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+            <dependencies>
+                <dependency>
+                    <groupId>org.jboss.capedwarf.tck</groupId>
+                    <artifactId>gae-tck</artifactId>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.wildfly</groupId>
+                    <artifactId>wildfly-arquillian-container-remote</artifactId>
+                    <scope>test</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.jboss.xnio</groupId>
+                    <artifactId>xnio-nio</artifactId>
+                    <scope>test</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.jboss.arquillian.protocol</groupId>
+                    <artifactId>arquillian-protocol-modules</artifactId>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <profile>
+            <id>capedwarf-managed</id>
+            <activation>
+                <property>
+                    <name>capedwarf.home</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                            <includes>
+                                <include>com/google/appengine/tck/**/*Test.java</include>
+                            </includes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+            <dependencies>
+                <dependency>
+                    <groupId>org.jboss.capedwarf.tck</groupId>
+                    <artifactId>gae-tck</artifactId>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.wildfly</groupId>
+                    <artifactId>wildfly-arquillian-container-managed</artifactId>
+                    <scope>test</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.jboss.xnio</groupId>
+                    <artifactId>xnio-nio</artifactId>
+                    <scope>test</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.jboss.arquillian.protocol</groupId>
+                    <artifactId>arquillian-protocol-modules</artifactId>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <!-- AppScale -->
+        <profile>
+            <id>appscale</id>
+            <activation>
+                <property>
+                    <name>appscale</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                            <includes>
+                                <include>com/google/appengine/tck/**/*Test.java</include>
+                            </includes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+            <dependencies>
+                <dependency>
+                    <groupId>org.jboss.arquillian.container</groupId>
+                    <artifactId>arquillian-appscale-remote</artifactId>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <!-- Multisuite -->
+        <profile>
+            <id>multisuite</id>
+            <activation>
+                <property>
+                    <name>multisuite</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                            <excludedGroups>com.google.appengine.tck.category.IgnoreMultisuite</excludedGroups>
+                            <includes>
+                                <include>com/google/appengine/tck/**/*Test.java</include>
+                            </includes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+            <dependencies>
+                <dependency>
+                    <groupId>com.google.appengine.tck</groupId>
+                    <artifactId>appengine-tck-multisuite</artifactId>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+</project>

@@ -1,0 +1,963 @@
+syntax = "proto3";
+
+package hashicorp.waypoint.sdk;
+
+option go_package = "./;proto";
+
+import "google/protobuf/any.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "google/rpc/status.proto";
+import "protostructure.proto";
+
+/********************************************************************
+* Generic Args
+********************************************************************/
+
+// Args are the common argument types that are available to many of the
+// dynamic functions. The exact list of available argument types is available
+// on the Go interface docs.
+message Args {
+  // See component.Source
+  message Source {
+    // app is the name of the application being deployed.
+    string app = 1;
+
+    // path is the absolute directory path to the root directory for source files.
+    string path = 2;
+  }
+
+  // See component.JobInfo
+  message JobInfo {
+    bool local = 1;
+    string workspace = 2;
+    string id = 3;
+    string project = 4;
+    string app = 5;
+  }
+
+  // See component.DeploymentConfig
+  message DeploymentConfig {
+    string id = 1;
+    string server_addr = 2;
+    bool server_tls = 3;
+    bool server_tls_skip_verify = 4;
+    string entrypoint_invite_token = 5;
+    uint32 sequence = 6;
+  }
+
+  // DataDir represents the directory where data can be stored. This is an internal
+  // struct and shouldn't be used directly. Use the relevant *datadir implementation
+  // instead.
+  message DataDir {
+    // NOTE(mitchellh): we use specific types here rather than a single type
+    // with an enum "type" field or something since this maps more cleanly
+    // to our internal dependency-injection API.
+
+    message Project {
+      string cache_dir = 2;
+      string data_dir = 3;
+    }
+
+    message App {
+      string cache_dir = 2;
+      string data_dir = 3;
+    }
+
+    message Component {
+      string cache_dir = 2;
+      string data_dir = 3;
+    }
+  }
+
+  // Logger is used to construct an logger for the plugin.
+  message Logger {
+    // name is the name of the logger
+    string name = 1;
+  }
+
+  // TerminalUI is used to construct the terminal.UI for the plugin.
+  message TerminalUI {
+    uint32 stream_id = 1;
+  }
+
+  // ReleaseTargets is the set of targets for a release operation.
+  message ReleaseTargets {
+    // The set of targets for a release. This is always guaranteed by
+    // the caller to sum to 100%. If the release component doesn't support
+    // traffic splitting, this is guaranteed to always be length 1.
+    repeated Target targets = 1;
+
+    // Target is a single target for releasing.
+    message Target {
+      google.protobuf.Any deployment = 1;
+      uint32 percent = 2;
+    }
+  }
+
+  // LabelSet is a set of labels for anything that can be labeled, such
+  // as a deployment, build, etc.
+  message LabelSet {
+    map<string, string> labels = 1;
+  }
+
+  // ExecSessionInfo is used to send the information about an exec plugin
+  // session.
+  message ExecSessionInfo {
+    // bidirectional usd for stdin and stdout
+    uint32 stream_id = 1;
+
+    // The arguments to the command (includes the command itself)
+    repeated string args = 2;
+
+    // Indicate if the client is expecting a TTY
+    bool is_tty = 3;
+
+    // The size of the window on start, if is_tty is true
+    WindowSize initial_window = 4;
+
+    // The value of the TERM environment variable, if is_tty is true
+    string term_type = 5;
+
+    // The environment variables to set in the context
+    repeated string env = 6;
+  }
+
+  message LogViewer {
+    uint32 stream_id = 1;
+
+    google.protobuf.Timestamp starting_at = 2;
+
+    uint32 limit = 3;
+  }
+
+  message TaskLaunchInfo {
+    // The OCI image to launch for the batch task.
+    string oci_url = 1;
+
+    // The environment variable that will be exposed to the task.
+    map<string, string> environment_variables = 2;
+
+    // Entrypoint override for the OCI image.
+    repeated string entrypoint = 4;
+
+    // The arguments that will be passed to the new container on boot.
+    repeated string arguments = 3;
+  }
+}
+
+// FuncSpec describes a function and is used by the dependency-injection
+// framework to provide the function with the proper values.
+//
+// Value types are specified using strings. Built-in framework types
+// are defined via constants in the `sdk` package. For custom types, you
+// can use whatever string as long as it is unique. We recommend using a
+// unique prefix plus the Go type name.
+message FuncSpec {
+  // name of the function. This is used for improved logging.
+  string name = 1;
+
+  // args is the list of arguments by protobuf Any types.
+  repeated Value args = 2;
+
+  // result are the resulting types that are made available. This is only
+  // critically important to be set for functions that may chain to other
+  // functions. It can be set to blank in which case it will not be used.
+  repeated Value result = 3;
+
+  message Value {
+    // name is the name of the argument. This may be empty for typed arguments.
+    string name = 1;
+
+    // type is the type of the argument. All arguments encoded using *any.Any
+    // specify the proto Any message type and not a language-specific type.
+    string type = 2;
+
+    // primitive_type is set to a non-zero if the type is NOT an *any.Any.
+    PrimitiveType primitive_type = 4;
+
+    // value for this Value. This is only set for Args and has no impact on specs.
+    // This value MUST match the type or primitive_type fields.
+    oneof value {
+      // proto is set if the value is a protobuf message.
+      google.protobuf.Any proto_any = 3;
+
+      // Primitive values below
+      bool bool = 5;
+      int64 int = 6; // all sizes up to 64-bit
+      uint64 uint = 7; // all sizes up to 64-bit
+      string string = 8;
+    }
+
+    // PrimitiveType are the types of primitives we support. The enum
+    // value must exactly match the Go reflect.Kind enum value.
+    enum PrimitiveType {
+      INVALID = 0;
+      BOOL = 1;
+      INT = 2;
+      INT8 = 3;
+      INT16 = 4;
+      INT32 = 5;
+      INT64 = 6;
+      UINT = 7;
+      UINT8 = 8;
+      UINT16 = 9;
+      UINT32 = 10;
+      UINT64 = 11;
+      STRING = 24;
+    }
+  }
+
+  // Args is the standard argument type for an RPC that is calling a FuncSpec.
+  message Args {
+    // args is the list of arguments. This will include some of the
+    // standard types in this file (in the Args message namespace) as well
+    // as custom types declared by the FuncSpec that the plugin is expected
+    // to understand how to decode.
+    repeated Value args = 1;
+  }
+}
+
+// Config is the namespace of messages related to configuration.
+//
+// All components that take configuration are expected to have two RPC calls:
+//
+//   * ConfigStruct - Returns the configuration structure.
+//   * Configure - Sends the configuration data back to the plugin and the
+//       plugin is also expected to perform any validation at this stage.
+//   * Documentation - Returns a Documentation struct that details what configuration
+//       is accepted, with documentation.
+//
+message Config {
+  // ConfigureRequest is the request sent once the configuration decoding
+  // is complete to actually assign the values to the structure.
+  message ConfigureRequest {
+    // json is the json data for the structure returned in the StructResp.
+    // It is guaranteed to decode cleanly into the target structure.
+    bytes json = 1;
+  }
+
+  // StructResp returns the struct for configuration.
+  message StructResp {
+    // struct is the configuration structure (or empty/nil if one doesn't exist).
+    // This struct should have all the proper struct tags for HCL decoding
+    // You should do validation on the Configure call.
+    protostructure.Struct struct = 1;
+  }
+
+  message FieldDocumentation {
+    string name = 1;
+    string synopsis = 2;
+    string summary = 3;
+    bool optional = 4;
+    string env_var = 5;
+    string type = 6;
+    string default = 7;
+    bool category = 8;
+    repeated FieldDocumentation sub_fields = 9;
+  }
+
+  message MapperDocumentation {
+    string input = 1;
+    string output = 2;
+    string description = 3;
+  }
+
+  message Documentation {
+    string description = 1;
+    string example = 2;
+    string input = 3;
+    string output = 4;
+    map<string, FieldDocumentation> fields = 5;
+    map<string, FieldDocumentation> template_fields = 7;
+    map<string, FieldDocumentation> request_fields = 8;
+    repeated MapperDocumentation mappers = 6;
+  }
+}
+
+// Auth is the namespace of messages related to auth.
+message Auth {
+  // AuthResponse is returned by the Auth functions.
+  message AuthResponse {
+    bool authenticated = 1;
+  }
+}
+
+message Generation {
+  // Resp is the response for the Generation function.
+  message Resp {
+    bytes id = 1;
+  }
+}
+
+// ImplementsResp returns true if the component implements an additional interface.
+message ImplementsResp {
+  bool implements = 1;
+}
+
+/********************************************************************
+* Framework Types (for package "framework")
+********************************************************************/
+
+message Framework {
+  // ResourceManagerState is the state stored by the framework/resource.Manager
+  // structure. This should not be used directly by plugin authors.
+  message ResourceManagerState {
+    repeated ResourceState resources = 1;
+
+    // The order that resources were created. This is used internally
+    // to construct the destruction order which is just this order reversed.
+    repeated string create_order = 2;
+  }
+
+  // ResourceState is the state of a single resource managed by the framework.
+  message ResourceState {
+    // name is the name of this resource
+    string name = 1;
+
+    // raw is the raw state for this resource (if any, this can be nil).
+    // The type can't typically be known since this is opaque and only
+    // known by the plugin implementation.
+    google.protobuf.Any raw = 2;
+
+    // json is the jsonpb-encoded version of the raw state. This might be
+    // used downstream even by consumers who don't know the original protobuf
+    // type.
+    string json = 3;
+  }
+}
+
+/********************************************************************
+* Shared Messages
+********************************************************************/
+
+// Ref contains shared messages used for references to other resources.
+//
+// Refs should be used when the full type shouldn't be embedded in the message.
+message Ref {
+
+  // DeclaredResource references a declared resource.
+  message DeclaredResource {
+    // Unique name of the declared resource.
+    string name = 1;
+  }
+}
+
+/********************************************************************
+* Status Report Messages
+********************************************************************/
+
+// StatusReport is the report genrated when querying the overall health of
+// a deployed or released application. This report can be either generated
+// by querying the platform itself which has performed the health checks,
+// or by Waypoint running user-defined health checks.
+message StatusReport {
+  // a collection of resources for a deployed application
+  repeated Resource resources = 1;
+
+  // the current overall health state for a deployment
+  Health health = 2;
+
+  // a simple human readable message detailing the Health state
+  string health_message = 3;
+
+  // the time when this report was generated
+  google.protobuf.Timestamp generated_time = 4;
+
+  // where the health check was performed. External means not executed by Waypoint,
+  // but by the platform deployed to.
+  bool external = 5;
+
+  // A resource as observed in a platform
+  message Resource {
+    // The id of the resource, according to the platform.
+    string id = 4;
+
+    // The declared resource that this resource was created from. I.e. a plugin may have
+    // an autoscaling group declared resource, and a status report may find an autoscaling group
+    // resource and multiple instance resources that all reference the original ASG declared resource.
+    // This field is set automatically by the resource manager framework.
+    Ref.DeclaredResource declared_resource = 5;
+
+    // Resources that created this resource.
+    string parent_resource_id = 6;
+
+    // Friendly name of the resource, if applicable
+    // If using resource manager, this will default to the name of the resource manager resource
+    string name = 1;
+
+    // The platform on which the resource exists.
+    // If using resource manager, this will default to the platform of the resource manager resource
+    string platform = 7;
+
+    // platform-specific name of the resource type. i.e. instance, pod, auto-scaling group, etc
+    // If using resource manager, this will default to the type of the resource manager resource
+    string type = 8;
+
+    // A link directly to the resource in the platform, if applicable.
+    string platform_url = 9;
+
+    // The high level category of the resource, used as a hint to the UI on how to display the resource.
+    ResourceCategoryDisplayHint category_display_hint = 10;
+
+    // platform-reported time of resource creation
+    google.protobuf.Timestamp created_time = 11;
+
+    // any additional metadata about the resource, encoded as JSON
+    string state_json = 12;
+
+    // the current health state for a single resource
+    Health health = 2;
+
+    // a simple human readable message detailing the Health state
+    string health_message = 3;
+  }
+
+  // the state of overall health of a deployed application
+  enum Health {
+    UNKNOWN = 0;
+    ALIVE = 1;
+    READY = 2;
+    DOWN = 3;
+    MISSING = 5; // We're expecting it to exist, but it does not.
+    PARTIAL = 4; // Some resources in deployment are OK, others are not OK
+  }
+}
+
+/********************************************************************
+* Exec Service
+********************************************************************/
+
+// Exec is a service that a work *component.ExecSessionInfo
+// to plugins. Plugins don't interact with this directly, they usually
+// interact with it indirectly via a *component.ExecSessionInfo.
+service ExecSessionService {
+  rpc Output(ExecSession.OutputRequest) returns (google.protobuf.Empty);
+  rpc Input(google.protobuf.Empty) returns (stream ExecSession.InputRequest);
+}
+
+message WindowSize {
+  uint32 height = 1;
+  uint32 width = 2;
+}
+
+message ExecSession {
+  message OutputRequest {
+    bytes data = 1;
+    bool stderr = 2;
+  }
+
+  message InputRequest {
+    oneof input {
+      bytes data = 1;
+      WindowSize window_size = 2;
+      bool input_closed = 3;
+    }
+  }
+}
+
+// Returned by Exec plugin functions to indicate the status of the executed
+// command.
+message ExecResult {
+  int32 exit_code = 1;
+}
+
+/********************************************************************
+* Log Plugin Plugin Service
+********************************************************************/
+
+// LogPlatform is responsible for reading logs of a deployment. This is
+// optionally implemented by a plugin to provide an alternative way
+// to reading the deployments logs when the CEB are not used.
+
+// LogViewer returns batches of log lines for a single app deployed
+// on a platform (though that app may itself have multiple instances).
+// This service is used exclusively internally across the plugin boundary
+// for mapping the component.LogViewer value into a plugin's LogsFunc()
+service LogViewer {
+  rpc NextLogBatch(stream Logs.NextBatchResp) returns (google.protobuf.Empty);
+}
+
+message Logs {
+  message Resp {
+    // stream_id is the stream ID to connect to to get access to the
+    // LogViewer service.
+    uint32 stream_id = 1;
+  }
+
+  message NextBatchResp {
+    repeated Event events = 1;
+  }
+
+  message Event {
+    string partition = 1;
+    google.protobuf.Timestamp timestamp = 2;
+    string contents = 3;
+  }
+}
+
+/********************************************************************
+* Terminal UI Service
+********************************************************************/
+
+// TerminalUIService is a service that provides "sdk/terminal.UI" interface
+// to plugins. Plugins don't interact with this directly, they usually
+// interact with it indirectly via a terminal.UI implementation.
+service TerminalUIService {
+  rpc Output(TerminalUI.OutputRequest) returns (google.protobuf.Empty);
+  rpc Events(stream TerminalUI.Event) returns (stream TerminalUI.Response);
+  rpc IsInteractive(google.protobuf.Empty) returns (TerminalUI.IsInteractiveResponse);
+}
+
+message TerminalUI {
+  message IsInteractiveResponse {
+    bool interactive = 1;
+  }
+
+  message OutputRequest {
+    repeated string lines = 1;
+  }
+
+  message Response {
+    oneof event {
+      Event.InputResp input = 1;
+    }
+  }
+
+  message Event {
+    oneof event {
+      Line line = 1;
+      Status status = 2;
+      NamedValues named_values = 3;
+      Raw raw = 4;
+      Table table = 5;
+      StepGroup step_group = 6;
+      Step step = 7;
+      Input input = 8;
+    }
+
+    message Input {
+      string prompt = 1;
+      string style = 2;
+      bool secret = 3;
+    }
+
+    message InputResp {
+      string input = 1;
+      google.rpc.Status error = 2;
+    }
+
+    message Status {
+      string status = 1;
+      string msg = 2;
+      bool step = 3;
+    }
+
+    message Line {
+      string msg = 1;
+      string style = 2;
+    }
+
+    message Raw {
+      bytes data = 1;
+      bool stderr = 2;
+    }
+
+    message NamedValue {
+      string name = 1;
+      string value = 2;
+    }
+
+    message NamedValues {
+      repeated NamedValue values = 1;
+    }
+
+    message TableEntry {
+      string value = 1;
+      string color = 2;
+    }
+
+    message TableRow {
+      repeated TableEntry entries = 1;
+    }
+
+    message Table {
+      repeated string headers = 1;
+      repeated TableRow rows = 2;
+    }
+
+    message StepGroup {
+      bool close = 1;
+      int32 id = 2;
+    }
+
+    message Step {
+      int32 id = 1;
+      bool close = 2;
+      string msg = 3;
+      string status = 4;
+      bytes output = 5;
+      int32 step_group = 6;
+    }
+  }
+}
+
+/********************************************************************
+* Mapper Plugin
+********************************************************************/
+
+// Mapper is a specialized type of plugin that provides type mappers
+// to convert to/from various types.
+service Mapper {
+  // ListMappers returns the list of mappers that this plugin supports.
+  rpc ListMappers(google.protobuf.Empty) returns (Map.ListResponse);
+
+  // Map executes a mapper.
+  rpc Map(Map.Request) returns (Map.Response);
+}
+
+message Map {
+  message Request {
+    // args is the list of argument types.
+    FuncSpec.Args args = 1;
+
+    // result is the desired result type.
+    string result = 2;
+  }
+
+  message Response {
+    // result is the mapped data type that matches the type expected
+    // by the MapRequest.result field.
+    google.protobuf.Any result = 1;
+  }
+
+  message ListResponse {
+    // FuncSpec
+    repeated FuncSpec funcs = 1;
+  }
+}
+
+/********************************************************************
+* Builder Plugin Service
+********************************************************************/
+
+// Builder service is a builder that takes some set of arguments and produces
+// an artifact.
+service Builder {
+  rpc IsAuthenticator(google.protobuf.Empty) returns (ImplementsResp);
+  rpc Auth(FuncSpec.Args) returns (Auth.AuthResponse);
+  rpc AuthSpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc ValidateAuth(FuncSpec.Args) returns (google.protobuf.Empty);
+  rpc ValidateAuthSpec(google.protobuf.Empty) returns (FuncSpec);
+
+  rpc ConfigStruct(google.protobuf.Empty) returns (Config.StructResp);
+  rpc Configure(Config.ConfigureRequest) returns (google.protobuf.Empty);
+  rpc Documentation(google.protobuf.Empty) returns (Config.Documentation);
+
+  rpc BuildSpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc Build(FuncSpec.Args) returns (Build.Resp);
+
+  rpc BuildODR(FuncSpec.Args) returns (Build.Resp);
+  rpc BuildSpecODR(google.protobuf.Empty) returns (FuncSpec);
+}
+
+message Build {
+  message Resp {
+    google.protobuf.Any result = 1;
+    string result_json = 4;
+    map<string, string> labels = 2;
+    bytes template_data = 3;
+  }
+}
+
+/********************************************************************
+* Platform Plugin Service
+********************************************************************/
+
+// Platform is responsible for deploying an artifact that is in a registry.
+service Platform {
+  rpc IsAuthenticator(google.protobuf.Empty) returns (ImplementsResp);
+  rpc Auth(FuncSpec.Args) returns (Auth.AuthResponse);
+  rpc AuthSpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc ValidateAuth(FuncSpec.Args) returns (google.protobuf.Empty);
+  rpc ValidateAuthSpec(google.protobuf.Empty) returns (FuncSpec);
+
+  rpc ConfigStruct(google.protobuf.Empty) returns (Config.StructResp);
+  rpc Configure(Config.ConfigureRequest) returns (google.protobuf.Empty);
+  rpc Documentation(google.protobuf.Empty) returns (Config.Documentation);
+
+  rpc DeploySpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc Deploy(FuncSpec.Args) returns (Deploy.Resp);
+
+  // component.PlatformReleaser optional implementation.
+  rpc DefaultReleaserSpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc DefaultReleaser(FuncSpec.Args) returns (DefaultReleaser.Resp);
+
+  // component.Destroyer optional implementation
+  rpc IsDestroyer(google.protobuf.Empty) returns (ImplementsResp);
+  rpc DestroySpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc Destroy(FuncSpec.Args) returns (google.protobuf.Empty);
+
+  // component.WorkspaceDestroyer optional implementation
+  rpc IsWorkspaceDestroyer(google.protobuf.Empty) returns (ImplementsResp);
+  rpc DestroyWorkspaceSpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc DestroyWorkspace(FuncSpec.Args) returns (google.protobuf.Empty);
+
+  // component.Execer optional implementation
+  rpc IsExecer(google.protobuf.Empty) returns (ImplementsResp);
+  rpc ExecSpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc Exec(FuncSpec.Args) returns (ExecResult);
+
+  // component.LogViewer optional implementation
+  // IsLogPlatform returns true if this platform also implements LogPlatform.
+  rpc IsLogPlatform(google.protobuf.Empty) returns (ImplementsResp);
+  rpc LogsSpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc Logs(FuncSpec.Args) returns (google.protobuf.Empty);
+
+  // component.Generation optional implementation
+  rpc IsGeneration(google.protobuf.Empty) returns (ImplementsResp);
+  rpc GenerationSpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc Generation(FuncSpec.Args) returns (Generation.Resp);
+
+  // component.Status optional implementation
+  rpc IsStatus(google.protobuf.Empty) returns (ImplementsResp);
+  rpc StatusSpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc Status(FuncSpec.Args) returns (StatusReport);
+}
+
+message DefaultReleaser {
+  message Resp {
+    // stream_id is the stream ID to connect to to get access to the
+    // ReleaseManager implementation.
+    uint32 stream_id = 1;
+  }
+}
+
+message Deploy {
+  // url is the URL provided by the plugin used to reach this deployment
+  // note that not all the plugins are able to return a meaningful
+  // entry here. In such cases, the best option is to leave this
+  // field empty and let the URL service (Hashicorp Horizon) provide
+  // an URL.
+  string url = 1;
+  message Resp {
+    // result is the resulting opaque data type
+    google.protobuf.Any result = 1;
+    string result_json = 5;
+
+    // deployment structure
+    Deploy deployment = 3;
+
+    // template data for the deployment
+    bytes template_data = 2;
+
+    // an array of declared resources that make up the deployment
+    DeclaredResources declared_resources = 4;
+  }
+}
+
+// A platform resource that an operation (release/deployment) has created, depends on, or manages.
+message DeclaredResource {
+  // Unique name name for the resource. Usually derived from the platform. Required.
+  string name = 1;
+
+  // platform-specific type of the resource type. i.e. instance, pod, auto-scaling group, etc
+  string type = 6;
+
+  // The platform on which the resource should exist, i.e. docker, gcp, k8s, etc.
+  string platform = 2;
+
+  // Internal ResourceManager representation of the resource.
+  google.protobuf.Any state = 3;
+
+  // Any additional information a plugin wants to expose on this resource.
+  // EX: Availability zones on a load balancer, concurrency limit on a lambda function, etc.
+  string state_json = 4;
+
+  // high level type of the resource, used for display purposes.
+  ResourceCategoryDisplayHint category_display_hint = 5;
+}
+
+message DeclaredResources {
+  repeated DeclaredResource resources = 1;
+}
+
+enum ResourceCategoryDisplayHint {
+  UNKNOWN = 0;
+  OTHER = 1; // catch-all for types that do not fit well into other predefined roles. i.e. aws target group
+  INSTANCE = 2; // i.e. k8s pod, docker container, ecs task
+  INSTANCE_MANAGER = 3; // i.e. k8s deployment, ec2 asg, nomad job, ecs service
+  ROUTER = 4; // i.e. k8s service, aws alb
+  POLICY = 5; // i.e. aws security group or iam role, k8s RoleBinding
+  CONFIG = 6; // i.e. aws launch config, k8s configmap
+  FUNCTION = 7; // i.e. lambda function, azure function
+  STORAGE = 8; // i.e. EBS volume, EFS filesystem, k8s PVC
+}
+
+/********************************************************************
+* Registry Plugin Service
+********************************************************************/
+
+// Registry is responsible for pushing a built artifact to some registry.
+// The difference between a registry and a builder is that while a builder
+// produces an artifact from source, a registry provides operations to work
+// with artifacts such as listing previous, deleting, etc.
+service Registry {
+  rpc IsAuthenticator(google.protobuf.Empty) returns (ImplementsResp);
+  rpc Auth(FuncSpec.Args) returns (Auth.AuthResponse);
+  rpc AuthSpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc ValidateAuth(FuncSpec.Args) returns (google.protobuf.Empty);
+  rpc ValidateAuthSpec(google.protobuf.Empty) returns (FuncSpec);
+
+  rpc ConfigStruct(google.protobuf.Empty) returns (Config.StructResp);
+  rpc Configure(Config.ConfigureRequest) returns (google.protobuf.Empty);
+  rpc Documentation(google.protobuf.Empty) returns (Config.Documentation);
+
+  rpc PushSpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc Push(FuncSpec.Args) returns (Push.Resp);
+
+  // Access and AccessSpec are used to provide the optional component.RegistryAccess
+  // interface.
+  rpc AccessSpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc Access(FuncSpec.Args) returns (Access.Resp);
+}
+
+message Push {
+  message Resp {
+    // result is the resulting opaque data type
+    google.protobuf.Any result = 1;
+    string result_json = 3;
+
+    // template data for the artifact
+    bytes template_data = 2;
+  }
+}
+
+// Access is returned by Registry.Access as the return value for the plugin's
+// return value from the AccessInfoFunc call.
+message Access {
+  message Resp {
+    // result is the resulting opaque data type
+    google.protobuf.Any result = 1;
+  }
+}
+
+/********************************************************************
+* Release Plugin Service
+********************************************************************/
+
+// ReleaseManager is a service that handles the process of exposing
+// a deployment to traffic.
+service ReleaseManager {
+  rpc IsAuthenticator(google.protobuf.Empty) returns (ImplementsResp);
+  rpc Auth(FuncSpec.Args) returns (Auth.AuthResponse);
+  rpc AuthSpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc ValidateAuth(FuncSpec.Args) returns (google.protobuf.Empty);
+  rpc ValidateAuthSpec(google.protobuf.Empty) returns (FuncSpec);
+
+  rpc ConfigStruct(google.protobuf.Empty) returns (Config.StructResp);
+  rpc Configure(Config.ConfigureRequest) returns (google.protobuf.Empty);
+  rpc Documentation(google.protobuf.Empty) returns (Config.Documentation);
+
+  // component.Destroyer optional implementation
+  rpc IsDestroyer(google.protobuf.Empty) returns (ImplementsResp);
+  rpc DestroySpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc Destroy(FuncSpec.Args) returns (google.protobuf.Empty);
+
+  // component.WorkspaceDestroyer optional implementation
+  rpc IsWorkspaceDestroyer(google.protobuf.Empty) returns (ImplementsResp);
+  rpc DestroyWorkspaceSpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc DestroyWorkspace(FuncSpec.Args) returns (google.protobuf.Empty);
+
+  rpc ReleaseSpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc Release(FuncSpec.Args) returns (Release.Resp);
+
+  // component.Status optional implementation
+  rpc IsStatus(google.protobuf.Empty) returns (ImplementsResp);
+  rpc StatusSpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc Status(FuncSpec.Args) returns (StatusReport);
+}
+
+message Release {
+  string url = 1;
+
+  message Resp {
+    // result is the resulting data type for building.
+    google.protobuf.Any result = 1;
+
+    // release structure
+    Release release = 2;
+
+    // template data for the release
+    bytes template_data = 3;
+
+    // an array of declared resources that make up the release
+    DeclaredResources declared_resources = 4;
+  }
+}
+
+/********************************************************************
+* Config Sourcer Plugin Service
+********************************************************************/
+
+// ConfigSourcer is a service that reads configuration for the application.
+service ConfigSourcer {
+  rpc ConfigStruct(google.protobuf.Empty) returns (Config.StructResp);
+  rpc Configure(Config.ConfigureRequest) returns (google.protobuf.Empty);
+  rpc Documentation(google.protobuf.Empty) returns (Config.Documentation);
+
+  rpc ReadSpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc Read(FuncSpec.Args) returns (ConfigSource.ReadResponse);
+
+  rpc StopSpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc Stop(FuncSpec.Args) returns (google.protobuf.Empty);
+}
+
+message ConfigSource {
+  message ReadResponse {
+    // values should be exactly equivalent in length to the list of
+    // variable requests given to the Read function.
+    repeated Value values = 1;
+  }
+
+  message Value {
+    // name must match the input name or the entrypoint will ignore it.
+    string name = 1;
+
+    oneof result {
+      // error is an error retrieving this value. Sourcers may also return
+      // an error from the entire Read function. The benefit of granular
+      // errors is that the runtime may be able to fallback to a default.
+      google.rpc.Status error = 2;
+
+      // value must be a string value for the config since we currently
+      // only support environment variables.
+      string value = 3;
+    }
+  }
+}
+
+/********************************************************************
+* TaskLauncher Plugin Service
+********************************************************************/
+
+// TaskLauncher service to start and stop tasks (activities spawned from
+// oci images that run until completion and are not restarted) that take
+// some set of arguments and returns its identification state.
+service TaskLauncher {
+  rpc ConfigStruct(google.protobuf.Empty) returns (Config.StructResp);
+  rpc Configure(Config.ConfigureRequest) returns (google.protobuf.Empty);
+  rpc Documentation(google.protobuf.Empty) returns (Config.Documentation);
+
+  rpc StartSpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc StopSpec(google.protobuf.Empty) returns (FuncSpec);
+  rpc StartTask(FuncSpec.Args) returns (TaskLaunch.Resp);
+  rpc StopTask(FuncSpec.Args) returns (google.protobuf.Empty);
+}
+
+message TaskLaunch {
+  message Resp {
+    google.protobuf.Any result = 1;
+    string result_json = 2;
+  }
+}

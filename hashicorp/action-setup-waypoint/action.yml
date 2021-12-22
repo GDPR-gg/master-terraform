@@ -1,0 +1,10 @@
+name: 'action-setup-waypoint'
+description: 'Installs the Waypoint binary for use in GitHub actions'
+author: 'HashiCorp'
+inputs:
+  version:
+    required: true
+    description: 'The version of Waypoint to install'
+runs:
+  using: 'node12'
+  main: 'dist/index.js'

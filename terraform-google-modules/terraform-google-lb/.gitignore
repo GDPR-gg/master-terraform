@@ -1,0 +1,10 @@
+**/terraform.tfstate*
+**/.terraform/
+**/backend.tf
+**/terraform.tfvars
+**/values-*.yaml
+.kitchen
+credentials.json
+
+# tf lock file
+.terraform.lock.hcl

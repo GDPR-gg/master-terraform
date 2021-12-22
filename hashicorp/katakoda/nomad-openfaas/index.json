@@ -1,0 +1,78 @@
+{
+  "title": "Nomad OpenFaaS Playground",
+  "description": "HashiCorp Nomad environment with OpenFaaS, Consul, and Terraform",
+  "icon": "fa-nomad",
+  "details": {
+    "intro": {
+      "text": "intro.md",
+      "credits": "https://learn.hashicorp.com/nomad"
+    },
+    "finish": {
+      "text": "finish.md",
+      "credits": "https://learn.hashicorp.com/nomad"
+    },
+    "steps": [
+      {
+        "title": "Provisioning Extra Course Components",
+        "text": "provision.md",
+        "code": "provision.code.sh",
+        "verify": "provision.verify.sh"
+      },
+      {
+        "title": "Getting started",
+        "text": "1_start.md",
+        "code": "terminal.sh"
+      },
+      {
+        "title": "Creating a function",
+        "text": "2_creating.md"
+      },
+      {
+        "title": "Building and Deploying",
+        "text": "3_deploying.md"
+      },
+      {
+        "title": "Executing a function",
+        "text": "4_invoking.md"
+      }
+    ],
+    "assets": {
+      "host01": [
+        {
+          "file": "nomad.hcl",
+          "target": "/etc/nomad.d/"
+        },
+        {
+          "file": "*.service",
+          "target": "/lib/systemd/system"
+        },
+        {
+          "file": "*.sh",
+          "target": "/usr/local/bin",
+          "chmod": "+x"
+        }
+      ],
+      "client": [
+        {
+          "file": "launch.sh",
+          "target": "/home/scrapbook",
+          "chmod": "+x"
+        }
+      ]
+    }
+  },
+  "environment": {
+    "uilayout": "terminal",
+    "showdashboard": true,
+    "dashboards": [
+      { "name": "Nomad", "port": 4646 },
+      { "name": "OpenFaaS", "port": 8080 }
+    ],
+    "uimessage1": "\u001b[32mInstalling and configuring OpenFaaS...\u001b[m\r\n"
+  },
+  "backend": {
+    "imageid": "ubuntu:1804",
+    "lifetime": 30
+  },
+  "private": true
+}

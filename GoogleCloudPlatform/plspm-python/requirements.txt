@@ -1,0 +1,12 @@
+pandas
+numpy
+scipy
+statsmodels
+scikit-learn
+pytest
+setuptools
+wheel
+twine
+sphinxcontrib-napoleon
+sphinx
+m2r

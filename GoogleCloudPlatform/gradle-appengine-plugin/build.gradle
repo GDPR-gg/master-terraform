@@ -1,0 +1,121 @@
+apply plugin: 'groovy'
+apply plugin: 'com.bmuschko.nexus'
+
+apply from: 'scripts/builder-model-impl.gradle'
+apply from: 'scripts/test-jar-publisher.gradle'
+
+sourceCompatibility = JavaVersion.VERSION_1_7
+targetCompatibility = JavaVersion.VERSION_1_7
+
+group = 'com.google.appengine'
+version = '1.9.59'
+project.ext.appengineVersion = version
+if ('snapshot' in project.gradle.startParameter.taskNames) {
+    version = "${version}-SNAPSHOT"
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.bmuschko:gradle-nexus-plugin:2.3.1'
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven {
+      url 'https://oss.sonatype.org/content/repositories/snapshots'
+    }
+}
+
+dependencies {
+    compile localGroovy()
+    compile gradleApi()
+    compile project(':builder-model')
+    compile "com.google.appengine:appengine-local-endpoints:${appengineVersion}"
+    // TODO : update spock-core to 1.0-groovy-2.3 when it becomes available
+    testCompile ('org.spockframework:spock-core:0.7-groovy-2.0') {
+        exclude module: "groovy-all"
+    }
+    testCompile "commons-io:commons-io:2.5"
+}
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'Gradle App Engine plugin',
+                   'Implementation-Version': version,
+                   'Built-By': System.getProperty('user.name'),
+                   'Built-Date': new Date(),
+                   'Built-JDK': System.getProperty('java.version'),
+                   'Built-Gradle': gradle.gradleVersion
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.0'
+}
+
+modifyPom {
+    project {
+        name 'Gradle App Engine plugin'
+        description 'Gradle plugin that provides tasks for uploading, running and managing Google App Engine projects.'
+        url 'https://github.com/GoogleCloudPlatform/gradle-appengine-plugin'
+        inceptionYear '2011'
+
+        scm {
+            url 'https://github.com/GoogleCloudPlatform/gradle-appengine-plugin'
+            connection 'scm:https://github.com/GoogleCloudPlatform/gradle-appengine-plugin.git'
+            developerConnection 'scm:git://github.com/GoogleCloudPlatform/gradle-appengine-plugin.git'
+        }
+
+        licenses {
+            license {
+                name 'The Apache Software License, Version 2.0'
+                url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                distribution 'repo'
+            }
+        }
+
+        developers {
+            developer {
+                id 'loosebazooka'
+                name 'Appu Goundan'
+                email 'appu@google.com'
+            }
+        }
+    }
+}
+
+task snapshot {
+}
+
+test {
+    systemProperty "appengine.version", "${appengineVersion}"
+    systemProperty "appengine.pluginversion", "${version}-test"
+    systemProperty "test.maven.repo", publishing.repositories.test.url
+}.dependsOn allprojects.collect { "${it.getPath()}:publishTestPublicationToTestRepository" }
+
+gradle.taskGraph.whenReady { taskGraph ->
+  if (!taskGraph.hasTask(snapshot) && taskGraph.allTasks.any { it.name.equals(project.nexus.getUploadTaskName()) }) {
+    java.io.Console console = System.console()
+    // something about the gradle cmdline output messed with the output ordering
+    // so sleep a little so we appear after [building x%]
+    sleep(200)
+
+    def nexusUsername = readPropCmdLine(console, "nexus.username", "", "Sonatype Username")
+    def nexusPassword = console.readPassword("Sonatype Password: ")
+
+    allprojects { ext."nexusUsername" = nexusUsername }
+    allprojects { ext."nexusPassword" = new String(nexusPassword) }
+  }
+}
+
+// if you see a weird error pointing here, make sure you run upload with --no-daemon
+// so stdin is good to go
+def readPropCmdLine(console, property, defaultValue, msg) {
+  def value = System.getProperty(property) ?: defaultValue
+  value = console.readLine("$msg [${value}]:") ?: value
+}

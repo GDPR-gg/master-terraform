@@ -1,0 +1,37 @@
+schemaVersion: "1.0.0"
+
+globalEnvVars:
+  - key: "VIRTUAL_ENV"
+    value: "/env"
+  - key: "PATH"
+    value: "/env/bin:$PATH"
+
+commandTests:
+  - name: "virtualenv python installation"
+    setup: [["virtualenv", "/env"]]
+    command: ["which", "python"]
+    expectedOutput: ["/env/bin/python\n"]
+
+  - name: "virtualenv python version"
+    setup: [["virtualenv", "/env"]]
+    command: ["python", "--version"]
+    # we check stderr instead of stdout for Python versions < 3.4
+    # https://bugs.python.org/issue18338
+    expectedError: ["Python 2.7.(9|12)\n"]
+
+  - name: "virtualenv pip installation"
+    setup: [["virtualenv", "/env"]]
+    command: ["which", "pip"]
+    expectedOutput: ["/env/bin/pip\n"]
+
+  - name: "virtualenv gunicorn installation"
+    setup: [["virtualenv", "/env"],
+            ["pip", "install", "gunicorn"]]
+    command: ["which", "gunicorn"]
+    expectedOutput: ["/env/bin/gunicorn"]
+      
+  - name: "virtualenv flask installation"
+    setup: [["virtualenv", "/env"],
+            ["pip", "install", "flask"]]
+    command: ["python", "-c", "import flask; print(flask.__file__)"]
+    expectedOutput: ["/env/lib/python2.7/site-packages/flask/__init__.pyc"]

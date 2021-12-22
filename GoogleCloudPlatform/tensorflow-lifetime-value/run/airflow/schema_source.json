@@ -1,0 +1,42 @@
+[
+  {
+    "mode": "NULLABLE",
+    "name": "InvoiceNo",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "StockCode",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "Description",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "Quantity",
+    "type": "INTEGER"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "InvoiceDate",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "UnitPrice",
+    "type": "FLOAT"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "CustomerID",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "Country",
+    "type": "STRING"
+  }
+]

@@ -1,0 +1,270 @@
+# Copyright 2020 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+platforms:
+  - name: local
+
+provisioner:
+  name: terraform
+
+verifier:
+  name: terraform
+  color: false
+  fail_fast: false
+
+suites:
+  - name: custom_service_accounts
+    driver:
+      name: terraform
+      root_module_directory: test/fixtures/custom_service_accounts/
+      command_timeout: 1800
+    verifier:
+      systems:
+        - name: gcloud
+          backend: local
+          controls:
+            - forseti-custom-service-account
+  - name: install_simple
+    lifecycle:
+      pre_verify:
+        - chmod go-rwx test/fixtures/bastion/tls_private_key_install_simple
+    driver:
+      name: terraform
+      root_module_directory: test/fixtures/install_simple
+      command_timeout: 1800
+    verifier:
+      systems:
+        - name: gcp
+          backend: gcp
+          controls:
+            - forseti
+            - forseti-nat
+        - name: server
+          backend: ssh
+          controls:
+            - config-validator
+            - install-simple
+            - policy-library
+            - server
+            - server-config
+            - server-rules
+          hosts_output: forseti-server-vm-ip
+          user: ubuntu
+          key_files:
+            - test/fixtures/install_simple/sshkey
+          proxy_command: ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o IdentitiesOnly=yes -o LogLevel=ERROR -o ForwardAgent=no -i test/fixtures/bastion/tls_private_key_install_simple ubuntu@<%= `terraform output -state test/fixtures/install_simple/terraform.tfstate.d/kitchen-terraform-install-simple-local/terraform.tfstate bastion_host 2> /dev/null`.strip %> -p 22 -W %h:%p
+          shell: true
+          shell_options: "--login"
+        - name: forseti-client
+          backend: ssh
+          controls:
+            - client
+          hosts_output: forseti-client-vm-ip
+          user: ubuntu
+          key_files:
+            - test/fixtures/install_simple/sshkey
+          proxy_command: ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o IdentitiesOnly=yes -o LogLevel=ERROR -o ForwardAgent=no -i test/fixtures/bastion/tls_private_key_install_simple ubuntu@<%= `terraform output -state test/fixtures/install_simple/terraform.tfstate.d/kitchen-terraform-install-simple-local/terraform.tfstate bastion_host 2> /dev/null`.strip %> -p 22 -W %h:%p
+          shell: true
+          shell_options: "--login"
+          show_progress: true
+        - name: org-iam
+          backend: local
+          controls:
+            - forseti-org-iam
+        - name: private-ips
+          backend: local
+          controls:
+            - forseti-no-public-ips
+  - name: manage_rules_disabled
+    lifecycle:
+      pre_verify:
+        - chmod go-rwx test/fixtures/bastion/tls_private_key_manage_rules_disabled
+    driver:
+      name: terraform
+      root_module_directory: test/fixtures/manage_rules_disabled
+      command_timeout: 1800
+    verifier:
+      systems:
+        - name: server
+          backend: ssh
+          controls:
+            - rules-disabled
+          hosts_output: forseti-server-vm-ip
+          user: ubuntu
+          key_files:
+            - test/fixtures/manage_rules_disabled/sshkey
+          proxy_command: ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o IdentitiesOnly=yes -o LogLevel=ERROR -o ForwardAgent=no -i test/fixtures/bastion/tls_private_key_manage_rules_disabled ubuntu@<%= `terraform output -state test/fixtures/manage_rules_disabled/terraform.tfstate.d/kitchen-terraform-manage-rules-disabled-local/terraform.tfstate bastion_host 2> /dev/null`.strip %> -p 22 -W %h:%p
+          shell: true
+          shell_options: "--login"
+          show_progress: true
+  - name: no_client_vm
+    driver:
+      name: terraform
+      root_module_directory: test/fixtures/no_client_vm/
+      command_timeout: 1800
+    verifier:
+      systems:
+        - name: gcloud
+          backend: local
+          controls:
+            - no-client-vm
+  - name: shared_vpc
+    lifecycle:
+      pre_verify:
+        - chmod go-rwx test/fixtures/bastion/tls_private_key_shared_vpc
+    driver:
+      name: terraform
+      command_timeout: 1800
+      root_module_directory: test/fixtures/shared_vpc
+    verifier:
+      systems:
+        - name: shared_vpc
+          backend: gcp
+          shell: true
+          controls:
+            - forseti
+            - forseti-client
+            - forseti-server
+            - forseti-service-project
+            - forseti-shared-firewall
+            - forseti-shared-project
+        - name: gcloud
+          backend: local
+          controls:
+            - forseti-subnetwork
+            - forseti-org-iam
+        - name: server
+          backend: ssh
+          controls:
+            - forseti-command-server
+            - server
+            - server-config
+            - server-rules
+          hosts_output: forseti-server-vm-ip
+          user: ubuntu
+          key_files:
+            - test/fixtures/shared_vpc/sshkey
+          proxy_command: ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o IdentitiesOnly=yes -o LogLevel=ERROR -o ForwardAgent=no -i test/fixtures/bastion/tls_private_key_shared_vpc ubuntu@<%= `terraform output -state test/fixtures/shared_vpc/terraform.tfstate.d/kitchen-terraform-shared-vpc-local/terraform.tfstate bastion_host 2> /dev/null`.strip %> -p 22 -W %h:%p
+          shell: true
+          shell_options: "--login"
+          show_progress: true
+        - name: forseti-client
+          backend: ssh
+          controls:
+            - forseti-command-client
+            - client
+          hosts_output: forseti-client-vm-ip
+          user: ubuntu
+          key_files:
+            - test/fixtures/shared_vpc/sshkey
+          proxy_command: ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o IdentitiesOnly=yes -o LogLevel=ERROR -o ForwardAgent=no -i test/fixtures/bastion/tls_private_key_shared_vpc ubuntu@<%= `terraform output -state test/fixtures/shared_vpc/terraform.tfstate.d/kitchen-terraform-shared-vpc-local/terraform.tfstate bastion_host 2> /dev/null`.strip %> -p 22 -W %h:%p
+          shell: true
+          shell_options: "--login"
+          show_progress: true
+  - name: shielded_vm
+    driver:
+      name: terraform
+      root_module_directory: test/fixtures/shielded_vm/
+      command_timeout: 1800
+    verifier:
+      systems:
+        - name: gcloud
+          backend: local
+          controls:
+            - shielded-vm
+  - name: private_connection
+    driver:
+      name: terraform
+      root_module_directory: test/fixtures/private_connection/
+      command_timeout: 1800
+    lifecycle:
+      pre_verify:
+        - chmod go-rwx test/fixtures/bastion/tls_private_key_private_conn
+    verifier:
+      systems:
+        - name: private_connection
+          backend: gcp
+          controls:
+            - forseti
+        - name: gcloud
+          backend: local
+          controls:
+            - forseti-org-iam
+        - name: server
+          backend: ssh
+          controls:
+            - server
+          hosts_output: forseti-server-vm-ip
+          user: ubuntu
+          key_files:
+            - test/fixtures/private_connection/sshkey
+          proxy_command: ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o IdentitiesOnly=yes -o LogLevel=ERROR -o ForwardAgent=no -i test/fixtures/bastion/tls_private_key_private_conn ubuntu@<%= `terraform output -state test/fixtures/private_connection/terraform.tfstate.d/kitchen-terraform-private-connection-local/terraform.tfstate bastion_host 2> /dev/null`.strip %> -p 22 -W %h:%p
+          shell: true
+          shell_options: "--login"
+
+# Disabled due to issue #285
+# (https://github.com/forseti-security/terraform-google-forseti/issues/285)
+#  - name: real_time_enforcer_roles
+#    driver:
+#      name: terraform
+#      root_module_directory: test/fixtures/real_time_enforcer_roles
+#      command_timeout: 1800
+#    verifier:
+#      systems:
+#        - name: local
+#          backend: local
+#  - name: real_time_enforcer
+#    lifecycle:
+#      pre_verify:
+#        - local: chmod go-rwx test/fixtures/bastion/tls_private_key
+#        - local: test/fixtures/real_time_enforcer/modules/enforcer_target/helpers/create-enforcer-fixtures.sh
+#      post_destroy:
+#        - local: test/fixtures/real_time_enforcer/modules/enforcer_target/helpers/destroy-enforcer-fixtures.sh
+#    driver:
+#      name: terraform
+#      root_module_directory: test/fixtures/real_time_enforcer
+#      command_timeout: 1800
+#    verifier:
+#      systems:
+#        - name: gcp
+#          backend: gcp
+#          controls:
+#            - real-time-enforcer-gcp
+#            - real-time-enforcer-target-gcp
+#
+#        - name: real-time-enforcer-host
+#          backend: ssh
+#          controls:
+#            - real-time-enforcer-host
+#          hosts_output: forseti-rt-enforcer-vm-ip
+#          user: ubuntu
+#          key_files:
+#            - test/fixtures/real_time_enforcer/sshkey
+#          proxy_command: ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o IdentitiesOnly=yes -o LogLevel=ERROR -o ForwardAgent=no -i test/fixtures/bastion/tls_private_key ubuntu@<%= `terraform output -state test/fixtures/real_time_enforcer/terraform.tfstate.d/kitchen-terraform-real-time-enforcer-local/terraform.tfstate bastion_host`.strip %> -p 22 -W %h:%p
+#          shell: true
+#          shell_options: "--login"
+#
+#        - name: gcloud
+#          backend: local
+#          controls:
+#            - real-time-enforcer-gcloud
+#  - name: real_time_enforcer_sinks
+#    driver:
+#      name: terraform
+#      command_timeout: 1800
+#      root_module_directory: test/fixtures/real_time_enforcer_sinks
+#    verifier:
+#      systems:
+#        - name: gcloud
+#          backend: local

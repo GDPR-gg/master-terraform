@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2013 Google Inc. All Rights Reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+  <head>
+    <title>Game Cluster Status</title>
+    <link href='http://fonts.googleapis.com/css?family=Orbitron:400,500,700'
+          rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="/common.css" type="text/css" />
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js">
+    </script>
+    <script src="message.js"></script>
+    <script src="stats.js"></script>
+  </head>
+
+  <body>
+    <!-- Grits logo and robot -->
+    <div class="grits-logo-container">
+      <a href="/" style="border:none">
+        <img src="/img/grits_logo.png" alt="Grits Logo"
+             class="grits-logo-image" />
+        <div class="on-gce">on Compute Engine</div>
+      </a>
+    </div>
+    <img class="grits-robot" src="/img/grits_robot_large.png"
+         alt="Grits Robot" />
+    <div class="clear-both"></div>
+
+    <div class="stats-container">
+      <!-- Cluster start up / tear down buttons -->
+      <div class="grits-button cluster-button" onclick="startUp()">
+        Start up cluster
+      </div>
+      <div class="grits-button cluster-button" onclick="tearDown()">
+        Tear down cluster
+      </div>
+      <div class="clear-both"></div>
+
+      <h1>Game Cluster Status</h1>
+
+      <div class="worker-list-title">
+        <span id="worker-count"></span> Game Servers
+      </div>
+      <div id="stats-table"></div>
+    </div>
+
+    <!-- Message -->
+    <div class="message">Game Cluster Starting</div>
+  </body>
+</html>

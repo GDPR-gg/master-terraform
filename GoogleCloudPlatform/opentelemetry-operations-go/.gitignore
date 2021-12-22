@@ -1,0 +1,12 @@
+.DS_Store
+Thumbs.db
+
+.combined-go.sum
+.tools/
+.idea/
+.vscode/
+*.iml
+*.so
+coverage.*
+
+/example/metric/metric

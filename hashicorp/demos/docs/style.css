@@ -1,0 +1,86 @@
+@import "https://fonts.googleapis.com/css?family=Open+Sans|Alex+Brush";
+
+html {
+  background: url(hashibackground.png) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+h1 {
+  font-family: "Open Sans";
+  font-size: 3.5em
+}
+
+h2 {
+  font-family: "Open Sans";
+  font-size: 2.5em
+}
+
+h3 {
+  font-family: "Open Sans";
+  font-size: 1.8em
+}
+
+p {
+  margin-left: auto;
+  margin-right: auto;
+  width: 25em
+}
+
+.hashilogo {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+}
+
+.centerblock {
+  text-align: center;
+  vertical-align: middle;
+}
+
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 65%;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+
+td.circleci {
+  padding-top: 10px;
+  width: 100px;
+  border-right: none;
+}
+
+td.icon {
+  vertical-align: middle;
+  width: 64px;
+  border-left: none;
+  border-right: none;
+  position: relative;
+}
+
+td.content {
+  vertical-align: middle;
+  border-left: none;
+  position: relative;
+  line-height: 2.0em;
+}
+
+img.icon {
+  vertical-align: middle;
+  padding-right: 20px;
+  display: inline-block;
+}

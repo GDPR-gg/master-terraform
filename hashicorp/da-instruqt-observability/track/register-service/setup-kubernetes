@@ -1,0 +1,20 @@
+#!/bin/bash
+echo "Cloning deployment files..."
+git clone https://github.com/hashicorp/da-instruqt-observability.git /tmp/observability
+
+echo "Wait for kubernetes API to respond..."
+IP=$(getent ahosts $HOSTNAME | head -n 1 | cut -d ' ' -f 1)
+while ! nc -z $IP 6443; do sleep 1; done
+
+echo "Wait for kubernetes to actually be ready..."
+if ! curl --silent --fail --output /dev/null http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/; then
+  while ! curl --silent --fail --output /dev/null http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/; do printf "." && sleep 1; done || break
+fi
+
+
+echo "Set up consul, prometheus and grafana..."
+kubectl --kubeconfig=/etc/kubernetes/admin.conf apply -f /tmp/observability/setup/consul
+kubectl --kubeconfig=/etc/kubernetes/admin.conf apply -f /tmp/observability/setup/monitoring
+
+echo "Wait for consul to be available..."
+while ! curl --silent --fail --output /dev/null http://localhost:8500/v1/status/leader; do printf "." && sleep 1; done

@@ -1,0 +1,101 @@
+schemaVersion: "1.0.0"
+commandTests:
+- name: 'Default directory'
+  command: ['pwd']
+  expectedOutput: ['/app\n']
+
+- name: 'Node Installation Directory'
+  command: ['which', 'node']
+  expectedOutput: ['/nodejs/bin/node\n']
+
+- name: 'Node Version'
+  command: ['node', '-v']
+  expectedOutput: ['v12.19.0\n']
+
+- name: 'Custom Node Version'
+  setup: [['install_node', 'v5.9.0']]
+  teardown: [['install_node', 'v8.9.3']]
+  command: ['node', '-v']
+  expectedOutput: ['v5.9.0\n']
+
+- name: 'Installing Node is Not Verbose'
+  teardown: [['install_node', 'v6.11.2']]
+  command: ['install_node', 'v5.9.0']
+  excludedOutput: ['node-v5.9.0-linux-x64/.*']
+
+- name: 'Trusted Keys Do Not Cause Warnings'
+  teardown: [['install_node', 'v6.11.2']]
+  command: ['install_node', 'v5.9.0']
+  excludedOutput: ['gpg: WARNING: This key is not certified with a trusted signature!']
+  excludedError: ['gpg: WARNING: This key is not certified with a trusted signature!']
+
+# This test verifies that the key added for Gibson Fahnestock can be
+# successfully used to install their signed Node binaries.
+- name: 'Can Install Node Versions Signed by Gibson Fahnestock'
+  setup: [['install_node', 'v6.11.5']]
+  command: ['install_node', 'v8.9.0']  # v8.9.0 is the version that is signed by Gibson Fahnestock.
+  excludedOutput: ['gpg: WARNING: This key is not certified with a trusted signature!']
+  excludedError: ['gpg: WARNING: This key is not certified with a trusted signature!']
+
+- name: 'Node Verification Errors are Displayed'
+  setup: [['mkdir', '/tmp/node_verification_failure_test_dir'],
+          ['curl', '-o',
+           '/tmp/node_verification_failure_test_dir/SHASUMS256.txt.asc',
+           'https://nodejs.org/dist/v6.11.1/SHASUMS256.txt.asc'],
+          ['curl', '-o',
+           '/tmp/node_verification_failure_test_dir/node-v6.11.1-linux-x86.tar.gz',
+           'https://nodejs.org/dist/v6.11.1/node-v6.11.1-linux-x86.tar.gz'],
+          ['sed', '-i',
+           's/iQEcBAEBCA/xxxxxxxxxx/g',
+           '/tmp/node_verification_failure_test_dir/SHASUMS256.txt.asc']]
+  command: ['/opt/gcp/runtime/verify_node',
+            '/tmp/node_verification_failure_test_dir/node-v6.11.1-linux-x86.tar.gz',
+            '/tmp/node_verification_failure_test_dir/SHASUMS256.txt.asc']
+  teardown: [['rm', '/tmp/node_verification_failure_test_dir/SHASUMS256.txt.asc'],
+             ['rm', '/tmp/node_verification_failure_test_dir/node-v6.11.1-linux-x86.tar.gz'],
+             ['rmdir', '/tmp/node_verification_failure_test_dir']]
+  expectedError: ['the signature could not be verified.']
+  exitCode: 2
+
+- name: 'Yarn Executable'
+  command: ['bash', '-c', 'yarn &> /dev/null && echo "ran without errors"']
+  expectedOutput: ['ran without errors\n']
+
+fileExistenceTests:
+- name: 'semver'
+  path: '/node_modules/semver'
+  permissions: 'drwxr-xr-x'
+  shouldExist: true
+
+- name: 'yarn'
+  path: '/usr/bin/yarn'
+  permissions: 'Lrwxrwxrwx'
+  shouldExist: true
+
+- name: KEYS
+  path: '/opt/gcp/runtime/KEYS'
+  permissions: '-rw-rw-r--'
+  shouldExist: true
+
+- name: install_node
+  path: '/opt/gcp/runtime/install_node'
+  permissions: '-rwxrwxr-x'
+  shouldExist: true
+
+- name: bootstrap_node
+  path: '/opt/gcp/runtime/bootstrap_node'
+  permissions: '-rwxrwxr-x'
+  shouldExist: true
+
+- name: verify_node
+  path: '/opt/gcp/runtime/verify_node'
+  permissions: '-rwxrwxr-x'
+  shouldExist: true
+
+licenseTests:
+- debian: false
+  files: [
+          '/nodejs/lib/node_modules/npm/LICENSE',
+          '/nodejs/LICENSE',
+          '/nodejs/lib/node_modules/npm/node_modules/semver/LICENSE'
+  ]

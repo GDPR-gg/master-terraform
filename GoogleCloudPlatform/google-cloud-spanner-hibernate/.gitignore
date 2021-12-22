@@ -1,0 +1,22 @@
+# maven
+target
+
+# intellij / idea
+*.iml
+.idea
+
+# eclipse
+.project
+.settings
+.classpath
+
+# Ignores generated files through testing
+**/transaction.log
+
+# local libs
+/libs
+
+# eclipse
+.project
+.settings
+.classpath

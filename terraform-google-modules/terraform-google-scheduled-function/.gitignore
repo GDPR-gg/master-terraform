@@ -1,0 +1,16 @@
+terraform.tfstate
+*.tfstate.*
+.terraform
+credentials.json
+*.iml
+.idea
+*.pyc
+.kitchen
+
+examples/**/*.zip
+examples/**/terraform.tfvars
+modules/**/terraform.tfvars
+submodules/**/terraform.tfvars
+
+# tf lock file
+.terraform.lock.hcl

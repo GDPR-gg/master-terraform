@@ -1,0 +1,212 @@
+version: 2.1
+
+orbs:
+  slack: circleci/slack@4.4
+
+executors:
+  go:
+    docker:
+      - image: docker.mirror.hashicorp.services/circleci/golang:${GO_VERSION}
+    environment:
+      CONSUL_VERSION: "1.10.3"
+      GOMAXPROCS: 4
+      GO111MODULE: "on"
+      GOPROXY: https://proxy.golang.org/
+      GO_VERSION: 1.16
+      TERRAFORM_VERSION: "1.0.8"
+      VAULT_VERSION: "1.8.3"
+
+jobs:
+  unit_integration_tests:
+    executor:
+      name: go
+    working_directory: /go/src/github.com/{{ORG_NAME}}/{{REPO_NAME}}
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - ct-modcache-v1-{{ checksum "go.mod" }}
+      - run: |
+          curl -sLo consul.zip https://releases.hashicorp.com/consul/${CONSUL_VERSION}/consul_${CONSUL_VERSION}_linux_amd64.zip
+          unzip consul.zip
+          sudo cp consul /usr/local/bin/
+      - run: |
+          make test-integration
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
+          branch_pattern: main,release/.+
+      - save_cache:
+          key: ct-modcache-v1-{{ checksum "go.mod" }}
+          paths:
+            - /go/pkg/mod
+
+  vault_integration_tests:
+    executor:
+      name: go
+    working_directory: /go/src/github.com/{{ORG_NAME}}/{{REPO_NAME}}
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - ct-modcache-v1-{{ checksum "go.mod" }}
+      - run:
+          name: Install Vault
+          command: |
+            curl -sLo vault.zip https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_linux_amd64.zip
+            unzip vault.zip
+            sudo cp vault /usr/local/bin/
+            vault version
+      - run: |
+          go test -count=1 -timeout=80s -tags 'integration vault' ./... -run Vault
+      - save_cache:
+          key: ct-modcache-v1-{{ checksum "go.mod" }}
+          paths:
+            - /go/pkg/mod
+            
+  e2e_tests:
+    executor:
+      name: go
+    resource_class: medium+
+    working_directory: /go/src/github.com/{{ORG_NAME}}/{{REPO_NAME}}
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - ct-modcache-v1-{{ checksum "go.mod" }}
+      - run: |
+          curl -sLo consul.zip https://releases.hashicorp.com/consul/${CONSUL_VERSION}/consul_${CONSUL_VERSION}_linux_amd64.zip
+          unzip consul.zip
+          sudo cp consul /usr/local/bin/
+      - run: |
+          make test-e2e-cirecleci
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
+          branch_pattern: main,release/.+
+      - save_cache:
+          key: ct-modcache-v1-{{ checksum "go.mod" }}
+          paths:
+            - /go/pkg/mod
+
+  consul_compatibility_tests:
+    executor:
+      name: go
+    working_directory: /go/src/github.com/{{ORG_NAME}}/{{REPO_NAME}}
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - ct-modcache-v1-{{ checksum "go.mod" }}
+      - run: |
+          make test-compat
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
+      - save_cache:
+          key: ct-modcache-v1-{{ checksum "go.mod" }}
+          paths:
+            - /go/pkg/mod
+
+  benchmarks:
+    executor:
+      name: go
+    parameters:
+      no_output_timeout:
+        type: string
+        description: the job times out after this duration with no output
+        default: 30m
+    working_directory: /go/src/github.com/{{ORG_NAME}}/{{REPO_NAME}}
+    steps:
+      - checkout
+      - run:
+          name: Install Consul
+          command: |
+            curl -sLo consul.zip https://releases.hashicorp.com/consul/${CONSUL_VERSION}/consul_${CONSUL_VERSION}_linux_amd64.zip
+            unzip consul.zip
+            sudo cp consul /usr/local/bin/
+      - run:
+          name: Install Terraform
+          command: |
+            curl -sLo terraform.zip https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+            unzip terraform.zip
+            sudo cp terraform /usr/local/bin/
+      - run:
+          name: Copy terraform to benchmark directory
+          command: /bin/cp /usr/local/bin/terraform ./e2e/
+      - run:
+          name: Version Check
+          command: |
+            go version
+            consul version
+            terraform version
+      - run:
+          name: Run benchmark suite
+          no_output_timeout: << parameters.no_output_timeout >>
+          command:
+            make test-benchmarks | /usr/bin/tee /tmp/benchmarks.json
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
+      - run:
+          name: Output benchmark results
+          command: |
+            mkdir /tmp/benchmark_results
+            grep 'ns/op' /tmp/benchmarks.json | awk -F '"Output":"'  '{print $2}' | sort \
+             > /tmp/benchmark_results/results-${CIRCLE_SHA1}-${CIRCLE_BUILD_NUM}.txt
+            cat /tmp/benchmark_results/results-${CIRCLE_SHA1}-${CIRCLE_BUILD_NUM}.txt
+      - store_artifacts:
+          path: /tmp/benchmarks.json
+          destination: benchmarks.json
+      - store_artifacts:
+          path: /tmp/benchmark_results
+          destination: benchmark_results
+
+  go-checks:
+    executor:
+      name: go
+    steps:
+      - checkout
+      - run: make go-fmt-check
+      - run:
+          name: verify go.mod and go.sum are correct
+          command: |
+            go mod tidy
+            git diff --quiet && exit 0
+            echo "please run 'go mod tidy' to ensure go.mod and go.sum are up to date"
+            exit 1
+
+  terraform-checks:
+    executor:
+      name: go
+    steps:
+      - checkout
+      - run:
+          name: Install Terraform
+          command: |
+            curl -sLo terraform.zip https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+            unzip terraform.zip
+            sudo cp terraform /usr/local/bin/
+      - run: make terraform-fmt-check
+
+workflows:
+  version: 2
+  build-test:
+    jobs:
+      - go-checks
+      - terraform-checks
+      - unit_integration_tests
+      - e2e_tests
+  weekly-benchmarks:
+    jobs:
+      - vault_integration_tests
+      - benchmarks
+      - consul_compatibility_tests
+    triggers:
+      - schedule:
+          # 02:10 UTC every Wednesday
+          cron: 10 2 * * 3
+          filters:
+            branches:
+              only:
+              - main

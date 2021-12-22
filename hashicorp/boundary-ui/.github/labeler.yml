@@ -1,0 +1,20 @@
+addons:
+  - addons/**/*
+
+api-addon:
+  - addons/api/**/*
+
+auth-addon:
+  - addons/auth/**/*
+
+styles-addon:
+  - addons/rose/**/*
+
+ui:
+  - ui/**/*
+
+admin:
+  - ui/admin/**/*
+
+desktop:
+  - ui/desktop/**/*

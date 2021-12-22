@@ -1,0 +1,241 @@
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+timeout: 3600s
+
+substitutions:
+  _USE_CACHE: "false"
+  _IMAGE_PREFIX: kube-pod-broker
+  _IMAGE_TAG: latest
+
+options:
+  machineType: N1_HIGHCPU_8
+
+tags:
+  - kube-app-launcher-images
+###
+# Images to be pushed
+###
+images: [
+    # controller
+    'gcr.io/${PROJECT_ID}/${_IMAGE_PREFIX}-controller:${_IMAGE_TAG}',
+    'gcr.io/${PROJECT_ID}/${_IMAGE_PREFIX}-controller:latest',
+    # web
+    'gcr.io/${PROJECT_ID}/${_IMAGE_PREFIX}-web:${_IMAGE_TAG}',
+    'gcr.io/${PROJECT_ID}/${_IMAGE_PREFIX}-web:latest',
+    # coturn
+    'gcr.io/${PROJECT_ID}/${_IMAGE_PREFIX}-coturn:${_IMAGE_TAG}',
+    'gcr.io/${PROJECT_ID}/${_IMAGE_PREFIX}-coturn:latest',
+    # coturn-web
+    'gcr.io/${PROJECT_ID}/${_IMAGE_PREFIX}-coturn-web:${_IMAGE_TAG}',
+    'gcr.io/${PROJECT_ID}/${_IMAGE_PREFIX}-coturn-web:latest',
+    # broker gce proxy
+    'gcr.io/${PROJECT_ID}/${_IMAGE_PREFIX}-gce-proxy:${_IMAGE_TAG}',
+    'gcr.io/${PROJECT_ID}/${_IMAGE_PREFIX}-gce-proxy:latest',
+    # autoneg controller
+    'gcr.io/${PROJECT_ID}/${_IMAGE_PREFIX}-autoneg-controller:${_IMAGE_TAG}',
+    'gcr.io/${PROJECT_ID}/${_IMAGE_PREFIX}-autoneg-controller:latest',
+]
+
+steps:
+###
+# Pod broker controller image
+###
+- name: 'gcr.io/cloud-builders/docker'
+  id: controller-pull
+  entrypoint: 'bash'
+  args: ["-c", "if [[ '${_USE_CACHE}' == 'true' ]]; then (docker pull gcr.io/${PROJECT_ID}/${_IMAGE_PREFIX}-controller:latest || exit 0); fi"]
+  waitFor: ["-"]
+- name: 'gcr.io/cloud-builders/docker'
+  id: controller
+  args: [
+            'build',
+            '-t', 'gcr.io/${PROJECT_ID}/${_IMAGE_PREFIX}-controller:${_IMAGE_TAG}',
+            '--cache-from', 'gcr.io/${PROJECT_ID}/${_IMAGE_PREFIX}-controller:latest',
+            'controller'
+        ]
+  waitFor:
+    - controller-pull
+- name: 'gcr.io/cloud-builders/docker'
+  id: controller-tags
+  args: [
+            'tag',
+            'gcr.io/${PROJECT_ID}/${_IMAGE_PREFIX}-controller:${_IMAGE_TAG}',
+            'gcr.io/${PROJECT_ID}/${_IMAGE_PREFIX}-controller:latest',
+        ]
+  waitFor:
+    - controller
+
+###
+# Pod broker web image
+###
+- name: 'gcr.io/cloud-builders/docker'
+  id: web-pull
+  entrypoint: 'bash'
+  args: ["-c", "if [[ '${_USE_CACHE}' == 'true' ]]; then (docker pull gcr.io/${PROJECT_ID}/${_IMAGE_PREFIX}-web:latest || exit 0); fi"]
+  waitFor: ["-"]
+- name: 'gcr.io/cloud-builders/docker'
+  id: web
+  args: [
+            'build',
+            '-t', 'gcr.io/${PROJECT_ID}/${_IMAGE_PREFIX}-web:${_IMAGE_TAG}',
+            '--cache-from', 'gcr.io/${PROJECT_ID}/${_IMAGE_PREFIX}-web:latest',
+            'web'
+        ]
+  waitFor:
+    - web-pull
+- name: 'gcr.io/cloud-builders/docker'
+  id: web-tags
+  args: [
+            'tag',
+            'gcr.io/${PROJECT_ID}/${_IMAGE_PREFIX}-web:${_IMAGE_TAG}',
+            'gcr.io/${PROJECT_ID}/${_IMAGE_PREFIX}-web:latest',
+        ]
+  waitFor:
+    - web
+
+###
+# Coturn image
+###
+- name: 'gcr.io/cloud-builders/docker'
+  id: coturn-pull
+  entrypoint: 'bash'
+  args: ["-c", "if [[ '${_USE_CACHE}' == 'true' ]]; then (docker pull gcr.io/${PROJECT_ID}/${_IMAGE_PREFIX}-coturn:latest || exit 0); fi"]
+  waitFor: ["-"]
+- name: 'gcr.io/cloud-builders/docker'
+  id: coturn
+  args: [
+            'build',
+            '-t', 'gcr.io/${PROJECT_ID}/${_IMAGE_PREFIX}-coturn:${_IMAGE_TAG}',
+            '--cache-from', 'gcr.io/${PROJECT_ID}/${_IMAGE_PREFIX}-coturn:latest',
+            'coturn'
+        ]
+  waitFor:
+    - coturn-pull
+- name: 'gcr.io/cloud-builders/docker'
+  id: coturn-tags
+  args: [
+            'tag',
+            'gcr.io/${PROJECT_ID}/${_IMAGE_PREFIX}-coturn:${_IMAGE_TAG}',
+            'gcr.io/${PROJECT_ID}/${_IMAGE_PREFIX}-coturn:latest',
+        ]
+  waitFor:
+    - coturn
+
+###
+# Coturn web image
+###
+- name: 'gcr.io/cloud-builders/docker'
+  id: coturn-web-pull
+  entrypoint: 'bash'
+  args: ["-c", "if [[ '${_USE_CACHE}' == 'true' ]]; then (docker pull gcr.io/${PROJECT_ID}/${_IMAGE_PREFIX}-coturn-web:latest || exit 0); fi"]
+  waitFor: ["-"]
+- name: 'gcr.io/cloud-builders/docker'
+  id: coturn-web
+  args: [
+            'build',
+            '-t', 'gcr.io/${PROJECT_ID}/${_IMAGE_PREFIX}-coturn-web:${_IMAGE_TAG}',
+            '--cache-from', 'gcr.io/${PROJECT_ID}/${_IMAGE_PREFIX}-coturn-web:latest',
+            'coturn-web'
+        ]
+  waitFor:
+    - coturn-web-pull
+- name: 'gcr.io/cloud-builders/docker'
+  id: coturn-web-tags
+  args: [
+            'tag',
+            'gcr.io/${PROJECT_ID}/${_IMAGE_PREFIX}-coturn-web:${_IMAGE_TAG}',
+            'gcr.io/${PROJECT_ID}/${_IMAGE_PREFIX}-coturn-web:latest',
+        ]
+  waitFor:
+    - coturn-web
+
+###
+# Broker GCE proxy image
+###
+- name: 'gcr.io/cloud-builders/docker'
+  id: gce-proxy-pull
+  entrypoint: 'bash'
+  args: ["-c", "if [[ '${_USE_CACHE}' == 'true' ]]; then (docker pull gcr.io/${PROJECT_ID}/${_IMAGE_PREFIX}-gce-proxy:latest || exit 0); fi"]
+  waitFor: ["-"]
+- name: 'gcr.io/cloud-builders/docker'
+  id: gce-proxy
+  args: [
+            'build',
+            '-t', 'gcr.io/${PROJECT_ID}/${_IMAGE_PREFIX}-gce-proxy:${_IMAGE_TAG}',
+            '--cache-from', 'gcr.io/${PROJECT_ID}/${_IMAGE_PREFIX}-gce-proxy:latest',
+            'gce-proxy'
+        ]
+  waitFor:
+    - gce-proxy-pull
+- name: 'gcr.io/cloud-builders/docker'
+  id: gce-proxy-tags
+  args: [
+            'tag',
+            'gcr.io/${PROJECT_ID}/${_IMAGE_PREFIX}-gce-proxy:${_IMAGE_TAG}',
+            'gcr.io/${PROJECT_ID}/${_IMAGE_PREFIX}-gce-proxy:latest',
+        ]
+  waitFor:
+    - gce-proxy
+
+###
+# GKE AutoNEG Controller fork with retry patch
+###
+- name: 'gcr.io/cloud-builders/docker'
+  id: autoneg-controller-pull
+  entrypoint: 'bash'
+  args: ["-c", "if [[ '${_USE_CACHE}' == 'true' ]]; then (docker pull gcr.io/${PROJECT_ID}/${_IMAGE_PREFIX}-autoneg-controller:latest || exit 0); fi"]
+  waitFor: ["-"]
+- name: gcr.io/cloud-builders/git
+  id: autoneg-controller-clone
+  args: ['clone', 'https://github.com/danisla/gke-autoneg-controller', '-b', 'retry-register-with-backend']
+  waitFor:
+    - autoneg-controller-pull
+- name: 'gcr.io/cloud-builders/go'
+  id: autoneg-controller-build
+  dir: gke-autoneg-controller
+  entrypoint: 'sh'
+  args:
+    - "-exc"
+    - |
+      make generate
+      CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GO111MODULE=on go build -a -o manager main.go
+      cat - > Dockerfile <<EOF
+      FROM gcr.io/distroless/static:latest
+      WORKDIR /
+      COPY manager .
+      ENTRYPOINT ["/manager"]
+      EOF
+  waitFor:
+    - autoneg-controller-clone
+- name: 'gcr.io/cloud-builders/docker'
+  id: autoneg-controller-docker
+  dir: gke-autoneg-controller
+  args: [
+            'build',
+            '-t', 'gcr.io/${PROJECT_ID}/${_IMAGE_PREFIX}-autoneg-controller:${_IMAGE_TAG}',
+            '--cache-from', 'gcr.io/${PROJECT_ID}/${_IMAGE_PREFIX}-autoneg-controller:latest',
+            '.'
+        ]
+  waitFor:
+    - autoneg-controller-build
+- name: 'gcr.io/cloud-builders/docker'
+  id: autoneg-controller-tags
+  args: [
+            'tag',
+            'gcr.io/${PROJECT_ID}/${_IMAGE_PREFIX}-autoneg-controller:${_IMAGE_TAG}',
+            'gcr.io/${PROJECT_ID}/${_IMAGE_PREFIX}-autoneg-controller:latest',
+        ]
+  waitFor:
+    - autoneg-controller-docker

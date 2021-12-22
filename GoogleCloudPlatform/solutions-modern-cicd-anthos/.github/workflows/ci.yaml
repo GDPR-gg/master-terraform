@@ -1,0 +1,20 @@
+name: CI
+on:
+  # Trigger the workflow on push to the master branch
+  push:
+    branches:
+      - master
+jobs:
+  run-installer:
+    # Job name is Greeting
+    name: Run the install and teardown if Success
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install & Teardown
+        env:
+          GCP_SERVICE_ACCOUNT_JSON: ${{ secrets.GCP_SERVICE_ACCOUNT_JSON }}
+          _ORG_ID: ${{ secrets.GCP_ORG_ID }}
+          _BILLING_ACCOUNT: ${{ secrets.GCP_BILLING_ACCOUNT }}
+          _FOLDER_ID: ${{ secrets.GCP_FOLDER_ID }}
+        run: ./test/setup_teardown.sh

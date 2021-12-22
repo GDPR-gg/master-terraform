@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  
+  <parent>
+    <groupId>com.google.cloud.trace.instrumentation.jdbc</groupId>
+    <artifactId>root</artifactId>
+    <version>0.1.2-SNAPSHOT</version>
+  </parent>
+  
+  <artifactId>driver-appengine-standard</artifactId>
+
+  <name>Google Cloud Trace for JDBC - driver for App Engine Standard Environment</name>
+
+  <properties>
+    <!-- Google App Engine Standard Environment doesn't support 1.8 yet. -->
+    <maven.compiler.source>1.7</maven.compiler.source>
+    <maven.compiler.target>1.7</maven.compiler.target>
+
+    <!-- App Engine Trace API is available in 1.9.44+. -->
+    <appengine.target.version>1.9.50</appengine.target.version>
+  </properties>
+  
+  <dependencies>
+    <!-- Compile/runtime dependencies -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>driver-common</artifactId>
+      <version>${project.version}</version>
+      <!-- The shade plugin will add this dependency to the Uber JAR. -->
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.appengine</groupId>
+      <artifactId>appengine-api-1.0-sdk</artifactId>
+      <version>${appengine.target.version}</version>
+      <!-- Intentionally marked as optional. We want the dependent project -->
+      <!-- to specify the concrete version to use in a deployment. -->
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.appengine</groupId>
+      <artifactId>appengine-api-labs</artifactId>
+      <version>${appengine.target.version}</version>
+      <!-- Intentionally marked as optional. We want the dependent project -->
+      <!-- to specify the concrete version to use in a deployment. -->
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.auto.service</groupId>
+      <artifactId>auto-service</artifactId>
+      <version>1.0-rc2</version>
+      <!-- The Java annotation processor is only used at compile-time. -->
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>20.0</version>
+      <!-- The shade plugin will add this dependency to the Uber JAR. -->
+      <optional>true</optional>
+    </dependency>
+    
+    <!-- Test-only dependencies. -->
+    <dependency>
+      <groupId>com.google.truth</groupId>
+      <artifactId>truth</artifactId>
+      <version>0.30</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>2.2.22</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <artifactSet>
+                <excludes>
+                  <exclude>com.google.appengine:*</exclude>
+                  <exclude>com.google.auto.service:*</exclude>
+                </excludes>
+              </artifactSet>
+              <relocations>
+                <relocation>
+                  <pattern>com.google.common</pattern>
+                  <shadedPattern>com.google.cloud.trace.jdbc.repackaged.com.google.common</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>com.google.thirdparty</pattern>
+                  <shadedPattern>com.google.cloud.trace.jdbc.repackaged.com.google.thirdparty</shadedPattern>
+                </relocation>
+              </relocations>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.github.wvengen</groupId>
+        <artifactId>proguard-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>proguard</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <options>
+            <option>-keep class com.google.cloud.trace.jdbc.Driver</option>
+            <option>-keep class * extends com.google.cloud.trace.jdbc.TraceService</option>
+            <option>-dontobfuscate</option>
+            <option>-dontoptimize</option>
+            <option>-dontnote com.google.appengine.**</option>
+            <option>-dontnote com.google.auto.common.*</option>
+            <option>-dontnote com.google.cloud.trace.jdbc.*</option>
+            <option>-dontnote com.google.cloud.trace.jdbc.repackaged.com.google.common.**</option>
+            <option>-dontwarn javax.annotation.**</option>
+            <option>-dontwarn com.google.errorprone.annotations.**</option>
+            <option>-dontwarn com.google.j2objc.annotations.**</option>
+            <option>-dontwarn org.codehaus.mojo.animal_sniffer.**</option>
+          </options>
+          <libs>
+            <lib>${java.home}/lib/rt.jar</lib>
+            <lib>${java.home}/lib/jce.jar</lib>
+          </libs>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

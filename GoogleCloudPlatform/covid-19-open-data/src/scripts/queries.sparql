@@ -1,0 +1,66 @@
+# Sample queries to be used at https://query.wikidata.org
+
+# Get all ISO-3166-2 codes and their labels
+SELECT ?code ?place ?placeLabel
+WHERE
+{
+  ?place wdt:P300 ?code.
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE]". }
+}
+ORDER BY ASC(?code)
+
+# Get all instances of wd:Q2555896 (municipalities of Colombia)
+SELECT ?place ?placeLabel
+WHERE
+{
+  ?place wdt:P31/wdt:P279* wd:Q2555896.
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE]". }
+}
+
+# Get all instances of wd:Q856076 (municipalities of Finland)
+SELECT ?code ?place ?placeLabel
+WHERE
+{
+  ?place wdt:P31/wdt:P279* wd:Q856076.
+  ?place wdt:P1203 ?code.
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE]". }
+}
+
+# Get all departments of France, and what administrative region they belong to
+SELECT ?place ?subregion1_code ?subregion2_code ?placeLabel
+WHERE
+{
+  ?place wdt:P131 ?subregion1_code.
+  ?place wdt:P2586 ?subregion2_code.
+  ?place wdt:P31/wdt:P279* wd:Q6465.
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE]". }
+}
+
+# Get all instances of municipalities of Brazil
+SELECT ?subregion1 ?subregion1Label ?subregion2 ?subregion1_code ?subregion2_code ?subregion2Label
+WHERE
+{
+  # subregion2 is type municipality of Brazil
+  ?subregion2 wdt:P31/wdt:P279* wd:Q3184121.
+  # subregion2 is located within subregion1
+  ?subregion2 wdt:P131 ?subregion1.
+  # subregion2_code is Brazilian municipality code of subregion2
+  ?subregion2 wdt:P1585 ?subregion2_code.
+  # subregion1_code is short name for subregion1
+  ?subregion1 wdt:P1813 ?subregion1_code.
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE]". }
+}
+
+# Get all level2 regions of Indonesia along with their corresponding level1 subregions
+# Get the end time (P582) to be able to filter out end-dated rows
+SELECT ?place ?subregion1Label ?placeLabel ?classLabel ?indonesia_admincode ?subregion1_endtime ?class_endtime
+WHERE
+{
+  ?place wdt:P31/wdt:P279* wd:Q12479774. # P31=instance of, P279=subclass of
+  ?place wdt:P131 ?subregion1. # P131=located in the administrative territorial entity
+  OPTIONAL { ?place p:P131 [ps:P131 ?subregion1; pq:P582 ?subregion1_endtime ]. }
+  ?place wdt:P2588 ?indonesia_admincode.
+  ?place wdt:P31 ?class.
+  OPTIONAL { ?place p:P31 [ps:P31 ?class; pq:P582 ?class_endtime ]. }
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE]". }
+}

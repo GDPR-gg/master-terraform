@@ -1,0 +1,15 @@
+#  Local .terraform directories
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
+# .tfvars files
+*.tfvars
+**/consul
+crash.log
+
+*.pem
+kube_config.yml
+kubernetes/.pid*
+kubernetes/.pid*

@@ -1,0 +1,6 @@
+.terraform*
+terraform.tfstate*
+plan.tfplan
+*.log
+*.out
+*.html

@@ -1,0 +1,243 @@
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# 
+# Copyright 2019 Google LLC. This software is provided as-is, 
+# without warranty or representation for any use or purpose.#
+#
+
+
+
+timeout: 7200s
+options:
+  machineType: N1_HIGHCPU_8
+steps:
+  - name: gcr.io/cloud-builders/gsutil
+    args: ['cp', '-DD', 'gs://${_GS_PROJECT_ID}_build/repo/keys/id_rsa_${_GS_PROJECT_ID}-repo', '/builder/home/.ssh/id_rsa']
+  - name: gcr.io/cloud-builders/gsutil
+    args: ['cp', '-DD', 'gs://${_GS_PROJECT_ID}_build/repo/github/build-ssh-config-git-hub', '/builder/home/.ssh/config']
+  - name: 'gcr.io/cloud-builders/git'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        mkdir -p /workspace/myenv
+        echo "/workspace/myenv" > /workspace/myenv/_rootdir_TAG.out
+        MYENV_DIR=$(cat /workspace/myenv/_rootdir_TAG.out)
+        cp /builder/home/.ssh/id_rsa /root/.ssh/id_rsa
+        cp /builder/home/.ssh/config /root/.ssh/config
+        chmod 400 /root/.ssh/id_rsa
+        git clone git@github.com:GoogleCloudPlatform/anthos-appconfig.git build-source
+    volumes:
+      - name: 'ssh'
+        path: /root/.ssh
+  - name: 'gcr.io/cloud-builders/git'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        [ "$_REF_PATH" == 'BRANCH_AUTO' ] && { MY_CHECKOUT_REF="$BRANCH_NAME";MY_APP_VERSION="b-$BRANCH_NAME"; }
+        [ "$_REF_PATH" == 'BRANCH_MANUAL' ] && { MY_CHECKOUT_REF="$_BRANCH_NAME";MY_APP_VERSION="b-$_BRANCH_NAME"; }
+        [ "$_REF_PATH" == 'BRANCH_VERSION' ] && { MY_CHECKOUT_REF="$_BRANCH_NAME";MY_APP_VERSION="$_POTENTIAL_VERSION"; }
+
+        MYENV_DIR=$(cat /workspace/myenv/_rootdir_TAG.out)
+        echo "$$MY_APP_VERSION" > $${MYENV_DIR}/_fileappversion_TAG.out
+        echo "$$MY_CHECKOUT_REF" >> $${MYENV_DIR}/_file_checkout_TAG.out
+        git pull
+        git checkout $$MY_CHECKOUT_REF
+
+        echo $(git rev-parse --verify HEAD) > $${MYENV_DIR}/_fileappsha1_long_TAG.out
+        PARM_BUILD_SHA_LONG="$(cat $${MYENV_DIR}/_fileappsha1_long_TAG.out)"
+        echo $(git rev-parse --short $${PARM_BUILD_SHA_LONG}) > $${MYENV_DIR}/_fileappsha1_TAG.out
+        PARM_BUILD_SHA="$(cat $${MYENV_DIR}/_fileappsha1_TAG.out)"
+        echo "Build-Info:[$${MY_CHECKOUT_REF}}]-[$${PARM_BUILD_SHA}]-[$${PARM_BUILD_SHA_LONG}]"
+        git status
+        echo "Build-Info:[$${MY_CHECKOUT_REF}}]-[$${PARM_BUILD_SHA}]-[$${PARM_BUILD_SHA_LONG}]"
+
+        for v in MYENV_DIR PARM_BUILD_BRANCH MY_APP_VERSION MY_CHECKOUT_REF PARM_BUILD_SHA PARM_BUILD_SHA_LONG PARM_TS_SEC PARM_PROJ PARM_CLUSTER PARM_REGION PARM_ZONE ; do
+          echo -e "${v}[${!v}]\n"
+        done
+
+    dir: "build-source"
+    volumes:
+      - name: 'ssh'
+        path: /root/.ssh
+  - name: ubuntu
+    args:
+      - "bash"
+      - '-c'
+      - |
+        ls -l
+    dir: "build-source"
+  - name: ubuntu
+    args:
+      - "bash"
+      - '-c'
+      - |
+        MYENV_DIR=$(cat /workspace/myenv/_rootdir_TAG.out)
+        date "+%Y%m%d-%H%M%S" > $${MYENV_DIR}/_file_TAG.out
+
+    dir: "build-source/appconfigmgrv2"
+  - name: "gcr.io/${_GS_PROJECT_ID}/appconfighelper-build:${_BUILDER_VERSION}"
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        MYENV_DIR=$(cat /workspace/myenv/_rootdir_TAG.out)
+
+        make || exit 1
+        make test || exit 1
+    dir: "build-source/appconfigmgrv2"
+    volumes:
+      - name: go-modules
+        path: /go
+  - name: gcr.io/cloud-builders/docker
+    entrypoint: '/bin/sh'
+    args:
+      - '-c'
+      - |
+        MYENV_DIR=$(cat /workspace/myenv/_rootdir_TAG.out)
+
+        PARM_TS_SEC=$(cat $${MYENV_DIR}/_file_TAG.out)
+        PARM_BUILD_BRANCH="$(cat $${MYENV_DIR}/_fileappversion_TAG.out)"
+        PARM_BUILD_BRANCH_TS="$$PARM_BUILD_BRANCH-$$PARM_TS_SEC"
+        docker build -t gcr.io/${_GS_PROJECT_ID}/appconfigtemplatev2_controller:$$PARM_BUILD_BRANCH_TS . || exit 1
+        docker push gcr.io/${_GS_PROJECT_ID}/appconfigtemplatev2_controller:$$PARM_BUILD_BRANCH_TS || exit 1
+    dir: "build-source/appconfigmgrv2"
+    volumes:
+      - name: go-modules
+        path: /go
+  - name: gcr.io/cloud-builders/docker
+    entrypoint: '/bin/sh'
+    args:
+      - '-c'
+      - |
+        MYENV_DIR=$(cat /workspace/myenv/_rootdir_TAG.out)
+
+        PARM_TS_SEC=$(cat $${MYENV_DIR}/_file_TAG.out)
+        PARM_BUILD_BRANCH="$(cat $${MYENV_DIR}/_fileappversion_TAG.out)"
+        PARM_BUILD_BRANCH_TS="$$PARM_BUILD_BRANCH-$$PARM_TS_SEC"
+        docker build -t gcr.io/${_GS_PROJECT_ID}/vault-api-helper:$$PARM_BUILD_BRANCH_TS . || exit 1
+        docker push gcr.io/${_GS_PROJECT_ID}/vault-api-helper:$$PARM_BUILD_BRANCH_TS || exit 1
+    dir: "build-source/vault-api-helper"
+    volumes:
+      - name: go-modules
+        path: /go
+  - name: "gcr.io/${_GS_PROJECT_ID}/appconfighelper-build:${_BUILDER_VERSION}"
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        PATCH_PATH="./config/default/manager_image_patch.yaml"
+        MYENV_DIR=$(cat /workspace/myenv/_rootdir_TAG.out)
+
+        PARM_TS_SEC=$(cat $${MYENV_DIR}/_file_TAG.out)
+        PARM_BUILD_BRANCH="$(cat $${MYENV_DIR}/_fileappversion_TAG.out)"
+        PARM_BUILD_BRANCH_TS="$$PARM_BUILD_BRANCH-$$PARM_TS_SEC"
+        sed -i'' -e '/CONTROLLER_BUILD/{N;s@value: .*@value: '\"$$PARM_BUILD_BRANCH_TS\"'@}' $$PATCH_PATH
+        sed -i'' -e '/CONTROLLER_REGISTRY/{N;s@value: .*@value: '\"gcr.io/${_GS_PROJECT_ID}\"'@}' $$PATCH_PATH
+        sed -i'' -e 's@image: .*@image: '"gcr.io/${_GS_PROJECT_ID}/appconfigtemplatev2_controller:$$PARM_BUILD_BRANCH_TS"'@' $$PATCH_PATH
+        sed  -i '/^status:$/,$d' ./config/crd/bases/appconfigmgr.cft.dev_appenvconfigtemplatev2s.yaml
+        make kustomize || exit 1
+    dir: "build-source/appconfigmgrv2"
+    volumes:
+      - name: go-modules
+        path: /go
+  - name: "gcr.io/${_GS_PROJECT_ID}/acmsplit:${_BUILDER_VERSION}"
+    entrypoint:  "/app"
+    dir: "build-source/appconfigmgrv2"
+  - name: gcr.io/cloud-builders/git
+    args: ['status']
+    dir: "build-source/appconfigmgrv2"
+  - name: gcr.io/cloud-builders/git
+    entrypoint: "bash"
+    args:
+      - '-c'
+      - |
+        MYENV_DIR=$(cat /workspace/myenv/_rootdir_TAG.out)
+        cp appconfigmgrv2/config/generated/all-cluster.yaml anthos-config-management/acm-crd/config-management-root/cluster
+        cp appconfigmgrv2/config/generated/all-other.yaml anthos-config-management/acm-crd/config-management-root/namespaces/appconfigmgrv2-system
+        echo "" > placeholder.txt
+    dir: "build-source"
+    volumes:
+      - name: 'ssh'
+        path: /root/.ssh
+  - name: gcr.io/cloud-builders/gsutil
+    entrypoint: "bash"
+    args:
+      - '-c'
+      - |
+        MYENV_DIR=$(cat /workspace/myenv/_rootdir_TAG.out)
+        PARM_TS_SEC=$(cat $${MYENV_DIR}/_file_TAG.out)
+        PARM_BUILD_BRANCH="$(cat $${MYENV_DIR}/_fileappversion_TAG.out)"
+        PARM_BUILD_BRANCH_TS="$$PARM_BUILD_BRANCH-$$PARM_TS_SEC"
+        gsutil cp 'placeholder.txt' "gs://${_GS_PROJECT_ID}_public/acm/anthos-config-management/$$PARM_BUILD_BRANCH/"
+        gsutil rm -R "gs://${_GS_PROJECT_ID}_public/acm/anthos-config-management/$$PARM_BUILD_BRANCH/*"
+        gsutil cp -R 'anthos-config-management/*' "gs://${_GS_PROJECT_ID}_public/acm/anthos-config-management/$$PARM_BUILD_BRANCH/"
+        gsutil rm -R "gs://${_GS_PROJECT_ID}_public/install/scripts/$$PARM_BUILD_BRANCH/*"
+        gsutil cp 'placeholder.txt' "gs://${_GS_PROJECT_ID}_public/install/scripts/$$PARM_BUILD_BRANCH/"
+        gsutil cp -R 'scripts/*' "gs://${_GS_PROJECT_ID}_public/install/scripts/$$PARM_BUILD_BRANCH/"
+        gsutil cp -R 'examples/use-cases/uc-secrets-vault-k8s/vault-roles-policy.sh' "gs://${_GS_PROJECT_ID}_public/install/scripts/$$PARM_BUILD_BRANCH/uc-secrets-vault-k8s-vault-roles-policy.sh"
+        gsutil cp -R 'tests/setup/scripts/*' "gs://${_GS_PROJECT_ID}_public/install/scripts/$$PARM_BUILD_BRANCH/"
+    dir: "build-source"
+  - name: google/cloud-sdk
+    entrypoint: "bash"
+    args:
+      - '-c'
+      - |
+        MYENV_DIR=$(cat /workspace/myenv/_rootdir_TAG.out)
+        PARM_BUILD_BRANCH="$(cat $${MYENV_DIR}/_fileappversion_TAG.out)"
+        ls -r  examples/use-cases/*/deploy-apps.yaml | xargs -I '{}'  gsutil cp '{}' gs://anthos-appconfig_public/deploy/$$PARM_BUILD_BRANCH/'{}'
+    dir: "build-source"
+  - name: google/cloud-sdk
+    entrypoint: "bash"
+    args:
+      - '-c'
+      - |
+        MYENV_DIR=$(cat /workspace/myenv/_rootdir_TAG.out)
+        MY_APP_VERSION="$(cat $${MYENV_DIR}/_fileappversion_TAG.out)"
+        MY_CHECKOUT_REF="$(cat $${MYENV_DIR}/_file_checkout_TAG.out)"
+        PARM_BUILD_BRANCH="$(cat $${MYENV_DIR}/_fileappversion_TAG.out)"
+
+        PARM_BUILD_SHA="$(cat $${MYENV_DIR}/_fileappsha1_TAG.out)"
+        PARM_BUILD_SHA_LONG="$(cat $${MYENV_DIR}/_fileappsha1_long_TAG.out)"
+        PARM_TS_SEC=$(cat $${MYENV_DIR}/_file_TAG.out)
+
+        echo -e "AppVersion:[$$PARM_BUILD_BRANCH]\n" > $${MYENV_DIR}/build_info.txt
+        echo; for v in PARM_BUILD_BRANCH PARM_BUILD_SHA PARM_BUILD_SHA_LONG PARM_TS_SEC PARM_PROJ PARM_CLUSTER PARM_REGION PARM_ZONE ; do
+          echo -e "${v}[${!v}]\n"  >> $${MYENV_DIR}/build_info.txt
+        done
+
+        gsutil cp '$${MYENV_DIR}/build_info.txt' "gs://${_GS_PROJECT_ID}_public/build_info/anthos-config-management/$$PARM_BUILD_BRANCH/$${PARM_TS_SEC}/build_info.txt"
+
+        MY_GS_PROJECT_ID=${_GS_PROJECT_ID}
+
+        if [ "$_REF_PATH" == 'BRANCH_VERSION' ]; then
+          MY_REF_PATH="SHA_MANUAL_RELEASE"
+          MY_STEPS_X=""
+          gcloud builds submit --config=tests/setup/cloudbuild.yaml  tests/setup/jobtemp --project ${PROJECT_ID} \
+            --substitutions="_GS_PROJECT_ID=$$MY_GS_PROJECT_ID,_REF_PATH=$$MY_REF_PATH,_POTENTIAL_VERSION=$$MY_APP_VERSION,_BRANCH_NAME=$$MY_CHECKOUT_REF,_INPUT_SHA_LONG=$$PARM_BUILD_SHA_LONG,_STEPS_X=$$MY_STEPS_X"
+        fi
+        if [ "$_REF_PATH" == 'BRANCH_MANUAL' ]; then
+          MY_REF_PATH="BRANCH_MANUAL"
+          MY_STEPS_X=""
+          gcloud builds submit --config=tests/setup/cloudbuild.yaml  tests/setup/jobtemp --project ${PROJECT_ID} \
+            --substitutions="_GS_PROJECT_ID=$$MY_GS_PROJECT_ID,_REF_PATH=$$MY_REF_PATH,_POTENTIAL_VERSION=$$MY_APP_VERSION,_BRANCH_NAME=$$MY_CHECKOUT_REF,_INPUT_SHA_LONG=$$PARM_BUILD_SHA_LONG,_STEPS_X=$$MY_STEPS_X"
+        fi
+        if [ "$_REF_PATH" == 'BRANCH_AUTO' ]; then
+          MY_REF_PATH="BRANCH_AUTO"
+          MY_STEPS_X=""
+          gcloud builds submit --config=tests/setup/cloudbuild.yaml  tests/setup/jobtemp --project ${PROJECT_ID} \
+            --substitutions="_GS_PROJECT_ID=$$MY_GS_PROJECT_ID,_REF_PATH=$$MY_REF_PATH,_POTENTIAL_VERSION=$$MY_APP_VERSION,_BRANCH_NAME=$$MY_CHECKOUT_REF,_INPUT_SHA_LONG=$$PARM_BUILD_SHA_LONG,_STEPS_X=$$MY_STEPS_X"
+        fi
+    dir: "build-source"

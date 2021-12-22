@@ -1,0 +1,356 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{0CD177FD-16EE-4DE7-B013-5C26348A4AB9}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GoogleCloudExtensionUnitTests</RootNamespace>
+    <AssemblyName>GoogleCloudExtensionUnitTests</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
+    <IsCodedUITest>False</IsCodedUITest>
+    <TestProjectType>UnitTest</TestProjectType>
+    <LangVersion>7.3</LangVersion>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <CodeAnalysisRuleSet>GoogleCloudExtensionUnitTests.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <CodeAnalysisRuleSet>GoogleCloudExtensionUnitTests.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>GoogleCloudExtensionUnitTests.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>GoogleCloudExtensionUnitTests.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Accounts\CredentialsStoreTests.cs" />
+    <Compile Include="Accounts\WindowsCredentialsStoreTest.cs" />
+    <Compile Include="Analytics\AnalyticsOptInDialog\AnalyticsOptInWindowContentTests.cs" />
+    <Compile Include="Analytics\AnalyticsOptInDialog\AnalyticsOptInWindowViewModelTests.cs" />
+    <Compile Include="AppEngineManagement\AppEngineManagementViewModelTests.cs" />
+    <Compile Include="AssemblyInitialize.cs" />
+    <Compile Include="AttachDebuggerDialog\AttachDebuggerFirewallPortTests.cs" />
+    <Compile Include="CloudExplorerSources\CloudConsoleLinks\CloudConsoleLinksSourceTests.cs" />
+    <Compile Include="CloudExplorerSources\CloudConsoleLinks\ConsoleLinkGroupTests.cs" />
+    <Compile Include="CloudExplorerSources\CloudConsoleLinks\ConsoleLinksRootTests.cs" />
+    <Compile Include="CloudExplorerSources\CloudConsoleLinks\ConsoleLinkTests.cs" />
+    <Compile Include="CloudExplorerSources\Gae\VersionViewModelTests.cs" />
+    <Compile Include="CloudExplorerSources\Gae\ServiceViewModelTests.cs" />
+    <Compile Include="CloudExplorerSources\Gce\GceInstanceViewModelTests.cs" />
+    <Compile Include="CloudExplorer\CloudExplorerSourceBaseTests.cs" />
+    <Compile Include="CloudExplorer\CloudExplorerToolWindowControlTests.cs" />
+    <Compile Include="CloudExplorer\DynamicCloudExplorerSourceBaseTests.cs" />
+    <Compile Include="CloudExplorer\CloudExplorerViewModelTests.cs" />
+    <Compile Include="CloudExplorer\SourceRootViewModelBaseTests.cs" />
+    <Compile Include="CloudSourceRepository\CsrAddRepoWindowViewModelTests.cs" />
+    <Compile Include="CloudSourceRepository\CsrCloneWindowViewModelTests.cs" />
+    <Compile Include="CloudSourceRepository\RepoNameConverterTests.cs" />
+    <Compile Include="CopyablePrompt\CopyablePromptDialogWindowViewModelTest.cs" />
+    <Compile Include="Analytics\EventsReporterWrapperTests.cs" />
+    <Compile Include="CloudSourceRepositories\CsrSectionControlViewModelTests.cs" />
+    <Compile Include="DelegatingTaskSchedulerService.cs" />
+    <Compile Include="Deployment\GkeDeploymentServiceTests.cs" />
+    <Compile Include="Deployment\MSBuildPropertyTests.cs" />
+    <Compile Include="Deployment\MSBuildTargetTests.cs" />
+    <Compile Include="Deployment\NetCoreAppUtilsTests.cs" />
+    <Compile Include="Deployment\WindowsVmDeploymentTests.cs" />
+    <Compile Include="FakeServices\FakeIVsTask.cs" />
+    <Compile Include="FakeServices\FakeIVsTaskCompletionSource.cs" />
+    <Compile Include="FakeServices\FakeIVsTaskSchedulerService.cs" />
+    <Compile Include="FirewallManagement\PortChangesTests.cs" />
+    <Compile Include="FirewallManagement\PortInfoTests.cs" />
+    <Compile Include="FirewallManagement\PortManagerViewModelTests.cs" />
+    <Compile Include="FirewallManagement\PortManagerWindowTests.cs" />
+    <Compile Include="FirewallManagement\PortModelTests.cs" />
+    <Compile Include="FirewallManagement\PortTestHelpers.cs" />
+    <Compile Include="GCloud\KubectlContextProviderTests.cs" />
+    <Compile Include="GCloud\KubectlContextTests.cs" />
+    <Compile Include="GCloud\ProcessServiceMockExtensions.cs" />
+    <Compile Include="ManageAccounts\ManageAccountsViewModelTests.cs" />
+    <Compile Include="MenuBarControls\GcpMenuBarControlFactoryTests.cs" />
+    <Compile Include="MenuBarControls\GcpMenuBarControlTests.cs" />
+    <Compile Include="MenuBarControls\GcpMenuBarPopupControlTests.cs" />
+    <Compile Include="MenuBarControls\GcpUserProjectViewModelTests.cs" />
+    <Compile Include="MenuBarControls\ProvideMainWindowFrameControlAttributeTests.cs" />
+    <Compile Include="PublishDialog\Steps\CoreGceWarning\CoreGceWarningContentTests.cs" />
+    <Compile Include="PublishDialog\Steps\CoreGceWarning\CoreGceWarningStepViewModelTests.cs" />
+    <Compile Include="Services\Configuration\AppEngineConfigurationTests.cs" />
+    <Compile Include="GCloud\GCloudContextUnitTests.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="GoogleCloudExtensionPackageTests.cs" />
+    <Compile Include="ManageAccounts\UserAccountViewModelTests.cs" />
+    <Compile Include="MockedGlobalServiceProviderTestsBase.cs" />
+    <Compile Include="Options\AnalyticsOptionsTests.cs" />
+    <Compile Include="Options\GeneralOptionsPageViewModelTests.cs" />
+    <Compile Include="PickProjectDialog\PickProjectIdWindowContentTests.cs" />
+    <Compile Include="Projects\DotNet4\CsprojProjectTests.cs" />
+    <Compile Include="Projects\DotNetCore\JsonProjectTests.cs" />
+    <Compile Include="Projects\DotNetCore\CsprojProjectTests.cs" />
+    <Compile Include="Projects\FakeParsedProject.cs" />
+    <Compile Include="Projects\ParsedDteProjectExtensionsTests.cs" />
+    <Compile Include="Projects\ProjectParserTests.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PublishDialog\PublishDialogWindowViewModelTests.cs" />
+    <Compile Include="PublishDialog\Steps\Choice\ChoiceStepViewModelTests.cs" />
+    <Compile Include="PublishDialog\Steps\Choice\ChoiceTests.cs" />
+    <Compile Include="PublishDialog\Steps\Flex\FlexStepViewModelTests.cs" />
+    <Compile Include="PublishDialog\Steps\Gce\GceStepViewModelTests.cs" />
+    <Compile Include="PublishDialog\Steps\Gke\GkeStepViewModelTests.cs" />
+    <Compile Include="PublishDialog\Steps\PublishDialogStepBaseTests.cs" />
+    <Compile Include="PublishDialog\PublishDialogWindowTests.cs" />
+    <Compile Include="ServiceProviderMockExtensions.cs" />
+    <Compile Include="Services\EnvironmentServiceTests.cs" />
+    <Compile Include="Services\FileSystem\FileSystemServiceTests.cs" />
+    <Compile Include="Services\FileSystem\IODirectoryServiceTests.cs" />
+    <Compile Include="Services\FileSystem\IOFileServiceTests.cs" />
+    <Compile Include="Services\FileSystem\IOPathServiceTests.cs" />
+    <Compile Include="Services\FileSystem\LinqXDocumentServiceTests.cs" />
+    <Compile Include="Services\VsProject\VsProjectPropertyServiceTests.cs" />
+    <Compile Include="SimpleIServiceProvider.cs" />
+    <Compile Include="SolutionUtils\ProjectHelperUnitTest.cs" />
+    <Compile Include="SplitStringBySpaceOrQuoteTests.cs" />
+    <Compile Include="StackdriverErrorReporting\ErrorGroupItemTests.cs" />
+    <Compile Include="StackdriverErrorReporting\ErrorReportingDetailViewModelTests.cs" />
+    <Compile Include="StackdriverErrorReporting\ErrorReportingToolWindowCommandTests.cs" />
+    <Compile Include="StackdriverErrorReporting\ErrorReportingViewModelTests.cs" />
+    <Compile Include="StackdriverErrorReporting\TimeRangeButtons\TimeRangeItemTests.cs" />
+    <Compile Include="StackdriverErrorReporting\EventItemTests.cs" />
+    <Compile Include="StackdriverLogsViewer\LogItemTests.cs" />
+    <Compile Include="StackdriverLogsViewer\LogsViewerToolWindowCommandTests.cs" />
+    <Compile Include="StackdriverLogsViewer\LogsViewerToolWindowTests.cs" />
+    <Compile Include="StackdriverLogsViewer\LogsViewerViewModelTests.cs" />
+    <Compile Include="StackdriverLogsViewer\SourceNavigation\LoggerTooltipViewModelTests.cs" />
+    <Compile Include="StackdriverLogsViewer\TreeViewConverters\ObjectNodeTreeTests.cs" />
+    <Compile Include="Theming\CommonDialogWindowContentTests.cs" />
+    <Compile Include="Theming\CommonDialogWindowTests.cs" />
+    <Compile Include="TitleBar\TitleBarViewModelTests.cs" />
+    <Compile Include="Utils\DataSourceFactoryTests.cs" />
+    <Compile Include="Utils\ErrorHandlerUtilsTests.cs" />
+    <Compile Include="TemplateWizards\Dialogs\AspNetVersionTests.cs" />
+    <Compile Include="Utils\GcpPublishStepsUtilsTests.cs" />
+    <Compile Include="Utils\ProcessUtilsTests.cs" />
+    <Compile Include="Utils\ProtectedAsyncCommandTests.cs" />
+    <Compile Include="Utils\ProtectedCommandBaseTests.cs" />
+    <Compile Include="Utils\ProtectedCommandTests.cs" />
+    <Compile Include="Utils\StatusbarHelperTests.cs" />
+    <Compile Include="Services\UserPromptServiceTests.cs" />
+    <Compile Include="Utils\ViewModelBaseTests.cs" />
+    <Compile Include="VsVersion\VS14\ToolsPathProviderTests.cs" />
+    <Compile Include="VsVersion\VS15\ToolsPathProviderTests.cs" />
+    <Compile Include="VsVersion\VS16\ToolsPathProviderTests.cs" />
+    <Compile Include="VsVersion\VsVersionUtilsTests.cs" />
+    <Compile Include="VsWindowFrameMocks.cs" />
+    <Compile Include="StackframeParserTests.cs" />
+    <Compile Include="SolutionUserOptionsTests.cs" />
+    <Compile Include="Utils\StringFormatUtilsTests.cs" />
+    <Compile Include="TemplateWizards\Dialogs\AspNetCoreTemplateChooserViewModelTests.cs" />
+    <Compile Include="TemplateWizards\Dialogs\AspNetTemplateChooserViewModelTests.cs" />
+    <Compile Include="ExtensionTestBase.cs" />
+    <Compile Include="TemplateWizards\Dialogs\TemplateChooserViewModelBaseTests.cs" />
+    <Compile Include="TemplateWizards\GoogleProjectSelectorTemplateWizardTests.cs" />
+    <Compile Include="TemplateWizards\GoogleProjectTemplateWizardTests.cs" />
+    <Compile Include="TemplateWizards\GoogleTemplateWizardHelperTests.cs" />
+    <Compile Include="UnitTestResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>UnitTestResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Utils\EditableModelTests.cs" />
+    <Compile Include="Utils\GCloudWrapperUtilsTests.cs" />
+    <Compile Include="Utils\StringUtilTests.cs" />
+    <Compile Include="Utils\ToolWindowCommandUtilsTests.cs" />
+    <Compile Include="Utils\Validation\StringValidationResultTests.cs" />
+    <Compile Include="Utils\Validation\ValidatingViewModelBaseTests.cs" />
+    <Compile Include="PickProjectDialog\PickProjectIdViewModelTests.cs" />
+    <Compile Include="VsVersion\ToolsPathProviderBaseTests.cs" />
+    <Compile Include="WpfTestBase.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GoogleAnalyticsUtils\GoogleAnalyticsUtils.csproj">
+      <Project>{A2D9AC4E-9621-4385-A175-316832F7BFDC}</Project>
+      <Name>GoogleAnalyticsUtils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GoogleCloudExtension.DataSources\GoogleCloudExtension.DataSources.csproj">
+      <Project>{3988aac1-3b20-4ba1-9627-ed7d3c80145f}</Project>
+      <Name>GoogleCloudExtension.DataSources</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GoogleCloudExtension.Deployment\GoogleCloudExtension.Deployment.csproj">
+      <Project>{92c6e0d0-41d8-4ecc-87e1-ae72fca891fc}</Project>
+      <Name>GoogleCloudExtension.Deployment</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GoogleCloudExtension.GCloud\GoogleCloudExtension.GCloud.csproj">
+      <Project>{95EFAC7E-4F6E-46F0-BCC8-90EE1487E1E1}</Project>
+      <Name>GoogleCloudExtension.GCloud</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GoogleCloudExtension.Interop\GoogleCloudExtension.Interop.csproj">
+      <Project>{856b9f2e-441f-405a-9d5c-af5dc5653902}</Project>
+      <Name>GoogleCloudExtension.Interop</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GoogleCloudExtension.Utils\GoogleCloudExtension.Utils.csproj">
+      <Project>{21501704-9D0C-442F-AD39-292B3DA4BC57}</Project>
+      <Name>GoogleCloudExtension.Utils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GoogleCloudExtension\GoogleCloudExtension.csproj">
+      <Project>{bfd6afbf-f0db-4ce1-9681-dae4e93f6dc5}</Project>
+      <Name>GoogleCloudExtension</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TestingHelpers\TestingHelpers.csproj">
+      <Project>{4EB5A3A0-3D68-4880-8855-405A46CDCE0B}</Project>
+      <Name>TestingHelpers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TestProjects\EchoApp\EchoApp.csproj">
+      <Project>{108901a6-861d-4021-a2c9-ce93554a26f5}</Project>
+      <Name>EchoApp</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="GoogleCloudExtensionUnitTests.ruleset" />
+    <None Include="key.snk" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\GoogleCloudExtension\source.extension.vsixmanifest">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Services\FileSystem\Resources\TestXmlFile.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UnitTestResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>UnitTestResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Google.Apis.Appengine.v1">
+      <Version>1.33.1.1226</Version>
+    </PackageReference>
+    <PackageReference Include="Google.Apis.Clouderrorreporting.v1beta1">
+      <Version>1.33.1.1219</Version>
+    </PackageReference>
+    <PackageReference Include="Google.Apis.CloudResourceManager.v1">
+      <Version>1.33.1.1229</Version>
+    </PackageReference>
+    <PackageReference Include="Google.Apis.CloudSourceRepositories.v1">
+      <Version>1.33.1.1223</Version>
+    </PackageReference>
+    <PackageReference Include="Google.Apis.Compute.v1">
+      <Version>1.33.1.1231</Version>
+    </PackageReference>
+    <PackageReference Include="Google.Apis.Container.v1">
+      <Version>1.33.1.1219</Version>
+    </PackageReference>
+    <PackageReference Include="Google.Apis.Logging.v2">
+      <Version>1.33.1.1227</Version>
+    </PackageReference>
+    <PackageReference Include="Google.Apis.Plus.v1">
+      <Version>1.33.1.1222</Version>
+    </PackageReference>
+    <PackageReference Include="log4net">
+      <Version>2.0.8</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.SDK">
+      <Version>17.0.31902.203</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.SDK.Analyzers">
+      <Version>16.10.10</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VSSDK.BuildTools">
+      <Version>17.0.5232</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Moq">
+      <Version>4.8.2</Version>
+    </PackageReference>
+    <PackageReference Include="MSTest.TestAdapter">
+      <Version>1.3.2</Version>
+    </PackageReference>
+    <PackageReference Include="MSTest.TestFramework">
+      <Version>1.3.2</Version>
+    </PackageReference>
+    <PackageReference Include="System.Security.Cryptography.Algorithms">
+      <Version>4.3.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.Security.Cryptography.X509Certificates">
+      <Version>4.3.2</Version>
+    </PackageReference>
+    <PackageReference Include="Zlib.Portable.Signed">
+      <Version>1.11.0</Version>
+    </PackageReference>
+  </ItemGroup>
+  <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

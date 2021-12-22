@@ -1,0 +1,36 @@
+{
+  "pathwayTitle": "Learn HashiCorp Vault",
+  "title": "[Enterprise] Vault Enterprise Playground",
+  "description": "HashiCorp Vault environment to explore the Vault Enterprise features for 6 hours.",
+  "difficulty": "beginner",
+  "time": "30 minutes",
+  "icon": "fa-vault",
+  "details": {
+    "steps": [
+      {
+        "title": "Installing Vault Enterprise",
+        "text": "step1.md",
+        "code": "terminal.sh",
+        "courseData": "courseBase.sh"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "credits": "https://learn.hashicorp.com/vault"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "environment": {
+    "uilayout": "editor-terminal",
+    "showdashboard": true,
+    "dashboards": [{ "name": "Vault UI", "port": 8200 }],
+    "uimessage1": "\u001b[32mYour Interactive Bash Terminal. A safe place to learn and execute commands version 0.1.\u001b[m\r\n"
+  },
+  "backend": {
+    "imageid": "hashicorp-hashistack-ent",
+    "lifetime": 30
+  },
+  "private": true
+}

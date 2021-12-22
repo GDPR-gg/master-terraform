@@ -1,0 +1,8 @@
+.cache
+.vscode
+.DS_Store
+collection/cityscraper/images*
+collection/shapescraper/images*
+dist
+node_modules
+windows-serve.sh

@@ -1,0 +1,54 @@
+---
+componentName: TextSplitWithCode
+---
+
+Display a title, description, and links alongside a code block.
+
+<LiveComponent>{`<TextSplitWithCode
+  textSplit={{
+    heading: 'Container Orchestration',
+    content: 'Deploy, manage, and scale your containers with the Docker, Podman, or Singularity task driver.',
+    links: [
+      {
+        text: 'Read More',
+        url: 'https://learn.hashicorp.com/collections/nomad/manage-jobs',
+        type: 'outbound',
+      },
+    ],
+  }}
+  codeBlock={{
+    options: { showWindowBar: true },
+    code: \`task <span class="token string">"webservice"</span> <span class="token punctuation">{</span>\n\t<span class="token property">driver</span> <span class="token punctuation">=</span> <span class="token string">"docker"</span>\n  \n\t<span class="token keyword">config</span> <span class="token punctuation">{</span>\n\t\t<span class="token property">image</span> <span class="token punctuation">=</span> <span class="token string">"redis:3.2"</span>\n\t\t<span class="token keyword">labels</span> <span class="token punctuation">{</span>\n\t\t\t<span class="token property">group</span> <span class="token punctuation">=</span> <span class="token string">"webservice-cache"</span>\n\t  <span class="token punctuation">}</span>\n\t<span class="token punctuation">}</span>\n<span class="token punctuation">}</span>\n\`,
+    language: 'hcl'
+  }}
+/>`}</LiveComponent>
+
+<UsageDetails packageJson={packageJson} />
+
+### Props
+
+<PropsTable props={componentProps} />
+
+### Examples
+
+Dark theme:
+
+<LiveComponent>{`<TextSplitWithCode
+  textSplit={{
+    heading: 'Container Orchestration',
+    content: 'Deploy, manage, and scale your containers with the Docker, Podman, or Singularity task driver.',
+    theme: 'dark',
+    links: [
+      {
+        text: 'Read More',
+        url: 'https://learn.hashicorp.com/collections/nomad/manage-jobs',
+        type: 'outbound',
+      },
+    ],
+  }}
+  codeBlock={{
+    options: { showWindowBar: true },
+    code: \`task <span class="token string">"webservice"</span> <span class="token punctuation">{</span>\n\t<span class="token property">driver</span> <span class="token punctuation">=</span> <span class="token string">"docker"</span>\n  \n\t<span class="token keyword">config</span> <span class="token punctuation">{</span>\n\t\t<span class="token property">image</span> <span class="token punctuation">=</span> <span class="token string">"redis:3.2"</span>\n\t\t<span class="token keyword">labels</span> <span class="token punctuation">{</span>\n\t\t\t<span class="token property">group</span> <span class="token punctuation">=</span> <span class="token string">"webservice-cache"</span>\n\t  <span class="token punctuation">}</span>\n\t<span class="token punctuation">}</span>\n<span class="token punctuation">}</span>\n\`,
+    language: 'hcl'
+  }}
+/>`}</LiveComponent>

@@ -1,0 +1,49 @@
+{
+  "name": "pizza-authenticator",
+  "version": "1.0.0",
+  "description": "Evaluate the authenticity of your pizza.",
+  "repository": "git@github.com:GoogleCloudPlatform/showcase-experiments.git",
+  "contributors": [
+    {
+      "name": "Terrence Ryan",
+      "email": "tpryan@google.com"
+    },
+    {
+      "name": "Mathias Paumgarten",
+      "email": "mail@mathias-paumgarten.com"
+    }
+  ],
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "parcel watch index.html --public-url=/experiment/pizza-authenticator/dist/",
+    "build-server": "cp -a server/. dist/",
+    "clean": "rm -rf dist",
+    "package": "yarn clean && parcel build index.html --public-url=/experiment/pizza-authenticator/dist/ && yarn build-server"
+  },
+  "dependencies": {
+    "classnames": "^2.2.6",
+    "lodash": "^4.17.19",
+    "parcel": "^1.12.4",
+    "parcel-bundler": "^1.10.0",
+    "react": "^16.6.3",
+    "react-addons-css-transition-group": "^15.6.2",
+    "react-dom": "^16.6.3",
+    "react-router-dom": "^4.3.1",
+    "rxjs": "^6.3.3"
+  },
+  "devDependencies": {
+    "@types/classnames": "^2.2.7",
+    "@types/lodash": "^4.14.120",
+    "@types/react": "^16.7.20",
+    "@types/react-addons-css-transition-group": "^15.0.5",
+    "@types/react-dom": "^16.0.11",
+    "@types/react-router-dom": "^4.3.1",
+    "autoprefixer": "^9.7.6",
+    "node-sass": "^4.14.1",
+    "postcss-modules": "^2.0.0",
+    "sass": "^1.15.2",
+    "tslint": "^5.11.0",
+    "typescript": "^3.2.2"
+  }
+}

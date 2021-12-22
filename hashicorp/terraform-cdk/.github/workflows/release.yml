@@ -1,0 +1,216 @@
+name: Release
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
+      - "website/**"
+
+jobs:
+  prepare-release:
+    if: github.repository == 'hashicorp/terraform-cdk'
+    runs-on: ubuntu-latest
+    outputs:
+      tests: ${{ steps.build-test-matrix.outputs.tests }}
+    container:
+      image: docker.mirror.hashicorp.services/hashicorp/jsii-terraform
+    env:
+      CHECKPOINT_DISABLE: "1"
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: installing dependencies
+        run: |
+          yarn install
+      - name: compile
+        run: |
+          tools/align-version.sh
+          yarn build
+      - name: test
+        run: |
+          yarn test
+      - name: create bundle
+        run: yarn package
+      - name: Upload artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: dist
+          path: dist
+      - name: installing test dependencies
+        run: |
+          cd test && yarn install
+      - id: build-test-matrix
+        run: |
+          ./tools/build-test-matrix.sh
+
+  integration-tests:
+    needs: prepare-release
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{fromJSON(needs.prepare-release.outputs.tests)}}
+    container:
+      image: docker.mirror.hashicorp.services/hashicorp/jsii-terraform
+    env:
+      CHECKPOINT_DISABLE: "1"
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download dist
+        uses: actions/download-artifact@v2
+        with:
+          name: dist
+          path: dist
+      - name: install test dependencies
+        run: cd test && yarn
+      - name: integration tests
+        run: cd test && ./run-against-dist npx jest ${TEST_TARGET}
+        env:
+          TEST_TARGET: ${{ matrix.target }}
+          TERRAFORM_CLOUD_TOKEN: ${{ secrets.TERRAFORM_CLOUD_TOKEN }}
+
+  release_github:
+    name: Release to Github
+    needs:
+      - prepare-release
+      - integration-tests
+    runs-on: ubuntu-latest
+    container:
+      image: docker.mirror.hashicorp.services/hashicorp/jsii-terraform
+    steps:
+      - uses: actions/checkout@v2
+      - name: installing dependencies
+        run: |
+          yarn install
+      - name: Download build artifacts
+        uses: actions/download-artifact@v1
+        with:
+          name: dist
+      - name: Release to github
+        run: yarn release-github
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  release_npm:
+    name: Release to Github Packages NPM regitry
+    needs:
+      - prepare-release
+      - integration-tests
+    runs-on: ubuntu-latest
+    container:
+      image: docker.mirror.hashicorp.services/hashicorp/jsii-terraform
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v1
+        with:
+          name: dist
+      - name: Release
+        run: npx -p jsii-release jsii-release-npm
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  release_pypi:
+    name: Release to PyPi
+    needs:
+      - prepare-release
+      - integration-tests
+    runs-on: ubuntu-latest
+    container:
+      image: docker.mirror.hashicorp.services/hashicorp/jsii-terraform
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v1
+        with:
+          name: dist
+      - name: Release
+        run: npx -p jsii-release jsii-release-pypi
+        env:
+          TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
+          TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
+
+  release_maven:
+    name: Release to Maven
+    needs:
+      - prepare-release
+      - integration-tests
+    runs-on: ubuntu-latest
+    container:
+      image: docker.mirror.hashicorp.services/hashicorp/jsii-terraform
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v1
+        with:
+          name: dist
+          path: dist
+      - name: Release
+        run: npx -p jsii-release jsii-release-maven
+        env:
+          MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
+          MAVEN_GPG_PRIVATE_KEY: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          MAVEN_GPG_PRIVATE_KEY_PASSPHRASE: ${{ secrets.MAVEN_GPG_PRIVATE_KEY_PASSPHRASE }}
+          MAVEN_STAGING_PROFILE_ID: ${{ secrets.MAVEN_STAGING_PROFILE_ID }}
+
+  release_nuget:
+    name: Release to NuGet
+    needs:
+      - prepare-release
+      - integration-tests
+    runs-on: ubuntu-latest
+    container:
+      image: docker.mirror.hashicorp.services/hashicorp/jsii-terraform
+    steps:
+      - name: Download dist
+        uses: actions/download-artifact@v2
+        with:
+          name: dist
+          path: dist
+      - name: Release
+        run: npx -p jsii-release jsii-release-nuget
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+
+  release_golang:
+    name: Release Go to Github Repo
+    needs:
+      - prepare-release
+      - integration-tests
+    runs-on: ubuntu-latest
+    container:
+      image: docker.mirror.hashicorp.services/hashicorp/jsii-terraform
+    steps:
+      - name: Download dist
+        uses: actions/download-artifact@v2
+        with:
+          name: dist
+          path: dist
+      - name: Release
+        run: npx -p jsii-release jsii-release-golang
+        env:
+          GITHUB_TOKEN: ${{ secrets.TERRAFORM_CDK_GO_REPO_GITHUB_TOKEN }}
+          GIT_USER_NAME: "CDK for Terraform Team"
+          GIT_USER_EMAIL: "github-team-tf-cdk@hashicorp.com"
+
+  release_homebrew:
+    name: Release to Homebrew
+    # The branch or tag ref that triggered the workflow run.
+    if: startsWith(github.event.head_commit.message, 'Bump version')
+    needs: release_npm
+    runs-on: ubuntu-latest
+    steps:
+      # extract version number from package.json
+      - uses: actions/checkout@v2
+      - name: version
+        id: get_version
+        run: |
+          version=$(node -p "require('./package.json').version")
+          echo "::set-output name=version::${version}"
+      # A PR will be sent to github.com/Homebrew/homebrew-core to update this formula:
+      - uses: mislav/bump-homebrew-formula-action@v1
+        with:
+          formula-name: cdktf
+          download-url: https://registry.npmjs.org/cdktf-cli/-/cdktf-cli-${{ steps.get_version.outputs.version }}.tgz
+          commit-message: cdktf ${{ steps.get_version.outputs.version }}
+        env:
+          COMMITTER_TOKEN: ${{ secrets.HOMEBREW_COMMITTER_TOKEN }}

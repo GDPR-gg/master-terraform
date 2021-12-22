@@ -1,0 +1,17 @@
+#  Local .terraform directories
+**/.terraform/*
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
+# .tfvars files
+*.tfvars
+
+# Packer vars
+**/vars.json
+
+# local binaries directory
+modules/vault_cluster/packer/binaries/*.zip
+
+.DS_Store

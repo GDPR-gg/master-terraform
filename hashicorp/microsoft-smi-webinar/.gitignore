@@ -1,0 +1,13 @@
+#  Local .terraform directories
+**/.terraform/*
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
+# .tfvars files
+*.tfvars
+.envrc
+kube_config.yml
+terraform/private_ssh_key
+.pid_*

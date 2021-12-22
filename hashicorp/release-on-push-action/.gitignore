@@ -1,0 +1,6 @@
+.env
+
+# Ignore state used for local testing
+last_commit
+last_release
+related_prs

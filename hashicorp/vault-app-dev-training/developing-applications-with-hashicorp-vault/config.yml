@@ -1,0 +1,6 @@
+version: "2"
+virtualmachines:
+- name: workstation
+  image: instruqt-hashicorp/developing-apps-with-vault
+  shell: /bin/bash
+  machine_type: g1-small

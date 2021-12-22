@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+  <head>
+    <title>Tag Engine</title>
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+  </head>  
+    <body>
+	   <div class="pagetitle">
+	   <h1>Tag Engine</h1>
+        </div>
+	   <div class="header">
+	   <h2>Create dynamic tag config using {{ template_id }}</h2>
+	   <span style="color:#9d9a9a;">
+		   <h6>To include a field in your tag, click on the checkbox next to the field and enter a query expression for the field in the text box. <br>
+			   <br>
+			   The query expression must be a <i>valid</i> select statement in BQ. It can contain aggregate functions, joins, filters, groupings, etc. <br>
+			   <br>
+			   In addition, the query expression can contain the following variables:<br>
+			   - <b>$table</b> refers to the table (or view) being tagged<br>
+			   - <b>$column</b> refers to the column being tagged<br>
+			   - <b>$dataset</b> refers to the dataset of the table (or view) being tagged<br>
+			   - <b>$project</b> refers to the project of the table (or view) being tagged<br>
+			   <br>
+			   Here are some examples: <br>
+			   select count(*) from $table<br>
+			   select count(distinct($column)) from $table <br>
+			   select count(*) > 1 from $table where $column is null<br>
+			   select rating from dw-project.quality.scores where table = '$table' and dataset = '$dataset' and project = '$project'<br>
+			   select '30-DAYS'<br>
+			    <br>
+			   Note: The result of the query expression must satisfy the type requirements of the field in the tag template. <br>
+			   For example, if the tag template field is of type string, the query expression must return a string type.
+			   
+		    <br><br>Mandatory template fields are marked by <span style="color:red;">*</span> and are already checked for you.
+		    </h6>
+	  </span>
+	   </div>
+	   <h3>Choose Template Fields</h3>
+         <form method="post" action="/process_dynamic_tag">
+		    <table>
+			   {% for dict_field in fields %}
+		        <tr>
+		          <td>
+				{% if dict_field['is_required'] == True %}
+                    <input type="checkbox" class="form-control move-left" name="selected" value="{{ dict_field['field_id'] }}" checked>
+				{% else: %}
+                    <input type="checkbox" class="form-control move-left" name="selected" value="{{ dict_field['field_id'] }}">
+				{% endif %}
+				</td>
+				<td>
+				{% if dict_field['is_required'] == True %}
+				<span style="color:red;">*</span>
+				{% else: %}
+				&nbsp;
+				{% endif %}
+				{{ dict_field['field_id'] }} (type {{ dict_field['field_type'] }}):
+				</td>
+				<td>
+				<input type="text" value="select ..." name="{{ dict_field['field_id'] }}" style="width: 700px;padding: 3px;overflow:auto;">
+				</td>
+			   </tr>
+			   {% endfor %}
+			   </table>
+			   <p>&nbsp;</p>
+			   <h3>Choose URIs</h3>
+		 	   <span style="color:#9d9a9a;">
+		 		   <h6>Specify URIs for resources to include in or exclude from your dynamic tag. Wildcards are allowed in the table name. <br><br>
+					  Supported URIs: <br>
+					  bigquery/project/{project_id}/* <br>
+					  bigquery/project/{project_id}/dataset/{dataset}/* <br>
+				       bigquery/project/{project_id}/dataset/{dataset}/{table} <br>
+				       bigquery/project/{project_id}/dataset/{dataset}/{table}/{column} <br>
+				  </h6>
+				</span>
+			    <table>
+			     <tr>
+			    <td>Included URIs:&nbsp;&nbsp;
+			    				<textarea name="included_uris" style="align-content:left; width: 700px; overflow:auto;">
+bigquery/project/{{ project_id }}/dataset/{dataset}/*, bigquery/project/{{ project_id }}/dataset/{dataset}/{table}*, bigquery/project/{{ project_id }}/dataset/{dataset}/{table}/{column}
+			    				</textarea></td>
+			     </tr>
+			     <tr><td>&nbsp;</td></tr>
+ 				<tr>
+ 			    <td>Excluded URIs:&nbsp;
+			    		          <textarea name="excluded_uris" style="align-content:left; width: 700px; overflow:auto;">
+bigquery/project/{{ project_id }}/dataset/{dataset}/*, bigquery/project/{{ project_id }}/dataset/{dataset}/{table}*, bigquery/project/{{ project_id }}/dataset/{dataset}/{table}/{column}
+			    		          </textarea>
+			    </td>
+ 		         </tr>
+		    </table>
+		        <p>&nbsp;</p>
+			   <h3>Choose Scheduling</h3>
+		 	   <span style="color:#9d9a9a;">
+		 		   <h6>If you choose the AUTO refresh mode, your tags will be scheduled for update based on your specified refresh frequency. <br>
+					   If you choose the ON-DEMAND refresh mode, your tags will <b>not</b> be scheduled for refresh (even if you specify a refresh frequency). <br>This mode is useful when you have tags that don't need to be updated or when you want to trigger the update from the API. <br><br>
+				   </h6>
+				</span>
+			     <table>
+				<tr>	
+			    <td>Refresh mode:&nbsp;<select name="refresh_mode">
+  				  				<option value="AUTO" selected>AUTO</option>
+  							   	<option value="ON-DEMAND">ON-DEMAND</option>
+							  </select>
+			    </td>
+		         </tr>
+			     <tr><td>&nbsp;</td></tr>
+				<tr>	
+			    <td>Refresh frequency:&nbsp;<input type="text" value="24" name="refresh_frequency" style="width: 30px;padding: 3px;">&nbsp;
+				    			  <select name="refresh_unit" style="width: 70px;padding: 3px;">
+  				  				<option value="hours" selected>hours</option>
+  							   	<option value="days">days</option>
+							  </select></td>
+		         </tr>
+		        </table>
+			    {% if display_export_option == 1 %}
+			      <p>&nbsp;</p>
+				<h3>Choose Export</h3>
+			    <table>
+			    <tr><td><input type="checkbox" class="form-control move-left" name="export" value="selected" checked>
+				    Save tag history to BigQuery&nbsp;&nbsp;
+			    </td></tr>
+			    </table>
+			    {% endif %}
+	         <p>&nbsp;</p>
+		        <table>
+		        <tr>
+			   <td><input type="submit" value="Submit Tag Config" name="action">
+			       <input type="submit" value="Cancel Changes" name="action">
+			   </td>
+		        </tr>
+			   </table>
+			   <input type="hidden" name ="template_id" value="{{ template_id }}">
+			   <input type="hidden" name ="project_id" value="{{ project_id }}">
+			   <input type="hidden" name ="region" value="{{ region }}">
+
+			   {% for dict_field in fields %}
+			   	<input type="hidden" name="{{ dict_field['field_id'] }}_datatype" value="{{ dict_field['field_type'] }}">
+			    {% endfor %}	
+
+         </form>
+    </body>
+</html>

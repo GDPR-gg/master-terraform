@@ -1,0 +1,9 @@
+include: package:lints/recommended.yaml
+analyzer:
+  exclude:
+    - 'templates/**'
+
+linter:
+  rules:
+    - prefer_relative_imports
+    - prefer_expression_function_bodies

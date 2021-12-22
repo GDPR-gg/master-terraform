@@ -1,0 +1,22 @@
+version: "3.9"
+services:
+  forwarder:
+    build: ./forwarder
+    ports:
+    - "30443:30443"
+    environment:
+    - COLLECTOR_ADDR=collector:4317
+    depends_on:
+    - collector
+  collector:
+    image: otel/opentelemetry-collector-contrib
+    volumes:
+    - ~/.config/gcloud/application_default_credentials.json:/etc/otel/key.json
+    - ./collector/config.yaml:/etc/otel/config.yaml
+    environment:
+    - GOOGLE_APPLICATION_CREDENTIALS=/etc/otel/key.json
+    - PROJECT_ID=${PROJECT_ID}
+    ports:
+    - "4317:4317"
+    - "4318:4318"
+    - "13133:13133"

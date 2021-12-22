@@ -1,0 +1,15 @@
+----
+
+CHAPTER VIII
+OF THE ANALYTICAL ENGINE
+
+The circular arrangement of the axes of the Difference Engine round large
+central wheels led to the most extended prospects. The whole of arithmetic now
+appeared within the grasp of mechanism. A vague glimpse even of an Analytical
+Engine at length opened out, and I pursued with enthusiasm the shadowy vision.
+The drawings and the experiments were of the most costly kind. Draftsmen of
+the highest order were necessary to economize the labour of my own head;
+whilst skilled workmen were required to execute the experimental machinery to
+which I was obliged constantly to have recourse.
+
+source - http://www.fourmilab.ch/babbage/lpae.html

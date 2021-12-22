@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Copyright 2019 Google LLC
+
+ Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in
+ compliance with the License. You may obtain a copy of the License at
+
+        https://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software distributed under the License
+ is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+ implied. See the License for the specific language governing permissions and limitations under the
+ License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.google.cloud.graphite</groupId>
+  <artifactId>gcp-plugin-core-java</artifactId>
+  <version>0.3.1-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <name>GCP Plugin Core for Java</name>
+  <description>This set of libraries provides common code used for Google Cloud Graphite's integrations to enable using GCP with popular open source platforms.</description>
+  <url>https://github.com/GoogleCloudPlatform/gcp-plugin-core-java</url>
+  <organization>
+    <name>Google</name>
+    <url>https://www.google.com</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <id>stephenashank</id>
+      <name>Stephen Shank</name>
+      <email>stephenshank@google.com</email>
+    </developer>
+    <developer>
+      <id>craigatgoogle</id>
+      <name>Craig Barber</name>
+      <email>craigbarber@google.com</email>
+    </developer>
+  </developers>
+
+  <modules>
+    <module>gcp-client</module>
+  </modules>
+
+  <scm>
+    <url>http://github.com/GoogleCloudPlatform/gcp-plugin-core-java/</url>
+    <connection>scm:git:git://github.com/GoogleCloudPlatform/gcp-plugin-core-java.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/GoogleCloudPlatform/gcp-plugin-core-java.git</developerConnection>
+    <tag>HEAD</tag>
+  </scm>
+  <distributionManagement>
+    <snapshotRepository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+    <repository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+  </distributionManagement>
+
+  <properties>
+    <java.level>8</java.level>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <google.api.version>1.25.0</google.api.version>
+    <google.http.version>1.21.0</google.http.version>
+    <mockito.version>2.10.0</mockito.version>
+    <junit.version>4.12</junit.version>
+    <google.guava.version>20.0</google.guava.version>
+    <maven-compiler.version>3.8.0</maven-compiler.version>
+    <xml-format-maven.version>3.0.7</xml-format-maven.version>
+    <tidy-maven.version>1.1.0</tidy-maven.version>
+    <fmt-maven.version>2.6.0</fmt-maven.version>
+    <!-- Skip at top level to avoid warnings. Specify as false in submodule properties. -->
+    <fmt-maven.skip>true</fmt-maven.skip>
+    <maven-failsafe.version>2.20.1</maven-failsafe.version>
+    <maven-surefire.version>${maven-failsafe.version}</maven-surefire.version>
+    <spotbugs.version>3.1.12</spotbugs.version>
+    <cobertura-maven.version>2.7</cobertura-maven.version>
+    <maven-release.version>2.5.3</maven-release.version>
+    <maven-source.version>3.0.1</maven-source.version>
+    <maven-javadoc.version>3.1.1</maven-javadoc.version>
+    <maven-gpg.version>1.6</maven-gpg.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>${mockito.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.http-client</groupId>
+      <artifactId>google-http-client</artifactId>
+      <version>${google.http.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.httpcomponents</groupId>
+          <artifactId>httpclient</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>${google.guava.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <!-- For automatic formatting-->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven-compiler.version}</version>
+        <configuration>
+          <compilerArgument>-Xlint:all</compilerArgument>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>au.com.acegi</groupId>
+        <artifactId>xml-format-maven-plugin</artifactId>
+        <version>${xml-format-maven.version}</version>
+        <executions>
+          <execution>
+            <id>validate</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>xml-format</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <includes>pom.xml</includes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>tidy-maven-plugin</artifactId>
+        <version>${tidy-maven.version}</version>
+        <executions>
+          <execution>
+            <id>validate</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>pom</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.coveo</groupId>
+        <artifactId>fmt-maven-plugin</artifactId>
+        <version>${fmt-maven.version}</version>
+        <configuration>
+          <style>google</style>
+          <skip>${fmt-maven.skip}</skip>
+          <skipSortingImports>${fmt-maven.skip}</skipSortingImports>
+          <verbose>true</verbose>
+          <detail>true</detail>
+          <displayFiles>true</displayFiles>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>format</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- For testing/validation -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>${maven-failsafe.version}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <disableXmlReport>true</disableXmlReport>
+          <useFile>false</useFile>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${maven-surefire.version}</version>
+      </plugin>
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+        <version>${spotbugs.version}</version>
+        <configuration>
+          <skip>true</skip>
+          <effort>Max</effort>
+          <threshold>Medium</threshold>
+          <xmlOutput>true</xmlOutput>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>cobertura-maven-plugin</artifactId>
+        <version>${cobertura-maven.version}</version>
+        <configuration>
+          <check/>
+          <instrumentation>
+            <excludes/>
+          </instrumentation>
+          <formats>
+            <format>html</format>
+            <format>xml</format>
+          </formats>
+        </configuration>
+      </plugin>
+      <!-- For release-->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>${maven-release.version}</version>
+        <configuration>
+          <autoVersionSubmodules>true</autoVersionSubmodules>
+          <useReleaseProfile>false</useReleaseProfile>
+          <releaseProfiles>release</releaseProfiles>
+          <preparationGoals>clean install</preparationGoals>
+          <goals>deploy</goals>
+          <completionGoals>xml-format:xml-format tidy:pom</completionGoals>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>${maven-source.version}</version>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <goals>
+                  <goal>jar-no-fork</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>${maven-javadoc.version}</version>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>${maven-gpg.version}</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+                <configuration>
+                  <keyname>${gpg.keyname}</keyname>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

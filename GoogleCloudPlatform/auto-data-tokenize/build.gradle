@@ -1,0 +1,263 @@
+/*
+ * Copyright 2021 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+plugins {
+    id "java"
+    id "java-library"
+    id "com.google.protobuf" version "0.8.14"
+    id "com.diffplug.spotless" version "5.9.0"
+    id "idea"
+    id "jacoco"
+    id "com.github.johnrengelman.shadow" version "6.1.0"
+}
+
+
+repositories {
+    mavenCentral()
+    gradlePluginPortal()
+    maven {
+        url "https://packages.confluent.io/maven/"
+    }
+}
+
+def protoVersion = "3.17.0"
+def beamVersion = "2.33.0"
+def hadoopVersion = "3.3.0"
+
+
+dependencies {
+
+    // Protobuf deps
+    compileOnly "com.google.api.grpc:proto-google-common-protos:1.18.1"
+
+    implementation "com.google.protobuf:protobuf-java:${protoVersion}"
+    implementation "com.google.protobuf:protobuf-java-util:${protoVersion}"
+
+    // Autovalue annotations
+    compileOnly "com.google.auto.value:auto-value-annotations:1.8.1"
+    annotationProcessor "com.google.auto.value:auto-value:1.8.1"
+    testCompileOnly "com.google.auto.value:auto-value-annotations:1.8.1"
+    testAnnotationProcessor "com.google.auto.value:auto-value:1.8.1"
+
+    // Commons library deps
+    implementation "com.google.guava:guava:30.1.1-jre"
+    implementation "org.apache.commons:commons-lang3:3.12.0"
+    implementation "org.apache.httpcomponents:httpclient:4.5.13"
+
+    // CSV Library
+    implementation "org.apache.commons:commons-csv:1.9.0"
+
+    // Google Services deps
+    implementation "com.google.cloud:google-cloud-dlp:2.4.3"
+    implementation "com.google.cloud:google-cloud-datacatalog:1.4.1"
+    implementation "com.google.cloud:google-cloud-kms:1.42.3"
+    implementation "com.google.cloud:google-cloud-secretmanager:1.6.3"
+
+    // Google Tink for encryption
+    implementation "com.google.crypto.tink:tink:1.6.1"
+    implementation "com.google.crypto.tink:tink-gcpkms:1.6.1"
+
+    // JSON related libs
+    implementation "com.github.wnameless.json:json-flattener:0.11.0"
+    implementation "com.jayway.jsonpath:json-path:2.4.0"
+    implementation "com.fasterxml.jackson.core:jackson-core:2.11.3"
+    implementation "com.fasterxml.jackson.core:jackson-databind:2.11.3"
+
+    // Hadoop files (Avro + Parquet)
+    implementation "org.apache.avro:avro:1.10.2"
+    implementation "org.apache.parquet:parquet-avro:1.12.0"
+    implementation("org.apache.hadoop:hadoop-common:${hadoopVersion}"){
+        exclude group: "org.slf4j", module: "slf4j-log4j12"
+    }
+
+    // Logging framework
+    implementation "com.google.flogger:flogger:0.6"
+    implementation "com.google.flogger:google-extensions:0.6"
+    runtimeOnly "com.google.flogger:flogger-system-backend:0.6"
+
+    // Apache Beam deps
+    implementation "org.apache.beam:beam-sdks-java-core:${beamVersion}"
+    implementation "org.apache.beam:beam-sdks-java-extensions-sorter:${beamVersion}"
+    implementation "org.apache.beam:beam-sdks-java-io-jdbc:${beamVersion}"
+    implementation "org.apache.beam:beam-sdks-java-io-google-cloud-platform:${beamVersion}"
+    implementation "org.apache.beam:beam-sdks-java-io-parquet:${beamVersion}"
+    testImplementation "org.apache.beam:beam-runners-direct-java:${beamVersion}"
+    runtimeOnly "org.apache.beam:beam-runners-google-cloud-dataflow-java:${beamVersion}"
+
+    // Runtime only deps
+    runtimeOnly "org.slf4j:slf4j-api:1.7.25"
+    runtimeOnly "org.slf4j:slf4j-jdk14:1.7.25"
+    runtimeOnly "io.grpc:grpc-netty:1.34.0"
+    runtimeOnly "com.google.cloud.sql:mysql-socket-factory-connector-j-8:1.2.3"
+    runtimeOnly ("org.apache.hadoop:hadoop-mapreduce-client-core:${hadoopVersion}") {
+        exclude group: "org.slf4j", module: "slf4j-log4j12"
+    }
+    testRuntimeOnly ("org.apache.hadoop:hadoop-mapreduce-client-core:${hadoopVersion}") {
+        exclude group: "org.slf4j", module: "slf4j-log4j12"
+    }
+
+    // MySQL JDBC driver
+    runtimeOnly("mysql:mysql-connector-java:8.0.24") {
+        exclude group: "com.google.protobuf", module: "protobuf-java"
+    }
+    testRuntimeOnly("mysql:mysql-connector-java:8.0.24") {
+        exclude group: "com.google.protobuf", module: "protobuf-java"
+    }
+
+    //checker-framework
+    compileOnly "org.checkerframework:checker-qual:3.13.0"
+
+    // Testing Dependencies
+    testImplementation "junit:junit:4.13.1"
+    testImplementation "org.hamcrest:hamcrest-all:1.3"
+    testImplementation "org.mockito:mockito-all:1.10.19"
+    testImplementation "com.google.truth:truth:1.1"
+    testImplementation "com.google.truth.extensions:truth-java8-extension:1.1"
+    testImplementation "com.google.truth.extensions:truth-proto-extension:1.1"
+    testImplementation "org.skyscreamer:jsonassert:1.5.0"
+    testImplementation "org.apache.logging.log4j:log4j-core:2.14.1"
+
+    // Testcontainers used to mock database
+    testImplementation "org.testcontainers:mysql:1.16.0"
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.14.0"
+    }
+
+    clean {
+        delete protobuf.generatedFilesBaseDir
+    }
+}
+
+
+java.sourceCompatibility = JavaVersion.VERSION_11
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+
+shadowJar {
+    zip64 = true
+    mergeServiceFiles()
+}
+
+test {
+    dependsOn cleanTest
+    testLogging.showStandardStreams = true
+    finalizedBy jacocoTestReport
+    maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
+}
+
+jacoco {
+    toolVersion = "0.8.7"
+}
+
+jacocoTestReport {
+    reports {
+        csv.enabled false
+        xml.enabled true
+        html.enabled true
+    }
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    "com/google/cloud/solutions/autotokenize/AutoTokenizeMessages*.class",
+                    "**/*AutoValue_*.class"
+            ])
+        }))
+    }
+}
+
+spotless {
+    java {
+        target "**/*.java"
+        targetExclude "third_party/**"
+        googleJavaFormat()
+        removeUnusedImports()
+        importOrder()
+        trimTrailingWhitespace()
+        endWithNewline()
+        licenseHeader "/*\n" +
+                " * Copyright \$YEAR Google LLC\n" +
+                " *\n" +
+                " * Licensed under the Apache License, Version 2.0 (the \"License\");\n" +
+                " * you may not use this file except in compliance with the License.\n" +
+                " * You may obtain a copy of the License at\n" +
+                " *\n" +
+                " *     https://www.apache.org/licenses/LICENSE-2.0\n" +
+                " *\n" +
+                " * Unless required by applicable law or agreed to in writing, software\n" +
+                " * distributed under the License is distributed on an \"AS IS\" BASIS,\n" +
+                " * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n" +
+                " * See the License for the specific language governing permissions and\n" +
+                " * limitations under the License.\n" +
+                " */\n" +
+                "\n"
+    }
+
+    kotlin {
+        target "**/*.kt"
+        ktlint()
+        trimTrailingWhitespace()
+        indentWithSpaces(2)
+        endWithNewline()
+    }
+
+    freshmark {
+        target '*.md'
+        indentWithSpaces(2)
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+
+    format "proto", {
+        target "**/*.proto"
+        licenseHeader("// Copyright \$YEAR Google LLC\n" +
+                "//\n" +
+                "// Licensed under the Apache License, Version 2.0 (the \"License\");\n" +
+                "// you may not use this file except in compliance with the License.\n" +
+                "// You may obtain a copy of the License at\n" +
+                "//\n" +
+                "//     http://www.apache.org/licenses/LICENSE-2.0\n" +
+                "//\n" +
+                "// Unless required by applicable law or agreed to in writing, software\n" +
+                "// distributed under the License is distributed on an \"AS IS\" BASIS,\n" +
+                "// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n" +
+                "// See the License for the specific language governing permissions and\n" +
+                "// limitations under the License.", "syntax")
+        indentWithSpaces(2)
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+
+
+    format "gradle", {
+        target "**/*.gradle"
+        indentWithSpaces(2)
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+
+    format "misc", {
+        target "**/.gitignore", "*.xml", "src/**/*.xml"
+        indentWithSpaces(2)
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+}

@@ -1,0 +1,68 @@
+#!/bin/bash
+# Copyright 2019 Google Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+echo "$CREATE_TABLE_AND_LOAD_DATA_HINT" > /root/.instruqt/hint.txt
+
+# Put the help text in help.txt
+echo "$CREATE_TABLE_AND_LOAD_DATA_HELP" > /root/.instruqt/help.txt
+
+cat <<EOF > data.csv
+1,2019-02-02,Moscone Center,-122.40069,37.7843234
+2,2019-02-03,Heavenly Mountain Resort,-119.9403548,38.9346948
+3,2019-02-04,Yosemite National Park,-119.5383294,37.8651011
+4,2019-02-05,Sequoia National Park,-118.5657516,36.4863668
+5,2019-02-06,Mojave National Preserve,-115.4483414,35.155183
+6,2019-02-07,Las Vegas,-115.1398296,36.1699412
+7,2019-02-08,Zion National Park,-113.0263005,37.2982022
+8,2019-02-09,Grand Canyon National Park,-112.1129972,36.1069652
+9,2019-02-10,Joshua Tree National Park,-115.9009923,33.873415
+10,2019-02-11,Santa Monica,-118.4911912,34.0194543
+11,2019-02-12,Universal Studios Hollywood,-118.3533783,34.1381168
+12,2019-02-13,Santa Barbara,-119.6981901,34.4208305
+13,2019-02-14,Mountain View,-122.08385,37.38605
+14,2019-02-15,Carmel-by-the-Sea,-121.9232879,36.5552386
+15,2019-02-16,Palo Alto,-122.1430195,37.4418834
+16,2019-02-17,San Francisco,-122.4194155,37.7749295
+EOF
+
+cat <<EOF > schema.json
+[
+  {
+    "mode": "REQUIRED",
+    "name": "id",
+    "type": "INTEGER"
+  },
+  {
+    "mode": "REQUIRED",
+    "name": "date",
+    "type": "DATE"
+  },
+  {
+    "mode": "REQUIRED",
+    "name": "place",
+    "type": "STRING"
+  },
+  {
+    "mode": "REQUIRED",
+    "name": "lat",
+    "type": "FLOAT"
+  },
+  {
+    "mode": "REQUIRED",
+    "name": "long",
+    "type": "FLOAT"
+  }
+]
+EOF

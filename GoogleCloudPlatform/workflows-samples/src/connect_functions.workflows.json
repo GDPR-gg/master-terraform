@@ -1,0 +1,23 @@
+[
+  {
+    "call_my_function": {
+      "call": "http.post",
+      "args": {
+        "url": "https://us-central1-myproject123.cloudfunctions.net/myfunc1",
+        "auth": {
+          "type": "OIDC"
+        },
+        "body": {
+          "some_val": "Hello World",
+          "another_val": 123
+        }
+      },
+      "result": "the_message"
+    }
+  },
+  {
+    "return_value": {
+      "return": "${the_message.body}"
+    }
+  }
+]

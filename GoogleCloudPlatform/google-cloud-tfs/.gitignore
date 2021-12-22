@@ -1,0 +1,29 @@
+*.ts~
+obj/
+*.taskkey
+bin/
+*/node_modules/
+typings.json
+*/typings/
+deploy-gae-build-task/#task.json#
+Dockerfile~
+*.json~
+*.md~
+*.json#
+*.ts#
+*.suo
+*.js
+*.js.map
+.vs/
+*.md#
+*.d.ts
+npm-debug.log
+*/icon.png
+.kube/
+*/ps_modules/
+*.user
+.nyc_output
+*/coverage
+/kubectl-build-task/test/resources/Cloud Tools for TFS Testing.json
+/.vscode
+/instance-group-ips-build-task/test/resources/Cloud Tools for TFS Testing.json

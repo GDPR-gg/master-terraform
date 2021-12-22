@@ -1,0 +1,126 @@
+# Copyright 2018 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+kind: gke-cluster
+metadata:
+  name: "gketf-1"
+spec:
+  private: true
+  region: "us-east4"
+  regional: true
+  #zones:
+  #- us-east4-a
+  #- us-east4-c
+  #databaseEncryption:
+  #  replace this with the existing kms key
+  #  keyName: "projects/myproject/locations/us-central1/keyRings/myring/cryptoKeys/mykey"
+  #  state: "ENCRYPTED"
+  #resourceUsageExportConfig:
+  #  enableNetworkEgressMetering: true
+  #  datasetId: "mybqdatasetid"
+  addons:
+    istio: false
+    logging: "logging.googleapis.com/kubernetes"
+    monitoring: "monitoring.googleapis.com/kubernetes"
+    networkPolicy: true
+    podSecurityPolicy: true
+    hpa: true
+    vpa: false
+    clusterAutoscaling: false
+    binaryAuth: true
+    httpLoadBalancing: true
+  labels:
+    samplelabel: samplevalue
+  network:
+    metadata:
+      name: gketf-network
+    spec:
+      subnetName: gketf-subnet
+      subnetRange: "10.0.0.0/24"
+      podSubnetRange: "10.1.0.0/16"
+      serviceSubnetRange: "10.2.0.0/20"
+      masterIPV4CIDRBlock: "172.16.0.16/28"
+  version: latest
+  masterAuthorizedNetworksConfig:
+    - cidrBlock: "10.0.0.0/24"
+      displayName: "All 10s"
+    - cidrBlock: "172.20.20.0/24"
+      displayName: "Sample internal 172"
+  #taints:
+  #  - key: "testall"
+  #    value: "valueall"
+  #    effect: "NO_SCHEDULE"
+  # workloadIdentityConfig:
+  # replace with correct values that match you project
+  #  identityNamespace: "bgeesaman-gke-demos.svc.id.goog"
+  defaultMaxPodsPerNode: 110
+  tpu: false
+  alpha: false
+  bastion:
+    spec:
+      zone: "us-east4-c"
+  nodePools:
+    - metadata:
+        name: gketf-node-pool
+      spec:
+        initialNodeCount: 1
+        machineType: n1-standard-1
+        diskSizeGB: 100
+        diskType: pd-ssd
+        localSSDCount: 0
+        #minCpuPlatform: "Intel Broadwell"
+        #gvisor: true
+        preemptible: true
+        minCount: 2
+        maxCount: 10
+        maxPodsPerNode: 64
+        oauthScopes:
+        - "https://www.googleapis.com/auth/devstorage.read_only"
+        - "https://www.googleapis.com/auth/logging.write"
+        - "https://www.googleapis.com/auth/monitoring"
+        - "https://www.googleapis.com/auth/servicecontrol"
+        - "https://www.googleapis.com/auth/service.management.readonly"
+        - "https://www.googleapis.com/auth/trace.append"
+        labels:
+          seven: "eight"
+        # replace the following line with the existing service account
+        # serviceAccount: "gketf-1-node-sa@my-project.iam.gserviceaccount.com"
+        workloadMetadataConfig:
+          nodeMetadata: "GKE_METADATA_SERVER"
+    - metadata:
+        name: my-third-nodepool
+      spec:
+        initialNodeCount: 1
+        machineType: n1-standard-1
+        diskSizeGB: 100
+        diskType: pd-ssd
+        oauthScopes:
+        - "https://www.googleapis.com/auth/logging.write"
+        - "https://www.googleapis.com/auth/monitoring"
+        - "https://www.googleapis.com/auth/trace.append"
+        tags:
+        - purple
+        - black
+        workloadMetadataConfig:
+          nodeMetadata: "SECURE"
+        #taints:
+        #  - key: "test1"
+        #    value: "value1"
+        #    effect: "NO_SCHEDULE"
+        #  - key: "test2"
+        #    value: "value2"
+        #    effect: "NO_EXECUTE"
+  tags:
+    - blue
+    - green

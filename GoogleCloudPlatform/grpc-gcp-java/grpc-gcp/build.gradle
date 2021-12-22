@@ -1,0 +1,164 @@
+plugins {
+    id 'java'
+    id 'maven'
+    id 'maven-publish'
+    id 'signing'
+    id 'com.google.protobuf' version '0.8.10'
+    id 'com.github.sherter.google-java-format' version '0.8'
+    id 'io.codearte.nexus-staging' version '0.8.0'
+}
+
+repositories {
+    maven { // The google mirror is less flaky than mavenCentral()
+        url "https://maven-central.storage-download.googleapis.com/maven2/" }
+    mavenCentral()
+    mavenLocal()
+}
+
+version = '1.1.1-SNAPSHOT'
+group = 'com.google.cloud'
+description = 'GRPC-GCP-Extension Java'
+sourceCompatibility = '1.8'
+
+def title = 'gRPC extension library for Google Cloud Platform'
+def grpcVersion = '1.36.0'
+def protobufVersion = '3.12.0'
+def protocVersion = '3.12.0'
+def spannerVersion = '6.1.0'
+def opencensusVersion = '0.28.0'
+
+dependencies {
+    implementation "com.google.protobuf:protobuf-java:${protobufVersion}"
+    implementation "com.google.protobuf:protobuf-java-util:${protobufVersion}"
+    implementation "io.grpc:grpc-netty-shaded:${grpcVersion}"
+    implementation "io.grpc:grpc-protobuf:${grpcVersion}"
+    implementation "io.grpc:grpc-stub:${grpcVersion}"
+    implementation "io.opencensus:opencensus-api:${opencensusVersion}"
+
+    compileOnly "org.apache.tomcat:annotations-api:6.0.53" // necessary for Java 9+
+
+    testImplementation "com.google.auth:google-auth-library-credentials:0.13.0"
+    testImplementation "com.google.cloud:google-cloud-spanner:${spannerVersion}"
+    testImplementation "com.google.cloud:google-cloud-bigtable:0.107.0"
+    testImplementation "com.google.api.grpc:proto-google-cloud-bigtable-v2:0.39.0"
+    testImplementation "com.google.api.grpc:grpc-google-cloud-bigtable-v2:0.39.0"
+    testImplementation "com.google.auth:google-auth-library-oauth2-http:0.9.0"
+    testImplementation "io.grpc:grpc-auth:${grpcVersion}"
+    testImplementation "io.grpc:grpc-stub:${grpcVersion}"
+    testImplementation "com.google.truth:truth:0.42"
+    testImplementation "junit:junit:4.12"
+}
+
+protobuf {
+    protoc { artifact = "com.google.protobuf:protoc:${protocVersion}" }
+    plugins {
+        grpc { artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}" }
+    }
+    generateProtoTasks {
+        all()*.plugins { grpc {} }
+    }
+}
+
+test {
+    testLogging {
+        outputs.upToDateWhen {false}
+        showStandardStreams = true
+    }
+    exclude 'com/google/cloud/grpc/SpannerIntegrationTest.class'
+    exclude 'com/google/cloud/grpc/BigtableIntegrationTest.class'
+}
+
+task allTests( type: Test ) {
+    // Execute all the tests, including integration tests.
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs 'build/generated/source/proto/main/grpc'
+            srcDirs 'build/generated/source/proto/main/java'
+        }
+    }
+}
+
+task javadocJar(type: Jar) {
+    archiveClassifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+task sourcesJar(type: Jar) {
+    archiveClassifier = 'sources'
+    from sourceSets.main.allJava
+}
+
+if (project.hasProperty('ossrhUsername') && project.hasProperty('ossrhPassword')) {
+    // Nexus staging plugin only works at root project level
+    // See https://github.com/Codearte/gradle-nexus-staging-plugin/issues/47
+    nexusStaging {
+        username = ossrhUsername
+        password = ossrhPassword
+        packageGroup = group
+    }
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+            artifact javadocJar
+            artifact sourcesJar
+            groupId = group
+            artifactId = 'grpc-gcp'
+            version = version
+            pom {
+                name = title
+                url = 'https://github.com/GoogleCloudPlatform/grpc-gcp-java/tree/master/grpc-gcp'
+                afterEvaluate {
+                    // description is not available until evaluated.
+                    description = project.description
+                }
+
+                scm {
+                    connection = 'scm:git:https://github.com/GoogleCloudPlatform/grpc-gcp-java.git'
+                    url = 'https://github.com/GoogleCloudPlatform/grpc-gcp-java'
+                }
+
+                licenses {
+                    license {
+                        name = 'Apache 2.0'
+                        url = 'https://opensource.org/licenses/Apache-2.0'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = "grpc.io"
+                        name = "gRPC Contributors"
+                        email = "grpc-io@googlegroups.com"
+                        url = "https://grpc.io/"
+                        organization = "gRPC Authors"
+                        organizationUrl = "https://www.google.com"
+                    }
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            url 'https://google.oss.sonatype.org/service/local/staging/deploy/maven2/'
+            credentials {
+                username = project.hasProperty('ossrhUsername') ? project.getProperty('ossrhUsername') : null
+                password = project.hasProperty('ossrhPassword') ? project.getProperty('ossrhPassword') : null
+            }
+        }
+    }
+}
+
+signing {
+    if (!project.hasProperty('skip.signing')) {
+        if (project.hasProperty('signing.gnupg.executable')) {
+            useGpgCmd()
+        }
+        sign publishing.publications.maven
+    }
+}

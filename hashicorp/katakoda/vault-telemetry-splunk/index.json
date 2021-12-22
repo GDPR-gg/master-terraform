@@ -1,0 +1,70 @@
+{
+  "pathwayTitle": "Learn HashiCorp Vault",
+  "title": "Vault Telemetry with Splunk",
+  "description": "Discover Vault telemetry metrics and audit device logs in Splunk",
+  "private": false,
+  "difficulty": "intermediate",
+  "time": "30 minutes",
+  "icon": "fa-vault",
+  "details": {
+    "steps": [
+      {
+        "title": "Start containers",
+        "text": "01-start-containers.md",
+        "code": "01-start-containers.md.terminal.sh",
+        "verify": "01-start-containers.md.verify.sh"
+      },
+      {
+        "title": "Prepare Vault",
+        "text": "02-prepare-vault.md",
+        "code": "02-prepare-vault.terminal.sh",
+        "verify": "02-prepare-vault.md.verify.sh"
+      },
+      {
+        "title": "Access Splunk Web",
+        "text": "03-access-splunk-web.md"
+      },
+      {
+        "title": "Perform actions to generate metrics",
+        "text": "04-perform-actions-to-generate-metrics.md",
+        "verify": "04-perform-actions-to-generate-metrics.md.verify.sh"
+      },
+      {
+        "title": "Analyze generated metrics",
+        "text": "05-analyze-generated-metrics.md",
+        "verify": "05-analyze-generated-metrics.md.verify.sh"
+      }
+    ],
+    "intro": {
+      "courseData": "courseBase.sh",
+      "text": "intro.md"
+    },
+    "finish": {
+      "text": "finish.md"
+    }
+  },
+  "environment": {
+    "uilayout": "terminal",
+    "uimessage1": "\u001b[32mVault Telemetry Lab→ \u001b[m\r\n",
+    "hideintro": false,
+    "hidefinish": false,
+    "hideHiddenFiles": true,
+    "exclusionPatterns": ["/root/vtl/.terraform/*"],
+    "showdashboard": false,
+    "dashboards": [
+      {
+        "name": "Splunk Web",
+        "href": "https://[[HOST_SUBDOMAIN]]-8000-[[KATACODA_HOST]].environments.katacoda.com"
+      }
+    ]
+  },
+  "backend": {
+    "imageid": "hashicorp-hashistack",
+    "lifetime": 30
+  },
+  "finish": {
+    "text": "finish.md",
+    "credits": "https://learn.hashicorp.com/vault"
+  },
+  "private": true
+}

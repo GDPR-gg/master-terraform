@@ -1,0 +1,22 @@
+---
+name: all 
+title: Test all of learn profiles
+maintainer: Zack Smith
+copyright: Hashicorp Inc.
+copyright_email: zsmith@hashicorp.com
+license: Apache-2.0
+summary: This runs all profiles 
+version: 1.0.0
+depends:
+  - name: vault
+    path: ../vault
+  - name: terraform 
+    path: ../terraform
+  - name: nomad 
+    path: ../nomad
+  - name: consul 
+    path: ../consul
+inputs:
+  - name: files_to_check
+    type: array
+    value: []

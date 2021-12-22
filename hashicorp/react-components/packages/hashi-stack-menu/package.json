@@ -1,0 +1,17 @@
+{
+  "name": "@hashicorp/react-hashi-stack-menu",
+  "description": "A menu for displaying the entire HashiCorp stack",
+  "version": "2.0.7",
+  "author": "HashiCorp",
+  "contributors": ["Jimmy Merritello"],
+  "dependencies": {
+    "@hashicorp/react-inline-svg": "^6.0.1",
+    "slugify": "1.6.0"
+  },
+  "peerDependencies": {
+    "@hashicorp/mktg-global-styles": ">=3.x",
+    "@hashicorp/mktg-logos": ">=1.x",
+    "react": ">=16.x"
+  },
+  "license": "MPL-2.0"
+}

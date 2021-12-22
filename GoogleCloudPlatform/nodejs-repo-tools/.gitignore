@@ -1,0 +1,11 @@
+node_modules
+*.log
+settings.json
+@google-cloud
+cjs
+.nyc_output
+package-lock.json
+yarn.lock
+binaries/
+test/samples/nodejs/bump/package.json
+test/samples/nodejs/bump/samples/package.json

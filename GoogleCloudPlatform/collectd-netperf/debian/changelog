@@ -1,0 +1,11 @@
+collectd-td (5.4.2-netperf-1) UNRELEASED; urgency=medium
+
+  * Bump version number to allow reinstallation
+
+ -- Ariel Shaqed (Scolnicov) <arielshaqed@google.com>  Wed, 02 Sep 2015 13:24:38 +0300
+
+collectd-td (5.4.2-netperf) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Ariel Shaqed (Scolnicov) <arielshaqed@google.com>  Wed, 22 Jul 2015 14:57:48 +0300

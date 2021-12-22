@@ -1,0 +1,42 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "go_default_library",
+    srcs = [
+        "converter.go",
+        "decoder.go",
+        "encoder.go",
+        "exporter.go",
+        "name.go",
+        "unstructured.go",
+    ],
+    importpath = "github.com/GoogleCloudPlatform/k8s-cluster-bundle/pkg/converter",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//pkg/apis/bundle/v1alpha1:go_default_library",
+        "@com_github_ghodss_yaml//:go_default_library",
+        "@io_k8s_apimachinery//pkg/apis/meta/v1:go_default_library",
+        "@io_k8s_apimachinery//pkg/apis/meta/v1/unstructured:go_default_library",
+    ],
+)
+
+go_test(
+    name = "go_default_test",
+    srcs = [
+        "bazel_init_test.go",
+        "converter_integration_test.go",
+        "converter_test.go",
+        "decoder_test.go",
+        "example_test.go",
+        "exporter_test.go",
+        "name_test.go",
+    ],
+    data = [
+        "//examples:testdata",
+    ],
+    embed = [":go_default_library"],
+    deps = [
+        "//pkg/testutil:go_default_library",
+        "@io_k8s_apimachinery//pkg/apis/meta/v1/unstructured:go_default_library",
+    ],
+)

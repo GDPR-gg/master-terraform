@@ -1,0 +1,12 @@
+stages:
+  - test
+
+test:
+  stage: test
+  image: golang:1.14
+  except:
+    - tags
+  script:
+    - make testacc
+  tags:
+    - hc-bladerunner

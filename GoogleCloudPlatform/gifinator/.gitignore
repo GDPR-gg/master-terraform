@@ -1,0 +1,9 @@
+frontend/frontend
+gifcreator/gifcreator
+movie/movie
+render/render
+vendor/
+.DS_Store
+Vagrantfile
+.vagrant
+.nfs*

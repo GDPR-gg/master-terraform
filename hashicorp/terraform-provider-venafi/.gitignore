@@ -1,0 +1,10 @@
+pkg
+dev-tests
+.terraform
+terraform.tfstate*
+condor.tf
+.idea
+terraform-provider-venafi
+credentials
+chain.pem
+!*/**

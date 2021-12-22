@@ -1,0 +1,192 @@
+# Copyright 2021 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sPSPHostNamespace
+metadata:
+  name: psp-host-namespace
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+---
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sPSPHostNetworkingPorts
+metadata:
+  name: psp-host-network-ports
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+  parameters:
+    hostNetwork: false
+---
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sPSPPrivilegedContainer
+metadata:
+  name: psp-privileged-container
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+---
+apiVersion: mutations.gatekeeper.sh/v1alpha1
+kind: Assign
+metadata:
+  name: restricted-capabilities
+spec:
+  applyTo:
+  - groups: [""]
+    kinds: ["Pod"]
+    versions: ["v1"]
+  match:
+    scope: Namespaced
+    kinds:
+    - apiGroups: ["*"]
+      kinds: ["Pod"]
+    namespaceSelector:
+      matchExpressions:
+        - operator: NotIn
+          key: security 
+          values: ["anyuid"]
+  location: "spec.containers[name:*].securityContext.capabilities.drop"
+  parameters:
+    assign:
+      value: ["KILL","MKNOD","SYS_CHROOT"]
+---
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sPSPCapabilities
+metadata:
+  name: restricted-capabilities
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+    namespaceSelector:
+      matchExpressions:
+        - operator: NotIn
+          key: security 
+          values: ["anyuid"] 
+  parameters:
+    requiredDropCapabilities: ["KILL","MKNOD","SYS_CHROOT"]
+---
+apiVersion: mutations.gatekeeper.sh/v1alpha1
+kind: Assign
+metadata:
+  name: anyuid-capabilities
+spec:
+  applyTo:
+  - groups: [""]
+    kinds: ["Pod"]
+    versions: ["v1"]
+  match:
+    scope: Namespaced
+    kinds:
+    - apiGroups: ["*"]
+      kinds: ["Pod"]
+    namespaceSelector:
+      matchExpressions:
+        - operator: In
+          key: security 
+          values: ["anyuid"]
+  location: "spec.containers[name:*].securityContext.capabilities.drop"
+  parameters:
+    assign:
+      value: ["MKNOD"]
+---
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sPSPCapabilities
+metadata:
+  name: anyuid-capabilities
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+    namespaceSelector:
+      matchExpressions:
+        - operator: In
+          key: security 
+          values: ["anyuid"]
+  parameters:
+    requiredDropCapabilities: ["MKNOD"]
+---
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sPSPAllowedUsers
+metadata:
+  name: restricted-users-and-groups
+spec:
+  match:  
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+    namespaceSelector:
+      matchExpressions:
+        - operator: NotIn
+          key: security 
+          values: ["anyuid","nonroot"] 
+  parameters:
+    runAsUser:
+      rule: MustRunAs # MustRunAsNonRoot # RunAsAny 
+      ranges:
+        - min: 1000
+          max: 2000
+    fsGroup:
+      rule: MustRunAs # MayRunAs # RunAsAny 
+      ranges:
+        - min: 1000
+          max: 2000
+---
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sPSPAllowedUsers
+metadata:
+  name: nonroot-users-and-groups
+spec:
+  match:  
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+    namespaceSelector:
+      matchExpressions:
+        - operator: In
+          key: security 
+          values: ["nonroot"] 
+  parameters:
+    runAsUser:
+      rule: MustRunAsNonRoot
+    fsGroup:
+      rule: MustRunAsNonRoot 
+---
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sPSPVolumeTypes
+metadata:
+  name: psp-volume-types
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+  parameters:
+    volumes:
+      - configMap
+      - downwardAPI
+      - emptyDir
+      - nfs
+      - persistentVolumeClaim
+      - projected
+      - secret

@@ -1,0 +1,50 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.google.cloud.trace</groupId>
+    <artifactId>samples</artifactId>
+    <version>0.8.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>basic-logging</artifactId>
+  <packaging>jar</packaging>
+
+  <name>Google Cloud Trace Java SDK Basic Logging Sample</name>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <exec.mainClass>com.google.cloud.trace.samples.logging.basic.BasicLogging</exec.mainClass>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>service</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>logging-service</artifactId>
+      <version>${project.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.5.0</version>
+        <configuration>
+          <mainClass>com.google.cloud.trace.samples.logging.basic.BasicLogging</mainClass>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

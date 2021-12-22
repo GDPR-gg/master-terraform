@@ -1,0 +1,18 @@
+syntax = "proto3";
+package hashicorp.hyparview.example.stat;
+option go_package = "proto";
+
+service Stat {
+  rpc View (StatEmpty) returns (ViewResponse) {}
+}
+
+message StatEmpty {}
+
+message ViewResponse {
+  repeated string active = 1;
+  repeated string passive = 2;
+  string from = 3;
+  int32 app = 4;
+  int32 hops = 5;
+  int32 waste = 6;
+}

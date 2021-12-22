@@ -1,0 +1,19 @@
+bin/
+tmp/
+
+# Repo-specific
+.waypoint/
+/waypoint
+/waypoint-entrypoint
+/pkg
+/doc
+
+# System-specific
+.DS_Store
+
+# Default Waypoint database file
+data.db
+
+# .vscode - We intentionally commit .vscode in order to share project-specific settings
+
+.idea

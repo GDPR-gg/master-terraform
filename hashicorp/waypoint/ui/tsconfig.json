@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "target": "es2017",
+    "allowJs": true,
+    "moduleResolution": "node",
+    "preserveSymlinks": true,
+    "allowSyntheticDefaultImports": true,
+    "noImplicitAny": false,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "strictNullChecks": true,
+    "strictPropertyInitialization": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noEmitOnError": false,
+    "noEmit": true,
+    "inlineSourceMap": true,
+    "inlineSources": true,
+    "baseUrl": ".",
+    "module": "es6",
+    "experimentalDecorators": true,
+    "paths": {
+      "ember-cli-flash/*": ["node_modules/ember-cli-flash/index.d.ts"],
+      "waypoint/tests/*": ["tests/*"],
+      "waypoint/*": ["app/*"],
+      // Ensure that types from libraries are included
+      "lib/waypoint-client": ["lib/waypoint-client/*"],
+      "*": ["types/*"]
+    }
+  },
+  "include": ["app/**/*", "tests/**/*", "types/**/*"]
+}

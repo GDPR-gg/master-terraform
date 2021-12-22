@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<!--
+Copyright 2013 Google Inc. All Rights Reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+  <head>
+    <title>Game Server on Compute Engine Demo</title>
+    <link href='http://fonts.googleapis.com/css?family=Orbitron:500,700'
+          rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="/common.css" type="text/css" />
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js">
+    </script>
+    <script src="message.js"></script>
+    <script src="grits.js"></script>
+  </head>
+
+  <body>
+    <!-- Grits logo and robot -->
+    <div class="grits-logo-container">
+      <img src="/img/grits_logo.png" alt="Grits Logo"
+           class="grits-logo-image" />
+      <div class="on-gce">on Compute Engine</div>
+    </div>
+    <img class="grits-robot" src="/img/grits_robot_large.png"
+         alt="Grits Robot" />
+    <div class="clear-both"></div>
+
+    <div class="main-contents">
+      <div class="game-start-button" onclick="playGrits()"></div>
+
+      <!-- Container of the server list -->
+      <div id="server-list"></div>
+
+      <div class="load-status">
+        <a href="/stats">Game Cluster Status (for admin)</a>
+      </div>
+    </div>
+
+    <!-- Message -->
+    <div class="message"></div>
+  </body>
+</html>

@@ -1,0 +1,44 @@
+{
+  "pathwayTitle": "Learn HashiCorp Vault",
+  "title": "[Enterprise] Data Tokenization",
+  "description": "Learn how Transform Secrets Engine works to protect your application data.",
+  "difficulty": "beginner",
+  "time": "10 minutes",
+  "icon": "fa-vault",
+  "details": {
+    "steps": [
+      {
+        "title": "Setup the Transform secrets engine",
+        "text": "step1.md",
+        "code": "terminal.sh",
+        "courseData": "courseBase.sh"
+      },
+      {
+        "title": "Transform secrets",
+        "text": "step2.md"
+      },
+      {
+        "title": "Setup external token storage",
+        "text": "step3.md"
+      }
+    ],
+    "intro": {
+      "text": "intro.md",
+      "credits": "https://learn.hashicorp.com/vault"
+    },
+    "finish": {
+      "text": "finish.md",
+      "credits": "https://learn.hashicorp.com/vault"
+    }
+  },
+  "environment": {
+      "showdashboard": true,
+      "uilayout": "terminal",
+      "hideHiddenFiles": true,
+      "uimessage1": "\u001b[32mYour Interactive Bash Terminal. A safe place to learn and execute commands.\u001b[m\r\n"
+  },
+  "backend": {
+    "imageid": "hashicorp-hashistack-ent"
+  },
+  "private": true
+}

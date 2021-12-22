@@ -1,0 +1,6 @@
+*.pyc
+.cache
+.coverage
+.nox
+/*_local.sh
+__pycache__

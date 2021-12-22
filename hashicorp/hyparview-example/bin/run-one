@@ -1,0 +1,23 @@
+#!/bin/bash
+set -e
+
+required="DOMAIN BOOTSTRAP LISTEN"
+
+for e in $required; do
+    [ -z "${!e}" ] && {
+	echo "usage: $required $0" 1>&2
+	exit 2
+    }
+done
+
+set -ax
+
+ADDR="$LISTEN:1$1"
+CA_CERT="cert/$DOMAIN-agent-ca.pem"
+SERVER_CERT="cert/$DOMAIN-server-$1.pem"
+SERVER_KEY="cert/$DOMAIN-server-$1-key.pem"
+CLIENT_CERT="cert/$DOMAIN-client-$1.pem"
+CLIENT_KEY="cert/$DOMAIN-client-$1-key.pem"
+
+make "$SERVER_CERT" "$CLIENT_CERT"
+exec bin/hyparview-example

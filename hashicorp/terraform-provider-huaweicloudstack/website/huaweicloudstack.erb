@@ -1,0 +1,178 @@
+<% wrap_layout :inner do %>
+  <% content_for :sidebar do %>
+    <div class="docs-sidebar hidden-print affix-top" role="complementary">
+      <ul class="nav docs-sidenav">
+        <li<%= sidebar_current("docs-home") %>>
+          <a href="/docs/providers/index.html">All Providers</a>
+        </li>
+
+        <li<%= sidebar_current("docs-huaweicloudstack-index") %>>
+          <a href="/docs/providers/huaweicloudstack/index.html">HuaweiCloudStack Provider</a>
+        </li>
+
+        <li<%= sidebar_current("docs-huaweicloudstack-datasource") %>>
+          <a href="#">Data Sources</a>
+          <ul class="nav nav-visible">
+            <li<%= sidebar_current("docs-huaweicloudstack-datasource-images-image-v2") %>>
+              <a href="/docs/providers/huaweicloudstack/d/images_image_v2.html">huaweicloudstack_images_image_v2</a>
+            </li>
+            <li<%= sidebar_current("docs-huaweicloudstack-datasource-kms-data-key-v1") %>>
+              <a href="/docs/providers/huaweicloudstack/d/kms_data_key_v1.html">huaweicloudstack_kms_data_key_v1</a>
+            </li>
+            <li<%= sidebar_current("docs-huaweicloudstack-datasource-kms-key-v1") %>>
+              <a href="/docs/providers/huaweicloudstack/d/kms_key_v1.html">huaweicloudstack_kms_key_v1</a>
+            </li>
+            <li<%= sidebar_current("docs-huaweicloudstack-datasource-networking-network-v2") %>>
+              <a href="/docs/providers/huaweicloudstack/d/networking_network_v2.html">huaweicloudstack_networking_network_v2</a>
+            </li>
+            <li<%= sidebar_current("docs-huaweicloudstack-datasource-networking-port-v2") %>>
+              <a href="/docs/providers/huaweicloudstack/d/networking_port_v2.html">huaweicloudstack_networking_port_v2</a>
+            </li>
+            <li<%= sidebar_current("docs-huaweicloudstack-datasource-networking-secgroup-v2") %>>
+              <a href="/docs/providers/huaweicloudstack/d/networking_secgroup_v2.html">huaweicloudstack_networking_secgroup_v2</a>
+            </li>
+            <li<%= sidebar_current("docs-huaweicloudstack-datasource-networking-subnet-v2") %>>
+              <a href="/docs/providers/huaweicloudstack/d/networking_subnet_v2.html">huaweicloudstack_networking_subnet_v2</a>
+            </li>
+          </ul>
+        </li>
+
+        <li<%= sidebar_current("docs-huaweicloudstack-resource-as") %>>
+          <a href="#">Auto Scaling Resources</a>
+          <ul class="nav nav-visible">
+            <li<%= sidebar_current("docs-huaweicloudstack-resource-as-configuration-v1") %>>
+              <a href="/docs/providers/huaweicloudstack/r/as_configuration_v1.html">huaweicloudstack_as_configuration_v1</a>
+            </li>
+
+            <li<%= sidebar_current("docs-huaweicloudstack-resource-as-group-v1") %>>
+              <a href="/docs/providers/huaweicloudstack/r/as_group_v1.html">huaweicloudstack_as_group_v1</a>
+            </li>
+            <li<%= sidebar_current("docs-huaweicloudstack-resource-as-policy-v1") %>>
+              <a href="/docs/providers/huaweicloudstack/r/as_policy_v1.html">huaweicloudstack_as_policy_v1</a>
+            </li>
+          </ul>
+        </li>
+
+        <li<%= sidebar_current("docs-huaweicloudstack-resource-blockstorage") %>>
+          <a href="#">Block Storage Resources</a>
+          <ul class="nav nav-visible">
+            <li<%= sidebar_current("docs-huaweicloudstack-resource-blockstorage-volume-v2") %>>
+              <a href="/docs/providers/huaweicloudstack/r/blockstorage_volume_v2.html">huaweicloudstack_blockstorage_volume_v2</a>
+            </li>
+          </ul>
+        </li>
+
+        <li<%= sidebar_current("docs-huaweicloudstack-resource-compute") %>>
+          <a href="#">Compute Resources</a>
+          <ul class="nav nav-visible">
+            <li<%= sidebar_current("docs-huaweicloudstack-resource-compute-floatingip-associate-v2") %>>
+              <a href="/docs/providers/huaweicloudstack/r/compute_floatingip_associate_v2.html">huaweicloudstack_compute_floatingip_associate_v2</a>
+            </li>
+            <li<%= sidebar_current("docs-huaweicloudstack-resource-compute-instance-v2") %>>
+              <a href="/docs/providers/huaweicloudstack/r/compute_instance_v2.html">huaweicloudstack_compute_instance_v2</a>
+            </li>
+            <li<%= sidebar_current("docs-huaweicloudstack-resource-compute-interface-attach-v2") %>>
+              <a href="/docs/providers/huaweicloudstack/r/compute_interface_attach_v2.html">huaweicloudstack_compute_interface_attach_v2</a>
+            </li>
+            <li<%= sidebar_current("docs-huaweicloudstack-resource-compute-keypair-v2") %>>
+              <a href="/docs/providers/huaweicloudstack/r/compute_keypair_v2.html">huaweicloudstack_compute_keypair_v2</a>
+            </li>
+            <li<%= sidebar_current("docs-huaweicloudstack-resource-compute-servergroup-v2") %>>
+              <a href="/docs/providers/huaweicloudstack/r/compute_servergroup_v2.html">huaweicloudstack_compute_servergroup_v2</a>
+            </li>
+            <li<%= sidebar_current("docs-huaweicloudstack-resource-compute-volume-attach-v2") %>>
+              <a href="/docs/providers/huaweicloudstack/r/compute_volume_attach_v2.html">huaweicloudstack_compute_volume_attach_v2</a>
+            </li>
+          </ul>
+        </li>
+
+        <li<%= sidebar_current("docs-huaweicloudstack-resource-lb") %>>
+          <a href="#">Elastic Load Balancer Resources</a>
+          <ul class="nav nav-visible">
+            <li<%= sidebar_current("docs-huaweicloudstack-resource-lb-certificate-v2") %>>
+              <a href="/docs/providers/huaweicloudstack/r/lb_certificate_v2.html">huaweicloudstack_lb_certificate_v2</a>
+            </li>
+            <li<%= sidebar_current("docs-huaweicloudstack-resource-lb-loadbalancer-v2") %>>
+              <a href="/docs/providers/huaweicloudstack/r/lb_loadbalancer_v2.html">huaweicloudstack_lb_loadbalancer_v2</a>
+            </li>
+            <li<%= sidebar_current("docs-huaweicloudstack-resource-lb-listener-v2") %>>
+              <a href="/docs/providers/huaweicloudstack/r/lb_listener_v2.html">huaweicloudstack_lb_listener_v2</a>
+            </li>
+            <li<%= sidebar_current("docs-huaweicloudstack-resource-lb-pool-v2") %>>
+              <a href="/docs/providers/huaweicloudstack/r/lb_pool_v2.html">huaweicloudstack_lb_pool_v2</a>
+            </li>
+            <li<%= sidebar_current("docs-huaweicloudstack-resource-lb-member-v2") %>>
+              <a href="/docs/providers/huaweicloudstack/r/lb_member_v2.html">huaweicloudstack_lb_member_v2</a>
+            </li>
+            <li<%= sidebar_current("docs-huaweicloudstack-resource-lb-monitor-v2") %>>
+              <a href="/docs/providers/huaweicloudstack/r/lb_monitor_v2.html">huaweicloudstack_lb_monitor_v2</a>
+            </li>
+            <li<%= sidebar_current("docs-huaweicloudstack-resource-lb-l7policy-v2") %>>
+              <a href="/docs/providers/huaweicloudstack/r/lb_l7policy_v2.html">huaweicloudstack_lb_l7policy_v2</a>
+            </li>
+            <li<%= sidebar_current("docs-huaweicloudstack-resource-lb-l7rule-v2") %>>
+              <a href="/docs/providers/huaweicloudstack/r/lb_l7rule_v2.html">huaweicloudstack_lb_l7rule_v2</a>
+            </li>
+            <li<%= sidebar_current("docs-huaweicloudstack-resource-lb-whitelist-v2") %>>
+              <a href="/docs/providers/huaweicloudstack/r/lb_whitelist_v2.html">huaweicloudstack_lb_whitelist_v2</a>
+            </li>
+          </ul>
+        </li>
+
+        <li<%= sidebar_current("docs-huaweicloudstack-resource-kms") %>>
+          <a href="#">KMS Resources</a>
+          <ul class="nav nav-visible">
+            <li<%= sidebar_current("docs-huaweicloudstack-resource-kms-key-v1") %>>
+              <a href="/docs/providers/huaweicloudstack/r/kms_key_v1.html">huaweicloudstack_kms_key_v1</a>
+            </li>
+          </ul>
+        </li>
+
+        <li<%= sidebar_current("docs-huaweicloudstack-resource-networking") %>>
+          <a href="#">Networking Resources</a>
+          <ul class="nav nav-visible">
+            <li<%= sidebar_current("docs-huaweicloudstack-resource-networking-floatingip-v2") %>>
+              <a href="/docs/providers/huaweicloudstack/r/networking_floatingip_v2.html">huaweicloudstack_networking_floatingip_v2</a>
+            </li>
+            <li<%= sidebar_current("docs-huaweicloudstack-resource-networking-floatingip-associate-v2") %>>
+              <a href="/docs/providers/huaweicloudstack/r/networking_floatingip_associate_v2.html">huaweicloudstack_networking_floatingip_associate_v2</a>
+            </li>
+            <li<%= sidebar_current("docs-huaweicloudstack-resource-networking-network-v2") %>>
+              <a href="/docs/providers/huaweicloudstack/r/networking_network_v2.html">huaweicloudstack_networking_network_v2</a>
+            </li>
+            <li<%= sidebar_current("docs-huaweicloudstack-resource-networking-port-v2") %>>
+              <a href="/docs/providers/huaweicloudstack/r/networking_port_v2.html">huaweicloudstack_networking_port_v2</a>
+            </li>
+            <li<%= sidebar_current("docs-huaweicloudstack-resource-networking-router-interface-v2") %>>
+              <a href="/docs/providers/huaweicloudstack/r/networking_router_interface_v2.html">huaweicloudstack_networking_router_interface_v2</a>
+            </li>
+            <li<%= sidebar_current("docs-huaweicloudstack-resource-networking-router-route-v2") %>>
+              <a href="/docs/providers/huaweicloudstack/r/networking_router_route_v2.html">huaweicloudstack_networking_router_route_v2</a>
+            </li>
+            <li<%= sidebar_current("docs-huaweicloudstack-resource-networking-router-v2") %>>
+              <a href="/docs/providers/huaweicloudstack/r/networking_router_v2.html">huaweicloudstack_networking_router_v2</a>
+            </li>
+            <li<%= sidebar_current("docs-huaweicloudstack-resource-networking-subnet-v2") %>>
+              <a href="/docs/providers/huaweicloudstack/r/networking_subnet_v2.html">huaweicloudstack_networking_subnet_v2</a>
+            </li>
+            <li<%= sidebar_current("docs-huaweicloudstack-resource-networking-secgroup-v2") %>>
+              <a href="/docs/providers/huaweicloudstack/r/networking_secgroup_v2.html">huaweicloudstack_networking_secgroup_v2</a>
+            </li>
+            <li<%= sidebar_current("docs-huaweicloudstack-resource-networking-secgroup-rule-v2") %>>
+              <a href="/docs/providers/huaweicloudstack/r/networking_secgroup_rule_v2.html">huaweicloudstack_networking_secgroup_rule_v2</a>
+            </li>
+            <li<%= sidebar_current("docs-huaweicloudstack-resource-networking-vip-v2") %>>
+              <a href="/docs/providers/huaweicloudstack/r/networking_vip_v2.html">huaweicloudstack_networking_vip_v2</a>
+            </li>
+            <li<%= sidebar_current("docs-huaweicloudstack-resource-networking-vip-associate-v2") %>>
+              <a href="/docs/providers/huaweicloudstack/r/networking_vip_associate_v2.html">huaweicloudstack_networking_vip_associate_v2</a>
+            </li>
+          </ul>
+        </li>
+
+      </ul>
+    </div>
+  <% end %>
+
+  <%= yield %>
+  <% end %>

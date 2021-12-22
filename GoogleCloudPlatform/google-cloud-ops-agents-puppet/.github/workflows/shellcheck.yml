@@ -1,0 +1,17 @@
+---
+name: shellcheck
+on:
+  pull_request:
+  push:
+      branches:
+      - master
+jobs:
+  shellcheck:
+    name: Shellcheck
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Shellcheck .github/scripts/
+      uses: ludeeus/action-shellcheck@master
+      with:
+        scandir: '.github/scripts/'

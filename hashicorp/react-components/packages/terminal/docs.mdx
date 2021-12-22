@@ -1,0 +1,36 @@
+---
+componentName: 'CommandLineTerminal'
+---
+
+The `<CommandLineTerminal>` is a representation of a terminal in a static state.
+
+<LiveComponent>{`<CommandLineTerminal
+  product="waypoint"
+  lines={[
+    {
+      code: '» Building . . . . . . . . . . . . .',
+    },
+    {
+      color: 'gray',
+      code: '  Creating new buildpack-based image using builder:',
+    },
+    {
+      color: 'gray',
+      code: '  heroku/buildpacks:18',
+    },
+    {
+      color: 'navy',
+      code: '  ✓ Creating pack client',
+    },
+    {
+      color: 'white',
+      code: '⠴ Building image',
+    },
+  ]}
+/>`}</LiveComponent>
+
+<UsageDetails packageJson={packageJson} />
+
+### Props
+
+<PropsTable props={componentProps} />

@@ -1,0 +1,194 @@
+# Python CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-python/ for more details
+#
+_setup_environment:
+  install_gcloud: &install_gcloud
+    # Following tutorial on https://cloud.google.com/sdk/docs/quickstart-debian-ubuntu
+    name: Install Gcloud
+    command: |
+      curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-236.0.0-linux-x86_64.tar.gz
+      tar zxf google-cloud-sdk-236.0.0-linux-x86_64.tar.gz google-cloud-sdk
+      ./google-cloud-sdk/install.sh --rc-path /home/circleci/.bashrc -q
+      source /home/circleci/.bashrc
+  install_nox: &install_nox
+    name: Install Nox
+    command: |
+      sudo apt-get -qqy install python3-pip
+      sudo python3 -m pip install --upgrade nox
+  install_cloud_sql_proxy: &install_cloud_sql_proxy
+    name: Install Cloud SQL Proxy
+    command: |
+      sudo curl -L -o /usr/local/bin/cloud_sql_proxy https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64
+      sudo chmod +x /usr/local/bin/cloud_sql_proxy
+  dump_credentials: &dump_credentials
+    name: Dump Google Cloud Credentials to file
+    # Content of service account key is saved in the environment variable $GCP_CREDENTIAL
+    command: |
+      echo ${GCP_CREDENTIAL} > "${GOOGLE_APPLICATION_CREDENTIALS}"
+      gcloud auth activate-service-account --key-file ${GOOGLE_APPLICATION_CREDENTIALS}
+      gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
+
+version: 2
+jobs:
+  Unit Test:
+    machine:
+      image: ubuntu-1604:201903-01
+
+    steps:
+      - checkout
+      - run: *install_nox
+      - run:
+          command: |
+            pyenv global 2.7.12 3.6.5
+            nox -f django_cloud_deploy/nox.py -s unit_test
+  Lint:
+    machine:
+      image: ubuntu-1604:201903-01
+
+    steps:
+      - checkout
+      - run: *install_nox
+      - run:
+          command: |
+            pyenv global 2.7.12 3.6.5
+            nox -f django_cloud_deploy/nox.py -s lint
+  Integration Test:
+    machine:
+      image: ubuntu-1604:201903-01
+
+    steps:
+      - checkout
+      - run: *install_gcloud
+      - run: *install_nox
+      - run: *install_cloud_sql_proxy
+      - run: *dump_credentials
+      - run:
+          name: Run Test
+          command: |
+            pyenv global 2.7.12 3.6.5
+            nox -f django_cloud_deploy/nox.py -s integration_test
+          # Timeout of integration test is set to 30 minutes
+          no_output_timeout: 30m
+  GKE E2E Test:
+    machine:
+      image: ubuntu-1604:201903-01
+
+    steps:
+      - checkout
+      - run: *install_gcloud
+      - run: *install_nox
+      - run: *install_cloud_sql_proxy
+      - run: *dump_credentials
+      - run:
+          name: Run Test
+          command: |
+            pyenv global 2.7.12 3.6.5
+            nox -f django_cloud_deploy/nox.py -s e2e_test_gke
+          # Timeout of e2e test is set to 30 minutes
+          no_output_timeout: 30m
+  GAE E2E Test:
+    machine:
+      image: ubuntu-1604:201903-01
+
+    steps:
+      - checkout
+      - run: *install_nox
+      - run: *install_cloud_sql_proxy
+      - run: *install_gcloud
+      - run: *dump_credentials
+      - run:
+          name: Run Test
+          command: |
+            source /home/circleci/.bashrc
+            pyenv global 2.7.12 3.6.5
+            nox -f django_cloud_deploy/nox.py -s e2e_test_gae
+          # Timeout of e2e test is set to 30 minutes
+          no_output_timeout: 30m
+
+  GAE Cloudify E2E Test:
+    machine:
+      image: ubuntu-1604:201903-01
+
+    steps:
+      - checkout
+      - run: *install_nox
+      - run: *install_cloud_sql_proxy
+      - run: *install_gcloud
+      - run: *dump_credentials
+      - run:
+          name: Run Test
+          command: |
+            source /home/circleci/.bashrc
+            pyenv global 2.7.12 3.6.5
+            nox -f django_cloud_deploy/nox.py -s e2e_test_gae_cloudify
+          # Timeout of e2e test is set to 30 minutes
+          no_output_timeout: 30m
+
+  GKE Cloudify E2E Test:
+    machine:
+      image: ubuntu-1604:201903-01
+
+    steps:
+      - checkout
+      - run: *install_nox
+      - run: *install_cloud_sql_proxy
+      - run: *install_gcloud
+      - run: *dump_credentials
+      - run:
+          name: Run Test
+          command: |
+            source /home/circleci/.bashrc
+            pyenv global 2.7.12 3.6.5
+            nox -f django_cloud_deploy/nox.py -s e2e_test_gke_cloudify
+          # Timeout of e2e test is set to 30 minutes
+          no_output_timeout: 30m
+
+  Resource Clean Up:
+    machine:
+      image: ubuntu-1604:201903-01
+
+    steps:
+      - checkout
+      - run: *install_gcloud
+      - run: *install_nox
+      - run: *install_cloud_sql_proxy
+      - run: *dump_credentials
+      - run:
+          name: Run Clean Up
+          command: |
+            pyenv global 2.7.12 3.6.5
+            nox -f django_cloud_deploy/nox.py -s resource_cleanup
+
+  Release:
+    docker:
+      - image: googleapis/nox:0.18.2
+
+    steps:
+      - checkout
+      - run:
+         name: Push To PyPI
+         command: source scripts/twine_upload.sh
+
+workflows:
+  version: 2
+  test:
+    jobs:
+      - Lint
+      - Unit Test
+      - Integration Test
+      - GKE E2E Test
+      - GAE E2E Test
+      - GAE Cloudify E2E Test
+      - GKE Cloudify E2E Test
+      - Resource Clean Up
+  release:
+    jobs:
+      - Release:
+          filters:
+            # Runs for no branches and only for tags like "1.2.3"
+            branches:
+              ignore: /.*/
+            tags:
+              only:
+                - /^\d+\.\d+\.\d+$/

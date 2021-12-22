@@ -1,0 +1,8 @@
+allowedLicenses:
+  - Apache-2.0
+sourceFileExtensions:
+  - gradle
+  - java
+  - sh
+allowedCopyrightHolders:
+  - Google

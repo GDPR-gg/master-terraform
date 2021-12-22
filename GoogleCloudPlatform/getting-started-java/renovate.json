@@ -1,0 +1,40 @@
+{
+  "extends": [
+    "config:base"
+  ],
+  "packageRules": [
+    {
+      "packagePatterns": [ "^com.google.appengine:" ],
+      "groupName": "AppEngine packages"
+    },
+    {
+      "packagePatterns": [ "^io.grpc:grpc-" ],
+      "groupName": "gRPC packages"
+    },
+    {
+      "packagePatterns": [ "^io.vertx:vertex-" ],
+      "groupName": "Vertx packages"
+    },
+    {
+      "packagePatterns": [ "^org.jetbrains.kotlin:" ],
+      "groupName": "Kotlin packages"
+    },
+    {
+      "packagePatterns": [ "^org.springframework.boot:" ],
+      "groupName": "Spring packages"
+    },
+    {
+      "packagePatterns": [ "^io.opencensus:" ],
+      "groupName": "Opencensus packages"
+    }
+  ],
+  "labels": [
+    "automerge"
+  ],
+  "prConcurrentLimit": 0,
+  "rebaseWhen": "never",
+   "dependencyDashboard": true,
+   "dependencyDashboardLabels": [
+    "type: process"
+  ]
+}

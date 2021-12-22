@@ -1,0 +1,76 @@
+﻿{
+  "$schema": "https://aka.ms/vsts-tasks.schema.json",
+  "id": "A8532465-D382-41CE-AEF6-48916FD7F6BA",
+  "name": "kubectl-build-task",
+  "friendlyName": "Kubectl Command Line",
+  "author": "Google Cloud Tools",
+  "description": "Execute an arbitrary kubectl command.",
+  "helpMarkDown":
+    "[List of kubectl commands](https://kubernetes.io/docs/user-guide/kubectl-overview/).",
+  "version": {
+    "Major": 0,
+    "Minor": 0,
+    "Patch": 2
+  },
+  "category": "Utility",
+  "demands": [],
+  "groups": [
+    {
+      "name": "advanced",
+      "displayName": "Advanced",
+      "isExpanded": false
+    }
+  ],
+  "inputs": [
+    {
+      "name": "serviceEndpoint",
+      "label": "GCP connection",
+      "type": "connectedService:GoogleCloudServiceEndpoint",
+      "required": true,
+      "helpMarkDown": "The Google Cloud Platform connection to use."
+    },
+    {
+      "name": "command",
+      "label": "Command Line",
+      "type": "string",
+      "required": true,
+      "helpMarkDown": "The [kubectl command](https://kubernetes.io/docs/user-guide/kubectl-overview/) to run."
+    },
+    {
+      "name": "zone",
+      "type": "string",
+      "label": "Zone",
+      "required": true,
+      "helpMarkDown": "The zone of the target cluster."
+    },
+    {
+      "name": "cluster",
+      "type": "string",
+      "label": "Cluster Name",
+      "required": true,
+      "helpMarkDown": "The name of the target cluster."
+    },
+    {
+      "name": "ignoreReturnCode",
+      "label": "Ignore Return Code",
+      "type": "boolean",
+      "required": true,
+      "helpMarkDown": "When checked, this task will succeed even if kubectl reports a failure.",
+      "defaultValue": false,
+      "groupName": "advanced"
+    },
+    {
+      "name": "outputVariable",
+      "label": "StdOut build variable",
+      "type": "string",
+      "required": false,
+      "helpMarkDown": "The name of a build variable in which the output from kubectl is saved. `--output json` is recommended, as new lines are removed.",
+      "groupName": "advanced"
+    }
+  ],
+  "execution": {
+    "Node": {
+      "target": "run.js"
+    }
+  }
+}

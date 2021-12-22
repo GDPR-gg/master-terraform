@@ -1,0 +1,80 @@
+{
+  "variables": {
+    "account_file": "",
+    "project_id": "null",
+    "consul_url": "https://releases.hashicorp.com/consul/0.6.3/consul_0.6.3_linux_amd64.zip",
+    "consul_template_url": "https://releases.hashicorp.com/consul-template/0.12.2/consul-template_0.12.2_linux_amd64.zip"
+  },
+  "builders": [
+    {
+      "type": "googlecompute",
+      "account_file": "{{user `account_file`}}",
+      "project_id": "{{user `project_id`}}",
+      "source_image": "debian-8-jessie-v20150818",
+      "zone": "us-central1-f",
+      "image_name": "haproxy-{{timestamp}}"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "# Make a dir we need",
+        "mkdir -p /etc/consul.d",
+        "mkdir -p /etc/haproxy"
+      ]
+    },
+    {
+      "type": "file",
+      "source": "consul_servers.service",
+      "destination": "/etc/systemd/system/consul_servers.service"
+    },
+    {
+      "type": "file",
+      "source": "consul_template.service",
+      "destination": "/etc/systemd/system/consul_template.service"
+    },
+    {
+      "type": "file",
+      "source": "consul_template_start.sh",
+      "destination": "/usr/bin/consul_template_start.sh"
+    },
+    {
+      "type": "file",
+      "source": "consul_servers.sh",
+      "destination": "/usr/bin/consul_servers.sh"
+    },
+    {
+        "type": "file",
+        "source": "haproxy-internal-service.json.tpl",
+        "destination": "/etc/consul.d/haproxy-internal-service.json.tpl"
+    },
+    {
+      "type": "file",
+      "source": "haproxy.ctmpl.tpl",
+      "destination": "/etc/haproxy/haproxy.ctmpl.tpl"
+    },
+    {
+      "type": "shell",
+      "inline": [
+            "#! /bin/bash",
+            "apt-get update -y",
+            "apt-get install -y unzip haproxy",
+
+            "# Get and install consul and consul-template",
+            "wget -O consul.zip {{user `consul_url`}}",
+            "wget -O consul-template.zip {{user `consul_template_url`}}",
+            "unzip consul.zip -d /usr/local/bin/",
+            "unzip consul-template.zip -d /usr/local/bin/",
+
+            "# Configure services",
+            "chmod +x /usr/bin/consul_servers.sh",
+            "chmod +x /usr/bin/consul_template_start.sh",
+        
+            "# Enable and start consul",
+            "systemctl enable consul_servers.service",
+            "systemctl enable consul_template.service"
+      ]
+    }
+  ]
+}

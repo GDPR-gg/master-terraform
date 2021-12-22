@@ -1,0 +1,196 @@
+version: 2
+
+# Reusable definitions shared between jobs
+defs:
+  defaults: &defaults
+    docker:
+      - image: circleci/node:carbon-browsers
+    working_directory: ~/app
+  steps:
+    step-update-env: &step-update-env
+      name: Update environment
+      command: |
+        echo "export PATH=$PATH:$(yarn global bin):~/app/node_modules/.bin" >> $BASH_ENV
+
+jobs:
+  checkout_code:
+    <<: *defaults
+    steps:
+      - checkout
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+  install_dependencies:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: .
+      - restore_cache:
+          keys:
+            - dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+            - dependency-cache-{{ .Branch }}-
+            - dependency-cache-
+      - run:
+          name: Install dependencies
+          command: |
+            yarn global add ember-cli
+            yarn global add bower
+            yarn
+      - save_cache:
+          key: dependency-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          paths:
+            - ./node_modules
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+  test-1.12.1:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          <<: *step-update-env
+      - run:
+          name: ember try 1.12.1
+          command: |
+            ember try:one "Ember 1.12.1"
+  test-1.13:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          <<: *step-update-env
+      - run:
+          name: ember try 1.13
+          command: |
+            ember try:one "Ember 1.13"
+  test-lts-2.4:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          <<: *step-update-env
+      - run:
+          name: ember try lts 2.4
+          command: |
+            ember try:one "ember-lts-2.4"
+  test-lts-2.8:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          <<: *step-update-env
+      - run:
+          name: ember try lts 2.8
+          command: |
+            ember try:one "ember-lts-2.8"
+  test-lts-2.12:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          <<: *step-update-env
+      - run:
+          name: ember try lts 2.12
+          command: |
+            ember try:one "ember-lts-2.12"
+  test-lts-2.16:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          <<: *step-update-env
+      - run:
+          name: ember try lts 2.16
+          command: |
+            ember try:one "ember-lts-2.16"
+  test-canary:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          <<: *step-update-env
+      - run:
+          name: ember try ember-canary
+          command: |
+            ember try:one "ember-canary"
+  test-beta:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          <<: *step-update-env
+      - run:
+          name: ember try ember-beta
+          command: |
+            ember try:one "ember-beta"
+  test-release:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          <<: *step-update-env
+      - run:
+          name: ember try ember-release
+          command: |
+            ember try:one "ember-release"
+  test-default-jquery:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          <<: *step-update-env
+      - run:
+          name: ember try ember-default-jquery
+          command: |
+            ember try:one "ember-default-jquery"
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - checkout_code
+      - install_dependencies:
+          requires:
+            - checkout_code
+      - test-1.12.1:
+          requires:
+            - install_dependencies
+      - test-1.13:
+          requires:
+            - install_dependencies
+      - test-lts-2.4:
+          requires:
+            - install_dependencies
+      - test-lts-2.8:
+          requires:
+            - install_dependencies
+      - test-lts-2.12:
+          requires:
+            - install_dependencies
+      - test-lts-2.16:
+          requires:
+            - install_dependencies
+      - test-canary:
+          requires:
+            - install_dependencies
+      - test-beta:
+          requires:
+            - install_dependencies
+      - test-release:
+          requires:
+            - install_dependencies
+      - test-default-jquery:
+          requires:
+            - install_dependencies

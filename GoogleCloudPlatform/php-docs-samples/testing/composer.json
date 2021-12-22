@@ -1,0 +1,13 @@
+{
+    "require": {
+        "php": "^7.2|^7.3|^7.4|^8.0"
+    },
+    "require-dev": {
+        "bshaffer/phpunit-retry-annotations": "^0.2.0",
+        "google/auth": "^1.12",
+        "google/cloud-tools": "dev-master",
+        "guzzlehttp/guzzle": "^7.0",
+        "phpunit/phpunit": "^7|^8",
+        "friendsofphp/php-cs-fixer": "^3.0"
+    }
+}

@@ -1,0 +1,12 @@
+*pyc
+data/*
+jobs/*
+trained/*
+.DS_Store
+images/
+nul
+.ipynb_checkpoints
+mykey.json
+run/airflow/*cfg
+run/airflow/airflow.db
+default.profraw

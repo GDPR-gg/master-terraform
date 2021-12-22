@@ -1,0 +1,22 @@
+argument_defaults:
+  aml_compute_region: us-central1
+  aml_dataset_name: clv_features
+  aml_model_name: clv_regression
+  dataset_location: US
+  deployment_threshold: 900
+  features_table_name: features
+  features_to_exclude: '["customer_id"]'
+  optimization_objective: MINIMIZE_MAE
+  primary_metric: mean_absolute_error
+  skip_deployment: false
+  target_column_name: target_monetary
+  train_budget: 1000
+  transactions_table_name: transactions
+  query_template_uri: 
+compiler_settings:
+  lightweight_components_base_image: gcr.io
+  local_search_paths:
+  - ../components/automl_tables/specs
+  url_search_prefixes:
+  - https://raw.githubusercontent.com/kubeflow/pipelines/0.2.5/components/gcp/
+  use_sa_secret: false

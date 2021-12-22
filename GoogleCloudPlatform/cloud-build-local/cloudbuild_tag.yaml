@@ -1,0 +1,35 @@
+# This build is triggered when a new tag is created in order to compile
+# binaries and copy them to GCS.
+steps:
+# Run unit tests in all subdirectories (except those excluded by the grep).
+- name: 'gcr.io/cloud-builders/go:debian'
+  entrypoint: 'bash'
+  args:
+  - '-c'
+  - |
+    find . -type d -maxdepth 1 | grep -Ev "vendor|.git|gopath|integration_tests" | xargs /builder/bin/go.bash test
+
+# Set TAG_NAME as version.
+- name: 'ubuntu'
+  args: ['sed', '-i', 's/HEAD/$TAG_NAME/g', 'version.go']
+
+# Create binaries for each pair of OS/Arch.
+# Create an archive with the latest binaries; that enables a single download url.
+- name: 'gcr.io/cloud-builders/go:debian'
+  entrypoint: 'bash'
+  env: ['CGO_ENABLED=0']
+  args:
+  - '-c'
+  - |
+    for GOOS in darwin linux; do
+        for GOARCH in 386 amd64; do
+            # Build binary with the new tag and with 'latest'
+            GOOS=$$GOOS GOARCH=$$GOARCH /builder/bin/go.bash build -o cloud-build-local_$${GOOS}_$${GOARCH}-$TAG_NAME github.com/GoogleCloudPlatform/cloud-build-local
+        done
+    done
+    tar -czvf cloud-build-local_latest.tar.gz cloud-build-local_*
+
+artifacts:
+  objects:
+    location: 'gs://local-builder/'
+    paths: ['cloud-build-local_*']

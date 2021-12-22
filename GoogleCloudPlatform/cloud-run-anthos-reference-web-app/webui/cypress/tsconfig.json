@@ -1,0 +1,10 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "allowJs": true
+  },
+  "include": [
+    "../node_modules/cypress/types",
+    "**/*.ts"
+  ]
+}

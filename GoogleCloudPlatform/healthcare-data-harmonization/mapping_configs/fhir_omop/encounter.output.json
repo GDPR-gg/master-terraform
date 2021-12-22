@@ -1,0 +1,15 @@
+{
+   "visit_occurrence":{
+      "visit_start_datetime":"2017-02-01T07:15:00+10:00",
+      "visit_type_concept_id":4.481852E+07,
+      "visit_occurrence_id":1.35797659E+08,
+      "visit_concept_id":9201,
+      "visit_start_date":"2017-02-01",
+      "discharge_to_concept_id":0,
+      "care_site_id":3.189841398E+09,
+      "visit_source_concept_id":0,
+      "provider_id":3.189841398E+09,
+      "admitted_from_concept_id":0,
+      "person_id":1.085670747E+09
+   }
+}

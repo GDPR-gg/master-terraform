@@ -1,0 +1,6 @@
+schemaVersion: "1.0.0"
+
+# See https://github.com/GoogleCloudPlatform/container-structure-test/blob/master/README.md
+licenseTests:
+  - debian: true
+    files: []

@@ -1,0 +1,17 @@
+# Mac .DS_Store
+.DS_Store
+
+# Terraform Binaries
+.terraform
+.terraform.lock.hcl
+.terraform.tfstate.lock.info
+
+# Terraform State
+*.tfstate
+*.tfstate.backup
+
+# Terraform local .tfvars
+*.tfvars
+
+# Service Account
+service-account-key.json

@@ -1,0 +1,7 @@
+cron:
+- description: auto create webhooks
+  url: /cron/create_webhooks
+  schedule: every 5 minutes
+- description: auto accept invites
+  url: /cron/accept_invitations
+  schedule: every 5 minutes

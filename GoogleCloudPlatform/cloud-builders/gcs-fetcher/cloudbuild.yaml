@@ -1,0 +1,78 @@
+steps:
+# Run tests.
+- name: 'golang:buster'
+  entrypoint: 'go'
+  args: ['test', './...']
+
+# Build the gcs-fetcher binary and put into the builder image.
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '--build-arg=cmd=./cmd/gcs-fetcher/', '-t', 'gcr.io/$PROJECT_ID/gcs-fetcher', '.']
+- name: 'gcr.io/$PROJECT_ID/gcs-fetcher'
+  args: ['--help']
+
+# Build the gcs-uploader binary and put it into the builder image.
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '--build-arg=cmd=./cmd/gcs-uploader/', '-t', 'gcr.io/$PROJECT_ID/gcs-uploader', '.']
+- name: 'gcr.io/$PROJECT_ID/gcs-uploader'
+  args: ['--help']
+
+# Test the manifest uploader with a defined manifest location.
+- name: 'gcr.io/$PROJECT_ID/gcs-uploader'
+  args:
+  - '--location=gs://${PROJECT_ID}_cloudbuild/manifest-${BUILD_ID}.json'
+# Print the manifest.
+- name: 'gcr.io/cloud-builders/gsutil'
+  args: ['cat', 'gs://${PROJECT_ID}_cloudbuild/manifest-${BUILD_ID}.json']
+# Fetch the manifest.
+- name: 'gcr.io/$PROJECT_ID/gcs-fetcher'
+  args:
+  - '--type=Manifest'
+  - '--location=gs://${PROJECT_ID}_cloudbuild/manifest-${BUILD_ID}.json'
+  - '--dest_dir=fetched'
+# Check that files were downloaded.
+- name: 'ubuntu'
+  args: ['cat', 'fetched/cloudbuild.yaml']
+
+# Tar.gz and upload the current directory, then fetch and check contents.
+- name: gcr.io/google.com/cloudsdktool/cloud-sdk
+  entrypoint: 'bash'
+  args:
+  - -c
+  - |
+    tar czvf /tmp/out.tar.gz .
+    gsutil cp /tmp/out.tar.gz gs://${PROJECT_ID}_cloudbuild/
+- name: gcr.io/$PROJECT_ID/gcs-fetcher
+  args:
+  - --type=TarGzArchive
+  - --location=gs://${PROJECT_ID}_cloudbuild/out.tar.gz
+  - --dest_dir=targz
+- name: ubuntu
+  args:
+  - cat
+  - targz/cloudbuild.yaml
+
+# Zip and upload the current directory, then fetch and check contents.
+- name: gcr.io/google.com/cloudsdktool/cloud-sdk
+  entrypoint: 'bash'
+  args:
+  - -c
+  - |
+    apt-get install -y zip
+    zip -r /tmp/out.zip .
+    gsutil cp /tmp/out.zip gs://${PROJECT_ID}_cloudbuild/
+- name: gcr.io/$PROJECT_ID/gcs-fetcher
+  args:
+  - --type=ZipArchive
+  - --location=gs://${PROJECT_ID}_cloudbuild/out.zip
+  - --dest_dir=zip
+- name: ubuntu
+  args:
+  - cat
+  - zip/cloudbuild.yaml
+
+# Push the images.
+images:
+- 'gcr.io/$PROJECT_ID/gcs-fetcher'
+- 'gcr.io/$PROJECT_ID/gcs-uploader'
+
+timeout: '2100s'

@@ -1,0 +1,208 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\NUnit3TestAdapter.4.0.0\build\net35\NUnit3TestAdapter.props" Condition="Exists('..\packages\NUnit3TestAdapter.4.0.0\build\net35\NUnit3TestAdapter.props')" />
+  <Import Project="..\packages\NUnit.3.13.2\build\NUnit.props" Condition="Exists('..\packages\NUnit.3.13.2\build\NUnit.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{BD834B99-2AEE-4160-BC38-1821695D4174}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Google.Solutions.IapDesktop.Application.Test</RootNamespace>
+    <AssemblyName>Google.Solutions.IapDesktop.Application.Test</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>..\Google.Solutions.Common\Google.Solutions.Common.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>..\Google.Solutions.Common\Google.Solutions.Common.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Castle.Core.4.4.1\lib\net45\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis, Version=1.52.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.1.52.0\lib\net45\Google.Apis.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Auth, Version=1.52.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Auth.1.52.0\lib\net461\Google.Apis.Auth.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Auth.PlatformServices, Version=1.52.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Auth.1.52.0\lib\net461\Google.Apis.Auth.PlatformServices.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.CloudResourceManager.v1, Version=1.52.0.2281, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.CloudResourceManager.v1.1.52.0.2281\lib\net45\Google.Apis.CloudResourceManager.v1.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Compute.v1, Version=1.52.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Compute.v1.1.52.0\lib\net45\Google.Apis.Compute.v1.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Core, Version=1.52.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Core.1.52.0\lib\net45\Google.Apis.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.PlatformServices, Version=1.52.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.1.52.0\lib\net45\Google.Apis.PlatformServices.dll</HintPath>
+    </Reference>
+    <Reference Include="Moq, Version=4.16.0.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
+      <HintPath>..\packages\Moq.4.16.1\lib\net45\Moq.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework, Version=3.13.2.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\NUnit.3.13.2\lib\net45\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.5.0.0\lib\net45\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security" />
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WeifenLuo.WinFormsUI.Docking, Version=3.0.6.0, Culture=neutral, PublicKeyToken=5cded1a1a0a7b481, processorArchitecture=MSIL">
+      <HintPath>..\packages\DockPanelSuite.3.0.6\lib\net40\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CertificateUtil.cs" />
+    <Compile Include="Controls\TestBindableListView.cs" />
+    <Compile Include="Controls\TestBindableTreeView.cs" />
+    <Compile Include="Controls\TestFontExtensions.cs" />
+    <Compile Include="Controls\TestScreenPicker.cs" />
+    <Compile Include="Controls\TestListViewExtensions.cs" />
+    <Compile Include="ObjectModel\MoqExtensions.cs" />
+    <Compile Include="ObjectModel\TestBindingExtensions.cs" />
+    <Compile Include="ObjectModel\TestCommandContainerForToolbar.cs" />
+    <Compile Include="ObjectModel\TestCommandContainerForContextMenu.cs" />
+    <Compile Include="ObjectModel\TestModelCachingViewModelBase.cs" />
+    <Compile Include="ObjectModel\TestServiceAttribute.cs" />
+    <Compile Include="SecureConnectFixtureBase.cs" />
+    <Compile Include="Services\Adapters\TestCertificateStoreAdapter.cs" />
+    <Compile Include="Services\Adapters\TestComputeEngineAdapter.cs" />
+    <Compile Include="Services\Adapters\TestComputeEngineAdapterWithMtls.cs" />
+    <Compile Include="Services\Adapters\TestGithubAdapter.cs" />
+    <Compile Include="ApplicationFixtureBase.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\Adapters\TestHttpProxyAdapter.cs" />
+    <Compile Include="Services\Adapters\TestInstanceExtensions.cs" />
+    <Compile Include="Services\Adapters\TestMetadataExtensions.cs" />
+    <Compile Include="Services\Adapters\TestWindowsCredentialAdapter.cs" />
+    <Compile Include="Services\Adapters\TestResourceManagerAdapter.cs" />
+    <Compile Include="Services\Adapters\TestResourceManagerAdapterWithMtls.cs" />
+    <Compile Include="Services\Integration\TestSessionBroker.cs" />
+    <Compile Include="Services\ProjectModel\TestProjectModelNodes.cs" />
+    <Compile Include="Services\ProjectModel\TestProjectModelService.cs" />
+    <Compile Include="Services\SecureConnect\TestChromeAutoSelectCertificateForUrlsPolicy.cs" />
+    <Compile Include="Services\SecureConnect\TestChromeCertificateSelector.cs" />
+    <Compile Include="Services\SecureConnect\TestChromePolicyUrlPattern.cs" />
+    <Compile Include="Services\Settings\TestToolWindowStateRepository.cs" />
+    <Compile Include="Services\Settings\TestApplicationSettingsRepository.cs" />
+    <Compile Include="Services\Settings\TestAppProtocolRegistry.cs" />
+    <Compile Include="Services\Settings\TestAuthSettingsRepository.cs" />
+    <Compile Include="Services\Settings\TestProjectRepository.cs" />
+    <Compile Include="Settings\TestRegistryBoolSetting.cs" />
+    <Compile Include="Settings\TestRegistryEnumFlagsSetting.cs" />
+    <Compile Include="Settings\TestRegistryQwordSetting.cs" />
+    <Compile Include="Settings\TestRegistryDwordSetting.cs" />
+    <Compile Include="Settings\TestRegistryEnumSetting.cs" />
+    <Compile Include="Settings\TestRegistrySecureStringSetting.cs" />
+    <Compile Include="Settings\TestRegistryStringSetting.cs" />
+    <Compile Include="Host\TestCommandLineOptions.cs" />
+    <Compile Include="Util\TestByteSizeFormatter.cs" />
+    <Compile Include="Services\SecureConnect\TestSecureConnectEnrollment.cs" />
+    <Compile Include="Util\TestHtmlClipboardFormat.cs" />
+    <Compile Include="Util\TestLeastRecentlyUsedCache.cs" />
+    <Compile Include="Util\TestRangeObservableCollection.cs" />
+    <Compile Include="Services\Integration\TestJobService.cs" />
+    <Compile Include="ObjectModel\TestServiceRegistry.cs" />
+    <Compile Include="Util\TestIapRdpUrl.cs" />
+    <Compile Include="Util\TestStringExtensions.cs" />
+    <Compile Include="Util\TestTypographicQuotes.cs" />
+    <Compile Include="Views\Authentication\TestDeviceFlyoutViewModel.cs" />
+    <Compile Include="Views\Authentication\TestUserFlyoutViewModel.cs" />
+    <Compile Include="Views\Options\TestScreenOptionsViewModel.cs" />
+    <Compile Include="Views\Options\TestNetworkOptionsViewModel.cs" />
+    <Compile Include="Views\Options\TestGeneralOptionsViewModel.cs" />
+    <Compile Include="Views\ProjectExplorer\TestProjectExplorerViewModel.cs" />
+    <Compile Include="Views\ProjectPicker\TestProjectPickerViewModel.cs" />
+    <Compile Include="Views\TestMainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\TestMainForm.Designer.cs">
+      <DependentUpon>TestMainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Properties\TestPropertiesInspectorWindow.cs" />
+    <Compile Include="Views\WindowTestFixtureBase.cs" />
+    <Compile Include="Util\TestSingletonApplicationBase.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Google.Solutions.Common.Test\Google.Solutions.Common.Test.csproj">
+      <Project>{aa8cd2fb-d463-42bd-a880-9247c93f9395}</Project>
+      <Name>Google.Solutions.Common.Test</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Google.Solutions.Common\Google.Solutions.Common.csproj">
+      <Project>{fb4c6f4d-32b1-4b0b-ba79-fd47fc4d7912}</Project>
+      <Name>Google.Solutions.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Google.Solutions.IapTunneling.Test\Google.Solutions.IapTunneling.Test.csproj">
+      <Project>{9c1aa910-798a-4571-9266-7280a677fe9f}</Project>
+      <Name>Google.Solutions.IapTunneling.Test</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Google.Solutions.IapDesktop.Application\Google.Solutions.IapDesktop.Application.csproj">
+      <Project>{842b003e-6eeb-429d-a3a1-53b4e642e83b}</Project>
+      <Name>Google.Solutions.IapDesktop.Application</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Google.Solutions.IapTunneling\Google.Solutions.IapTunneling.csproj">
+      <Project>{d9493479-1751-402b-880f-60ed33ebb885}</Project>
+      <Name>Google.Solutions.IapTunneling</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Views\TestMainForm.resx">
+      <DependentUpon>TestMainForm.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\NUnit.3.13.2\build\NUnit.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NUnit.3.13.2\build\NUnit.props'))" />
+    <Error Condition="!Exists('..\packages\NUnit3TestAdapter.4.0.0\build\net35\NUnit3TestAdapter.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NUnit3TestAdapter.4.0.0\build\net35\NUnit3TestAdapter.props'))" />
+  </Target>
+</Project>

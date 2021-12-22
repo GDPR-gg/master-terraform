@@ -1,0 +1,21 @@
+sudo: false
+language: python
+python: "3.5"
+env:
+  - TOXENV=py35
+  - TOXENV=codestyle
+
+before_install:
+- openssl aes-256-cbc -K $encrypted_37013481d15f_key -iv $encrypted_37013481d15f_iv -in tests/servacc.json.enc -out servacc.json -d
+
+install: pip install tox
+script: tox
+
+# notification for gitter integration at https://gitter.im/GoogleCloudPlatform/err-gcloud
+notifications:
+  webhooks:
+    urls:
+       - https://webhooks.gitter.im/e/2ae0264133304df746c9
+    on_success: always  # options: [always|never|change] default: always
+    on_failure: always  # options: [always|never|change] default: always
+    on_start: true     # default: false

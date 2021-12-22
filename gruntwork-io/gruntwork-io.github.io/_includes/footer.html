@@ -1,0 +1,54 @@
+<footer class="footer hidden-print">
+  <div class="section section-footer-content">
+    <div class="container">
+      {% if page.footer_heading %}
+      <div class="row row-call-to-action">
+        <div class="col-xs-12 text-center">
+          <h2 class="h1 no-anchor">{{ page.footer_heading }}</h2>
+          <p><a href="/pricing/" class="btn btn-info" role="button" ga-on="click" ga-event-category="footer-{{ page.path | slugify }}" ga-event-action="get-started">Get Started</a></p>
+        </div>
+      </div>
+      {% endif %}
+      <div class="row row-sitemap">
+        {% for category in site.data.sitemap %}
+        <div class="col-xs-10 col-xs-offset-1 col-sm-3 col-sm-offset-0">
+          <h3 class="no-anchor">{{ category.title }}</h3>
+          <hr class="hr-sm" />
+          <ul class="list-unstyled">
+            {% for link in category.links %}
+              <li {% if link.title == "Contact us" %} {% endif %}>
+                <a href="{{ link.url }}" ga-on="click" ga-event-category="footer-{{ page.path | slugify }}" ga-event-action="link-{{ link.title | slugify }}">{{ link.title }}</a>
+              </li>
+            {% endfor %}
+            {% if category.title == "Connect" %}
+              <li>
+                <div class="btn-group btn-group-social-icons" role="group" aria-label="Group of Social Links">
+                  <a href="{{site.data.contact.github.url}}" class="btn btn-default" role="button"><i class="fa fa-fw fa-github-square"></i></a>
+                  <a href="{{site.data.contact.facebook.url}}" class="btn btn-default" role="button"><i class="fa fa-fw fa-facebook-square"></i></a>
+                  <a href="{{site.data.contact.twitter.url}}" class="btn btn-default" role="button"><i class="fa fa-fw fa-twitter-square"></i></a>
+                  <a href="{{site.data.contact.linkedin.url}}" class="btn btn-default" role="button"><i class="fa fa-fw fa-linkedin-square"></i></a>
+                </div>
+              </li>
+            {% endif %}
+          </ul>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  <div class="section section-footer-copyright">
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-12 text-center">
+          &copy; 2016 - {{ 'now' | date: "%Y" }} Gruntwork, Inc. All rights reserved.
+          <div>
+          <span style="display:inline-block; margin-right:12px;"><a href="/legal/terms">Terms of Service</a></span>
+          <span style="display:inline-block; margin-right:12px;"><a href="/legal/website-terms">Website Terms</a></span>
+          <span style="display:inline-block; margin-right:12px;"><a href="/legal/privacy-policy">Privacy Policy</a></span>
+          <span><a href="/legal/cookie-policy">Cookie Policy</a></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </footer>

@@ -1,0 +1,48 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\Common.csproj.include" />
+
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp2.0;net45</TargetFrameworks>
+    <TargetFrameworks Condition=" '$(OS)' != 'Windows_NT' ">netcoreapp2.0</TargetFrameworks>
+    <IsPackable>false</IsPackable>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>../keys/Grpc.Gcp.snk</AssemblyOriginatorKeyFile>
+    <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Google.Cloud.Bigtable.V2" Version="1.0.0" />
+    <PackageReference Include="Google.Cloud.Spanner.V1" Version="2.0.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.7.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="1.2.1" />
+    <PackageReference Include="MSTest.TestFramework" Version="1.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Grpc.Gcp\Grpc.Gcp.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="mscorlib">
+      <HintPath>mscorlib</HintPath>
+    </Reference>
+    <Reference Include="System">
+      <HintPath>System</HintPath>
+    </Reference>
+    <Reference Include="System.Core">
+      <HintPath>System.Core</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="spanner.grpc.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

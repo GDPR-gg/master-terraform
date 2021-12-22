@@ -1,0 +1,4 @@
+*.test.js
+.prettierrc
+.editorconfig
+plugins/*/fixtures

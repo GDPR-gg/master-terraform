@@ -1,0 +1,12 @@
+{
+  "Name": "web-prod-quota",
+  "Description": "limit the web-prod namespace",
+  "Limits": [
+    {
+      "Region": "global",
+      "RegionLimit": {
+        "MemoryMB": 1000
+      }
+    }
+  ]
+}

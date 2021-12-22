@@ -1,0 +1,11 @@
+node_modules/**
+.DS_Store
+img/**
+coverage/**
+deprecated/**
+sftp-config.json
+request.json
+outputFileName
+.env
+herp.py
+test.json

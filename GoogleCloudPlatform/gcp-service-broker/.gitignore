@@ -1,0 +1,15 @@
+.envrc
+.idea/
+*.coverprofile
+*.DS_Store
+*.brokerpak
+*.sqlite3
+gcp-service-broker
+product/
+release/
+tile-history.yml
+ci/parameters.yml
+ci/vars.yml
+config.yml
+
+!pkg/brokerpak/testdata/dummy-brokerpaks/*.brokerpak

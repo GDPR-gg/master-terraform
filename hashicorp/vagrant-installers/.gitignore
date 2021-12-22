@@ -1,0 +1,17 @@
+*.DS_Store
+*.pyc
+.tmp/
+.vagrant
+Gemfile*
+Thumbs.db
+cache
+dist
+packer/packer_cache
+packer/var-file.json
+substrate/launcher/launcher.exe
+substrate/terraform/*.tfstate
+substrate/terraform/*.tfvars
+substrate/terraform/output
+pkg
+substrate-assets
+cacert.pem

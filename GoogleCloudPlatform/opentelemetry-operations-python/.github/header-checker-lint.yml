@@ -1,0 +1,8 @@
+allowedLicenses:
+  - Apache-2.0
+allowedCopyrightHolders:
+  - Google LLC
+  - The OpenTelemetry Authors
+sourceFileExtensions:
+  - py
+  - sh

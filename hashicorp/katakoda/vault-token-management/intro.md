@@ -1,0 +1,1 @@
+Vault persists the service tokens in the storage backend until they expire and Vault revokes them. Depending on the auth method, the generated service token varies in its size due to the amount of metadata attached to it. To avoid unused tokens from overtaking the storage memory, set an explicit token time-to-live (TTL) so that Vault will automatically revoke expired tokens.

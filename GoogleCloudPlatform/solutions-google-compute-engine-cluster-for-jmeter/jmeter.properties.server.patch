@@ -1,0 +1,35 @@
+# Copyright 2013 Google Inc. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+diff -rU3 apache-jmeter-2.9/bin/jmeter.properties apache-jmeter-2.9-server/bin/jmeter.properties
+--- apache-jmeter-2.9/bin/jmeter.properties	2013-01-24 03:21:37.000000000 -0800
++++ apache-jmeter-2.9-server/bin/jmeter.properties	2013-11-20 13:30:53.000000000 -0800
+@@ -160,7 +160,7 @@
+ #remote_hosts=localhost:1099,localhost:2010
+
+ # RMI port to be used by the server (must start rmiregistry with same port)
+-#server_port=1099
++server_port={{SERVER_PORT}}
+
+ # To change the port to (say) 1234:
+ # On the server(s)
+@@ -185,7 +185,8 @@
+
+ # To use a specific port for the JMeter server engine, define
+ # the following property before starting the server:
+-#server.rmi.localport=4000
++server.rmi.localport={{SERVER_RMI_PORT}}
++server.rmi.localhostname=127.0.0.1
+
+ # From JMeter 2.3.1, the jmeter server creates the RMI registry as part of the server process.
+ # To stop the server creating the RMI registry:

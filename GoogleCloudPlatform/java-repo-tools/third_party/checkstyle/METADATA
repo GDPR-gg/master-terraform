@@ -1,0 +1,22 @@
+name: "checkstyle"
+description:
+    "Checkstyle is a development tool to help programmers write Java code that "
+    "adheres to a coding standard. By default it supports the Google Java Style "
+    "Guide and Sun Code Conventions, but is highly configurable."
+
+third_party {
+  url {
+    type: HOMEPAGE
+    value: "http://checkstyle.sourceforge.net/"
+  }
+  url {
+    type: GIT
+    value: "https://github.com/checkstyle/checkstyle"
+  }
+  version: "8.36.1"
+  last_upgrade_date { year: 2021 month: 4 day: 05 }
+  local_modifications:
+      "RegexpHeader, severity(error), SupressWaringsHolder, SuppressionCommentFilter, "
+      "SingleLineJavadoc(ignoreInlineTags), and SuppressionCommentFilter"
+
+}

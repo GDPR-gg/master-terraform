@@ -1,0 +1,16 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sRequireNamespaceNetworkPolicies
+metadata:
+  name: require-namespace-network-policies
+  annotations:
+    # This constraint is not certified by CIS.
+    description: "Requires that every namespace defined in the cluster has a NetworkPolicy."
+    bundles.validator.forsetisecurity.org/cis-k8s-v1.5.1: 5.3.2
+spec:
+  enforcementAction: dryrun
+  match:
+    excludedNamespaces:
+      - kube-system
+      - config-management-system
+      - config-management-monitoring
+      - resource-group-system

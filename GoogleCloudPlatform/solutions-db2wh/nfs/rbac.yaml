@@ -1,0 +1,67 @@
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: nfs-client-provisioner-runner
+rules:
+  - apiGroups: [""]
+    resources: ["persistentvolumes"]
+    verbs: ["get", "list", "watch", "create", "delete"]
+  - apiGroups: [""]
+    resources: ["persistentvolumeclaims"]
+    verbs: ["get", "list", "watch", "update"]
+  - apiGroups: ["storage.k8s.io"]
+    resources: ["storageclasses"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["create", "update", "patch"]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: run-nfs-client-provisioner
+subjects:
+  - kind: ServiceAccount
+    name: nfs-client-provisioner
+    namespace: default
+roleRef:
+  kind: ClusterRole
+  name: nfs-client-provisioner-runner
+  apiGroup: rbac.authorization.k8s.io
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: leader-locking-nfs-client-provisioner
+rules:
+  - apiGroups: [""]
+    resources: ["endpoints"]
+    verbs: ["get", "list", "watch", "create", "update", "patch"]
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: leader-locking-nfs-client-provisioner
+subjects:
+  - kind: ServiceAccount
+    name: nfs-client-provisioner
+    # replace with namespace where provisioner is deployed
+    namespace: default
+roleRef:
+  kind: Role
+  name: leader-locking-nfs-client-provisioner
+  apiGroup: rbac.authorization.k8s.io

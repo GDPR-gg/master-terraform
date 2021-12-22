@@ -1,0 +1,11 @@
+Dockerfile
+README.md
+*.pyc
+*.pyo
+*.pyd
+__pycache__
+.gitignore
+tests/
+images/
+scripts/
+.github/

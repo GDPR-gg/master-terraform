@@ -1,0 +1,79 @@
+#!/bin/sh
+
+./CLEANUP
+mkdir google
+cd google
+mkdir api cloud longrunning rpc
+
+#api
+cd api
+
+curl https://raw.githubusercontent.com/googleapis/googleapis/master/google/api/client.proto >> client.proto
+curl https://raw.githubusercontent.com/googleapis/googleapis/master/google/api/annotations.proto >> annotations.proto
+curl https://raw.githubusercontent.com/googleapis/googleapis/master/google/api/http.proto >> http.proto
+curl https://raw.githubusercontent.com/googleapis/googleapis/master/google/api/label.proto >> label.proto
+curl https://raw.githubusercontent.com/googleapis/googleapis/master/google/api/monitored_resource.proto >> monitored_resource.proto
+curl https://raw.githubusercontent.com/googleapis/googleapis/master/google/api/field_behavior.proto >> field_behavior.proto
+curl https://raw.githubusercontent.com/googleapis/googleapis/master/google/api/resource.proto >> resource.proto
+curl https://raw.githubusercontent.com/googleapis/googleapis/master/google/api/launch_stage.proto >> launch_stage.proto
+
+
+cd ..
+
+
+#longrunning
+cd longrunning
+curl https://raw.githubusercontent.com/googleapis/googleapis/master/google/longrunning/operations.proto >> operations.proto
+
+cd ..
+
+# rpc
+cd rpc
+curl https://raw.githubusercontent.com/googleapis/googleapis/master/google/rpc/code.proto >> code.proto
+curl https://raw.githubusercontent.com/googleapis/googleapis/master/google/rpc/error_details.proto >> error_details.proto
+curl https://raw.githubusercontent.com/googleapis/googleapis/master/google/rpc/status.proto >> status.proto
+
+cd ..
+
+cd cloud
+mkdir translate
+cd translate
+mkdir v3
+cd v3
+
+#cloud
+curl https://raw.githubusercontent.com/googleapis/googleapis/master/google/cloud/translate/v3/translation_service.proto >> translation_service.proto
+
+cd ../../../..
+echo "Checking path of the directory"
+pwd
+
+
+echo "Installing Cocoapod dependencies"
+pod install
+
+echo "Clean BoringSSL module.modulemap"
+> Pods/BoringSSL/include/openssl/module.modulemap
+
+echo "Fix the bad imports in the generated files"
+grep -rl "google/api/Annotations.pbobjc.h"  google/** | xargs sed -i '' s@'"google\/api\/Annotations\.pbobjc\.h"'@'\<googleapis\/Annotations\.pbobjc\.h\>'@g
+grep -rl "google/longrunning/Operations.pbobjc.h"  google/** | xargs sed -i '' s@'"google\/longrunning\/Operations\.pbobjc\.h"'@'\<googleapis\/Operations\.pbobjc\.h\>'@g
+grep -rl "google/rpc/Status.pbobjc.h"  google/** | xargs sed -i '' s@'"google\/rpc\/Status\.pbobjc\.h"'@'\<googleapis\/Status\.pbobjc\.h\>'@g
+
+
+grep -rl "Annotations.pbobjc.h"  pods/** | \
+	xargs sed -i '' s@'"Annotations\.pbobjc\.h"'@'\<Firestore\/Protos\/objc\/google\/api\/Annotations\.pbobjc\.h\>'@g
+grep -rl "Status.pbobjc.h"  pods/** | \
+	xargs sed -i '' s@'"Status\.pbobjc\.h"'@'\<Firestore\/Protos\/objc\/google\/rpc\/Status\.pbobjc\.h\>'@g
+grep -rl "Latlng.pbobjc.h"  pods/** | \
+	xargs sed -i '' s@'"Latlng\.pbobjc\.h"'@'\<Firestore\/Protos\/objc\/google\/type\/Latlng\.pbobjc\.h\>'@g
+grep -rl "Document.pbobjc.h"  pods/** | \
+	xargs sed -i '' s@'"Document\.pbobjc\.h"'@'\<Firestore\/Protos\/objc\/google\/firestore\/v1\/Document\.pbobjc\.h\>'@g
+
+
+echo "Opening the project workspace in Xcode"
+open Translation.xcworkspace
+
+echo "Now press the run button!"
+
+

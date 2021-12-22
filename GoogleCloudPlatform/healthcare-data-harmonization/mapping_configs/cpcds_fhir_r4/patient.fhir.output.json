@@ -1,0 +1,113 @@
+{
+  "entry": [
+    {
+      "request": {
+        "method": "PUT",
+        "url": "Patient/a916e0dc02d8490fcda48a87aef9993f"
+      },
+      "resource": {
+        "address": [
+          {
+            "country": "United States",
+            "district": "Los Angeles County",
+            "postalCode": "91326",
+            "state": "California"
+          }
+        ],
+        "birthDate": "1971-05-09",
+        "deceasedBoolean": false,
+        "extension": [
+          {
+            "extension": [
+              {
+                "url": "text",
+                "valueString": "white"
+              }
+            ],
+            "url": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-race"
+          },
+          {
+            "extension": [
+              {
+                "url": "text",
+                "valueString": "hispanic"
+              }
+            ],
+            "url": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity"
+          },
+          {
+            "extension": [
+              {
+                "url": "ombCategory",
+                "valueCode": "F"
+              }
+            ],
+            "url": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex"
+          }
+        ],
+        "gender": "female",
+        "id": "a916e0dc02d8490fcda48a87aef9993f",
+        "identifier": [
+          {
+            "system": "http://www.bcbs.com/fhir/ns/NamingSystem/patient-mb",
+            "type": {
+              "coding": [
+                {
+                  "code": "MB",
+                  "display": "Member Number",
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203"
+                }
+              ]
+            },
+            "value": "19e0aea1-2681-40b0-b849-6ccdf7c57b28"
+          },
+          {
+            "system": "http://www.external-org.com/fhir/NamingSystem/patient-identifier",
+            "type": {
+              "coding": [
+                {
+                  "code": "PT",
+                  "display": "Patient External Identifier",
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203"
+                }
+              ]
+            },
+            "value": "19e0aea1-2681-40b0-b849-6ccdf7c57b28"
+          },
+          {
+            "system": "http://www.bcbs.com/fhir/ns/NamingSystem/patient-mrn",
+            "type": {
+              "coding": [
+                {
+                  "code": "MR",
+                  "display": "Medical Record Number",
+                  "system": "http://terminology.hl7.org/CodeSystem/v2-0203"
+                }
+              ]
+            },
+            "value": "19e0aea1-2681-40b0-b849-6ccdf7c57b28"
+          }
+        ],
+        "meta": {
+          "lastUpdated": "2020-01-01T01:01:01.1111Z",
+          "profile": [
+            "http://hl7.org/fhir/us/carin/StructureDefinition/carin-bb-patient"
+          ],
+          "source": "Xyz Organization"
+        },
+        "name": [
+          {
+            "family": "Rodríquez611",
+            "given": [
+              "Elsa29"
+            ],
+            "text": "Elsa29 Rodríquez611"
+          }
+        ],
+        "resourceType": "Patient"
+      }
+    }
+  ],
+  "resourceType": "Bundle",
+  "type": "transaction"
+}

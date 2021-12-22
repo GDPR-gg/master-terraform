@@ -1,0 +1,7 @@
+test_rule = rule { 
+    true
+}
+
+main = rule {
+    test_rule
+}

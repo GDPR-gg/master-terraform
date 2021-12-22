@@ -1,0 +1,34 @@
+{
+  "extends": [
+    "config:base"
+  ],
+  "pinVersions": false,
+  "rebaseStalePrs": true,
+  "timezone": "America/Los_Angeles",
+  "schedule": [
+    "after 9am and before 3pm every tuesday"
+  ],
+  "prConcurrentLimit": 3,
+  "gitAuthor": null,
+  "packageRules": [
+    {
+      "extends": "packages:linters",
+      "groupName": "linters"
+    }
+  ],
+  "reviewers": ["GoogleCloudPlatform/observability-devx"],
+  "labels": [
+    "dependencies",
+    "type: cleanup",
+    "priority: p2"
+  ],
+  "lockFileMaintenance": {
+    "enabled": true,
+    "recreateClosed": true
+  },
+  "ignoreDeps": [
+    "com.google.protobuf:protoc"
+  ],
+  "semanticCommits" : "enabled",
+  "baseBranches": ["develop"]
+}

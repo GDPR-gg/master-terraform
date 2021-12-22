@@ -1,0 +1,17 @@
+# terraform
+/terraform/.terraform
+/terraform/terraform.tfstate
+/terraform/terraform.tfstate.backup
+/terraform/account.json
+/terraform/main.auto.tfvars
+/terraform/override.tf
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.swp
+/.idea
+

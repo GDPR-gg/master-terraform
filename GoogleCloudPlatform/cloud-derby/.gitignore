@@ -1,0 +1,27 @@
+# See https://git-scm.com/docs/gitignore
+
+# ------------ Ignore
+.secrets
+project-id.sh*
+setenv-local.sh
+checkpoint_graph_def
+tensorflow-models
+**/node_modules
+**/target
+**/build
+**/tmp
+**/.idea
+**/*.pem
+**/*.log
+**/log.txt
+**/*.bak
+**/*.old
+**/nohup.out
+**/*.class
+**/package-lock.json
+**/*service-account.json
+**/app-generated.yml
+
+# ------------ Do not ignore
+!**/.gitignore
+!**/.cloudignore

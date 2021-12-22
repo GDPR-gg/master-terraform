@@ -1,0 +1,56 @@
+.root {
+  padding-top: 72px;
+
+  & a {
+    text-decoration: underline;
+  }
+}
+
+.pageTitle {
+  composes: g-type-display-1 from global;
+  text-align: center;
+}
+
+.logo {
+  max-width: 140px;
+}
+
+.hosting {
+  border: 1px solid var(--gray-5);
+  padding: 16px;
+  text-align: center;
+  color: var(--gray-2);
+}
+
+.gettingStarted {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 40px 0 64px 0;
+  text-align: center;
+
+  @media (--medium-up) {
+    padding: 88px 0 128px 0;
+  }
+}
+
+.gettingStartedTitle {
+  composes: g-type-display-2 from global;
+  margin: 16px 0;
+  text-align: center;
+}
+
+.gettingStartedDescription {
+  composes: g-type-body from global;
+  color: var(--gray-2);
+}
+
+.links {
+  margin-top: 32px;
+}
+
+.link {
+  color: var(--black);
+  text-align: center;
+  display: block;
+  margin: 8px 0;
+}

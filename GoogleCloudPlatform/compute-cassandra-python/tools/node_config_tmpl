@@ -1,0 +1,73 @@
+#!/bin/bash
+# Copyright 2013 Google Inc. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# This script was used to install and configure this instance as a
+# Cassandra node per the tutorial outlined at
+# https://github.com/GoogleCloudPlatform/compute-cassandra-python
+
+# This script is expecting the user to accept the Oracle EULA and download:
+# http://download.oracle.com/otn-pub/java/jdk/7u51-b13/jre-7u51-linux-x64.tar.gz
+jre_install_file=@JRE7_INSTALL@
+jre_version=@JRE7_VERSION@
+gcs_bucket=@GCS_BUCKET@
+gce_username=@GCE_USERNAME@
+
+# adapted from,
+# http://www.datastax.com/documentation/cassandra/2.0/webhelp/index.html#cassandra/install/installDeb_t.html
+echo 'deb http://debian.datastax.com/community stable main' >> /etc/apt/sources.list
+curl -sL http://debian.datastax.com/debian/repo_key | /usr/bin/apt-key add - >/dev/null
+apt-get -y -qq update
+apt-get -y -qq upgrade
+apt-get -y -qq install dsc20 libjna-java
+service cassandra stop
+rm -rf /var/lib/cassandra/*
+
+CONF=/etc/cassandra/cassandra.yaml
+intip=$(ifconfig eth0 | grep "inet addr:" | awk '{print $2}' | cut -d: -f2)
+
+sed -i "s|^cluster_name: 'Test Cluster'$|cluster_name: 'GCECassandraCluster'|" $CONF
+sed -i "s|^listen_address: localhost$|listen_address: ${intip}|" $CONF
+sed -i "s|^rpc_address: localhost$|rpc_address: 0.0.0.0|" $CONF
+sed -i "s|^# num_tokens: 256$|num_tokens: 256|" $CONF
+sed -i "s|^endpoint_snitch: SimpleSnitch$|endpoint_snitch: PropertyFileSnitch|" $CONF
+sed -i "s|seeds: \"127.0.0.1\"|seeds: \"@SEED_IPS@\"|" $CONF
+echo "" >> $CONF
+echo "##############################################################" >> $CONF
+echo "##############################################################" >> $CONF
+echo "# WARNING!! Remove 'auto_bootstrap' if you intend on using" >> $CONF
+echo "#           this as a long running cluster. This setting is" >> $CONF
+echo "#           *ONLY* intended for bootstrapping a fresh cluster" >>  $CONF
+echo "#           with NO EXISTING DATA. See the following,        " >>  $CONF
+echo "#           http://goo.gl/v5wdBA                             " >>  $CONF
+echo "auto_bootstrap: false" >> $CONF
+echo "##############################################################" >> $CONF
+echo "##############################################################" >> $CONF
+cat > /etc/cassandra/cassandra-topology.properties <<EOF
+@SNITCH_TEXT@
+EOF
+
+# Assume the JRE install file has already been uploaded to the GCS bucket, so
+# use the GCE username to fetch it from GCS
+su -lc "gsutil cp gs://${gcs_bucket}/${jre_install_file} /tmp/${jre_install_file}" ${gce_username}
+
+# Set up Java per,
+# http://www.datastax.com/documentation/cassandra/2.0/webhelp/cassandra/install/installJreDeb.html
+mkdir -p /usr/lib/jvm
+tar zxvf /tmp/${jre_install_file} -C /usr/lib/jvm
+update-alternatives --install "/usr/bin/java" "java" "/usr/lib/jvm/${jre_version}/bin/java" 1
+update-alternatives --set java /usr/lib/jvm/${jre_version}/bin/java
+
+touch /tmp/cassandra_startup_script_complete
+exit 0

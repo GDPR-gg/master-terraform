@@ -1,0 +1,25 @@
+global:
+  bootstrapACLs: true
+
+server:
+  replicas: 1
+  bootstrapExpect: 1
+  connect: true
+
+client:
+  grpc: true
+
+connectInject:
+  enabled: true
+
+ui:
+  enabled: true
+  service:
+    enabled: true
+
+centralConfig:
+  enabled: true
+  proxyDefaults: |
+    {
+      "envoy_dogstatsd_url": "udp://127.0.0.1:9125"
+    }

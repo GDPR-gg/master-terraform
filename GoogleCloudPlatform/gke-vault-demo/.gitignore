@@ -1,0 +1,42 @@
+# OSX leaves these everywhere on SMB shares
+._*
+
+# OSX trash
+.DS_Store
+
+# Emacs save files
+*~
+\#*\#
+.\#*
+
+# Vim-related files
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+*.un~
+Session.vim
+.netrwhist
+
+test/__pycache__
+
+# Terraform
+terraform.tfvars
+.terraform
+.terraform.tfstate.lock.info
+*.tfstate
+*.tfstate.*
+
+# TLS keys
+tls/*
+# Keep the .keep file so the directory is available during cert creation
+!tls/.keep
+
+# Vault tokens
+token.json
+
+# Vault binary
+vault
+*.zip
+
+# Temp file
+helloworld.txt
+sa.json

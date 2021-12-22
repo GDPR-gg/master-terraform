@@ -1,0 +1,12 @@
+ssh-keys/
+.terraform/
+terraform.tfstate*
+
+.vscode/
+target/
+
+.envrc
+projects/
+
+cli/anthos-platform-cli
+cli/release/

@@ -1,0 +1,127 @@
+# Defines a set of groups for builders that support particular language runtimes
+licenses(["notice"])
+
+exports_files(
+    ["testdata"],
+)
+
+package_group(
+    name = "cpp_builders",
+    packages = [
+        "//builders/gcp/base",
+    ],
+)
+
+package_group(
+    name = "dotnet_builders",
+    packages = [
+        "//builders/gae/dotnet3",
+        "//builders/gcf/dotnet3",
+        "//builders/gcp/base",
+    ],
+)
+
+package_group(
+    name = "go_builders",
+    packages = [
+        "//builders/gae/go111",
+        "//builders/gae/go112",
+        "//builders/gae/go113",
+        "//builders/gae/go114",
+        "//builders/gae/go115",
+        "//builders/gae/go116",
+        "//builders/gcf/go111",
+        "//builders/gcf/go113",
+        "//builders/gcf/go116",
+        "//builders/gcp/base",
+    ],
+)
+
+package_group(
+    name = "java_builders",
+    packages = [
+        "//builders/gae/java11",
+        "//builders/gae/java17",
+        "//builders/gcf/java11",
+        "//builders/gcf/java17",
+        "//builders/gcp/base",
+    ],
+)
+
+package_group(
+    name = "nodejs_builders",
+    packages = [
+        "//builders/gae/nodejs10",
+        "//builders/gae/nodejs12",
+        "//builders/gae/nodejs14",
+        "//builders/gae/nodejs16",
+        "//builders/gcf/nodejs10",
+        "//builders/gcf/nodejs12",
+        "//builders/gcf/nodejs14",
+        "//builders/gcf/nodejs16",
+        "//builders/gcf/nodejs8",
+        "//builders/gcp/base",
+    ],
+)
+
+package_group(
+    name = "php_builders",
+    packages = [
+        "//builders/gae/php72",
+        "//builders/gae/php73",
+        "//builders/gae/php74",
+        "//builders/gcf/php74",
+        "//builders/gcp/base",
+    ],
+)
+
+package_group(
+    name = "python_builders",
+    packages = [
+        "//builders/gae/python37",
+        "//builders/gae/python38",
+        "//builders/gae/python39",
+        "//builders/gcf/python37",
+        "//builders/gcf/python38",
+        "//builders/gcf/python39",
+        "//builders/gcp/base",
+    ],
+)
+
+package_group(
+    name = "ruby_builders",
+    packages = [
+        "//builders/gae/ruby25",
+        "//builders/gae/ruby26",
+        "//builders/gae/ruby27",
+        "//builders/gae/ruby30",
+        "//builders/gcf/ruby26",
+        "//builders/gcf/ruby27",
+        "//builders/gcf/ruby30",
+        "//builders/gcp/base",
+    ],
+)
+
+package_group(
+    name = "function_builders",
+    packages = [
+        "//builders/gcf/dotnet3",
+        "//builders/gcf/go111",
+        "//builders/gcf/go113",
+        "//builders/gcf/go116",
+        "//builders/gcf/java11",
+        "//builders/gcf/java17",
+        "//builders/gcf/nodejs10",
+        "//builders/gcf/nodejs12",
+        "//builders/gcf/nodejs14",
+        "//builders/gcf/nodejs16",
+        "//builders/gcf/nodejs8",
+        "//builders/gcf/php74",
+        "//builders/gcf/python37",
+        "//builders/gcf/python38",
+        "//builders/gcf/python39",
+        "//builders/gcf/ruby26",
+        "//builders/gcf/ruby27",
+        "//builders/gcf/ruby30",
+    ],
+)

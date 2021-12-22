@@ -1,0 +1,15 @@
+/bin/
+/build/
+/.docker/
+/docker-compose.override.yml
+/.env
+/.env.test
+/vendor/
+
+# IDE integration
+/.idea/*
+!/.idea/*.iml
+!/.idea/externalDependencies.xml
+!/.idea/go.imports.xml
+!/.idea/modules.xml
+!/.idea/runConfigurations/

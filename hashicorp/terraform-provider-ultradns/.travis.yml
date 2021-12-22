@@ -1,0 +1,35 @@
+dist: trusty
+sudo: required
+services:
+- docker
+language: go
+go:
+  - "1.14.x"
+  - tip
+
+install:
+# This script is used by the Travis build to install a cookie for
+# go.googlesource.com so rate limits are higher when using `go get` to fetch
+# packages that live there.
+# See: https://github.com/golang/go/issues/12933
+- bash scripts/gogetcookie.sh
+
+script:
+- go mod tidy 
+- go mod vendor
+- make fmt
+- make test
+- make vet
+- make website-test
+- go test -timeout=30s -parallel=4 terraform-provider-ultradns terraform-provider-ultradns/ultradns -coverprofile=coverage.txt
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+
+branches:
+  only:
+  - master
+matrix:
+  fast_finish: true
+  allow_failures:
+  - go: tip

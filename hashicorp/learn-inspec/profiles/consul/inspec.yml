@@ -1,0 +1,25 @@
+---
+name: consul 
+title: Consul profile 
+maintainer: Zack Smith
+copyright: Hashicorp Inc.
+copyright_email: zsmith@hashicorp.com
+license: Apache-2.0
+summary: This profile runs syntax checks for markdown in the consul directory 
+version: 2.0.0
+depends:
+  - name: shared 
+    path: ../shared
+inputs:
+  - name: replacements 
+    type: hash 
+    value:
+      '<your-BIG-IP-mgmt-ip>': '10.1.2.3'
+      '<your-consul-ip>': '10.1.2.4'
+      '<your-BIG-IP-virtual-ip>': '10.1.2.5'
+      '<your-authorization-header>' : 'YWxhZGRpbjpvcGVuc2VzYW1l'
+  - name:  products_used
+    type: array
+    value: ['Consul','Consul Enterprise'] 
+  - name: files_to_check
+    value: []

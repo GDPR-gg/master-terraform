@@ -1,0 +1,481 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{842B003E-6EEB-429D-A3A1-53B4E642E83B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Google.Solutions.IapDesktop.Application</RootNamespace>
+    <AssemblyName>Google.Solutions.IapDesktop.Application</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+    <AssemblyVersionNumber>1.0.1.0</AssemblyVersionNumber>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <CodeAnalysisRuleSet>..\Google.Solutions.Common\Google.Solutions.Common.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <CodeAnalysisRuleSet>..\Google.Solutions.Common\Google.Solutions.Common.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Google.Apis, Version=1.52.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.1.52.0\lib\net45\Google.Apis.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Auth, Version=1.52.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Auth.1.52.0\lib\net461\Google.Apis.Auth.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Auth.PlatformServices, Version=1.52.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Auth.1.52.0\lib\net461\Google.Apis.Auth.PlatformServices.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.CloudResourceManager.v1, Version=1.52.0.2281, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.CloudResourceManager.v1.1.52.0.2281\lib\net45\Google.Apis.CloudResourceManager.v1.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Compute.v1, Version=1.52.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Compute.v1.1.52.0\lib\net45\Google.Apis.Compute.v1.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Core, Version=1.52.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Core.1.52.0\lib\net45\Google.Apis.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.PlatformServices, Version=1.52.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.1.52.0\lib\net45\Google.Apis.PlatformServices.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http.WebRequest" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WeifenLuo.WinFormsUI.Docking, Version=3.0.6.0, Culture=neutral, PublicKeyToken=5cded1a1a0a7b481, processorArchitecture=MSIL">
+      <HintPath>..\packages\DockPanelSuite.3.0.6\lib\net40\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
+    </Reference>
+    <Reference Include="WeifenLuo.WinFormsUI.Docking.ThemeVS2015, Version=3.0.6.0, Culture=neutral, PublicKeyToken=5cded1a1a0a7b481, processorArchitecture=MSIL">
+      <HintPath>..\packages\DockPanelSuite.ThemeVS2015.3.0.6\lib\net40\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Controls\BindableListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\BindableTreeView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ControlExtensions.cs" />
+    <Compile Include="Controls\ExceptionEventArgs.cs" />
+    <Compile Include="Controls\FontExtensions.cs" />
+    <Compile Include="Controls\ListViewExtensions.cs" />
+    <Compile Include="Controls\PropertyGridExtensions.cs" />
+    <Compile Include="Controls\RichTextBoxExtensions.cs" />
+    <Compile Include="Controls\ScreenPicker.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ScreenPicker.Designer.cs">
+      <DependentUpon>ScreenPicker.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SearchableList.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\SearchableList.Designer.cs">
+      <DependentUpon>SearchableList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TextBoxExtensions.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Host\CommandLineOptions.cs" />
+    <Compile Include="ObjectModel\BindingExtensions.cs" />
+    <Compile Include="ObjectModel\Command.cs" />
+    <Compile Include="ObjectModel\CommandContainer.cs" />
+    <Compile Include="ObjectModel\IServiceCategoryProvider.cs" />
+    <Compile Include="ObjectModel\ModelCachingViewModel.cs" />
+    <Compile Include="ObjectModel\ServiceAttribute.cs" />
+    <Compile Include="ObjectModel\ViewModelBase.cs" />
+    <Compile Include="Services\Adapters\AdapterException.cs" />
+    <Compile Include="Services\Adapters\CertificateStoreAdapter.cs" />
+    <Compile Include="Services\Adapters\ClientServiceInitializer.cs" />
+    <Compile Include="Services\Adapters\ComputeEngineAdapter.cs" />
+    <Compile Include="Services\Adapters\BuganizerAdapter.cs" />
+    <Compile Include="Services\Adapters\GithubAdapter.cs" />
+    <Compile Include="Services\Adapters\HttpProxyAdapter.cs" />
+    <Compile Include="Services\Adapters\IComputeEngineAdapter.cs" />
+    <Compile Include="Services\Adapters\InstanceExtensions.cs" />
+    <Compile Include="Services\Adapters\MetadataExtensions.cs" />
+    <Compile Include="Services\Adapters\OperatingSystems.cs" />
+    <Compile Include="Services\Adapters\Permissions.cs" />
+    <Compile Include="Services\Adapters\WindowsCredentialAdapter.cs" />
+    <Compile Include="Services\Adapters\ResourceManagerAdapter.cs" />
+    <Compile Include="Global.cs" />
+    <Compile Include="Services\Adapters\SerialPortStream.cs" />
+    <Compile Include="Services\ProjectModel\ProjectModelEvents.cs" />
+    <Compile Include="Services\ProjectModel\ProjectModelNodes.cs" />
+    <Compile Include="Services\ProjectModel\ProjectModelService.cs" />
+    <Compile Include="Services\SecureConnect\ChromeAutoSelectCertificateForUrlsPolicy.cs" />
+    <Compile Include="Services\SecureConnect\ChromeCertificateSelector.cs" />
+    <Compile Include="Services\SecureConnect\ChromePolicy.cs" />
+    <Compile Include="Services\SecureConnect\ChromePolicyUrlPattern.cs" />
+    <Compile Include="Services\SecureConnect\SecureConnectEnrollment.cs" />
+    <Compile Include="Services\Integration\SessionBroker.cs" />
+    <Compile Include="Services\Integration\EventService.cs" />
+    <Compile Include="Services\Integration\JobService.cs" />
+    <Compile Include="ObjectModel\ServiceRegistry.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Services\Settings\AppProtocolRegistry.cs" />
+    <Compile Include="Services\Settings\ApplicationSettingsRepository.cs" />
+    <Compile Include="Services\Settings\AuthSettingsRepository.cs" />
+    <Compile Include="Services\Settings\IProjectRepository.cs" />
+    <Compile Include="Services\Settings\ProjectRepository.cs" />
+    <Compile Include="Services\Settings\SettingRepositoryBase.cs" />
+    <Compile Include="Services\Settings\ToolWindowStateRepository.cs" />
+    <Compile Include="Settings\ISetting.cs" />
+    <Compile Include="Settings\PersistentSettingsCollection.cs" />
+    <Compile Include="Settings\RegistrySetting.cs" />
+    <Compile Include="Settings\SettingBase.cs" />
+    <Compile Include="Util\AsyncLock.cs" />
+    <Compile Include="Util\ByteSizeFormatter.cs" />
+    <Compile Include="Util\Disposable.cs" />
+    <Compile Include="Util\EventArgs.cs" />
+    <Compile Include="Util\StringExtensions.cs" />
+    <Compile Include="Util\TypographicQuotes.cs" />
+    <Compile Include="Views\Authentication\DeviceFlyoutViewModel.cs" />
+    <Compile Include="Views\Authentication\UserFlyoutViewModel.cs" />
+    <Compile Include="Views\Authentication\DeviceFlyoutWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\Authentication\DeviceFlyoutWindow.Designer.cs">
+      <DependentUpon>DeviceFlyoutWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Authentication\UserFlyoutWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\Authentication\UserFlyoutWindow.Designer.cs">
+      <DependentUpon>UserFlyoutWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CloudConsoleService.cs" />
+    <Compile Include="Services\Adapters\IAuthorizationAdapter.cs" />
+    <Compile Include="Controls\FlatListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Views\Diagnostics\DebugFullScreenPane.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\Diagnostics\DebugFullScreenPane.Designer.cs">
+      <DependentUpon>DebugFullScreenPane.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Diagnostics\DebugFocusWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\Diagnostics\DebugFocusWindow.Designer.cs">
+      <DependentUpon>DebugFocusWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Dialog\ConfirmationDialog.cs" />
+    <Compile Include="Views\Diagnostics\DebugDockingWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\Diagnostics\DebugDockingWindow.Designer.cs">
+      <DependentUpon>DebugDockingWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Diagnostics\DebugProjectExplorerTrackingViewModel.cs" />
+    <Compile Include="Views\Diagnostics\DebugProjectExplorerTrackingWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\Diagnostics\DebugProjectExplorerTrackingWindow.Designer.cs">
+      <DependentUpon>DebugProjectExplorerTrackingWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\FlatVerticalTabControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Util\HtmlClipboardFormat.cs" />
+    <Compile Include="Util\IIapUrlHandler.cs" />
+    <Compile Include="Views\Dialog\UnsafeNativeMethods.cs" />
+    <Compile Include="Views\DocumentWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\FlyoutWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\FlyoutWindow.Designer.cs">
+      <DependentUpon>FlyoutWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\HelpService.cs" />
+    <Compile Include="Views\Options\ScreenOptionsViewModel.cs" />
+    <Compile Include="Views\Options\ScreenOptionsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\Options\ScreenOptionsControl.Designer.cs">
+      <DependentUpon>ScreenOptionsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Options\GeneralOptionsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\Options\GeneralOptionsControl.Designer.cs">
+      <DependentUpon>GeneralOptionsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Options\GeneralOptionsViewModel.cs" />
+    <Compile Include="Views\Options\OptionsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\Options\NetworkOptionsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\Options\NetworkOptionsControl.Designer.cs">
+      <DependentUpon>NetworkOptionsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Options\NetworkOptionsViewModel.cs" />
+    <Compile Include="Views\ProjectExplorer\ProjectExplorerTrackingToolWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\ProjectExplorer\ProjectExplorerViewModel.cs" />
+    <Compile Include="Views\ProjectPicker\ProjectList.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\ProjectPicker\ProjectPickerViewModel.cs" />
+    <Compile Include="Views\ProjectPicker\ProjectPickerWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\ProjectPicker\ProjectPickerWindow.Designer.cs">
+      <DependentUpon>ProjectPickerWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Properties\IPropertiesDialogPane.cs" />
+    <Compile Include="Views\Properties\IPropertiesInspectorViewModel.cs" />
+    <Compile Include="Views\Properties\PropertiesDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\Properties\PropertiesDialog.Designer.cs">
+      <DependentUpon>PropertiesDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Properties\PropertiesInspectorWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\Properties\PropertiesInspectorWindow.Designer.cs">
+      <DependentUpon>PropertiesInspectorWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Properties\SettingsCollectionTypeDescriptor.cs" />
+    <Compile Include="Views\SlowLoadingPane.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\SlowLoadingPane.Designer.cs">
+      <DependentUpon>SlowLoadingPane.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Dialog\TaskDialog.cs" />
+    <Compile Include="Services\UpdateService.cs" />
+    <Compile Include="ApplicationTraceSources.cs" />
+    <Compile Include="Util\LeastRecentlyUsedCache.cs" />
+    <Compile Include="Util\RangeObservableCollection.cs" />
+    <Compile Include="Util\SecureStringExtensions.cs" />
+    <Compile Include="Util\IapRdpUrl.cs" />
+    <Compile Include="Views\About\AboutWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\About\AboutWindow.Designer.cs">
+      <DependentUpon>AboutWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Diagnostics\DebugJobServiceWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\Diagnostics\DebugJobServiceWindow.Designer.cs">
+      <DependentUpon>DebugJobServiceWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Dialog\ExceptionDialog.cs" />
+    <Compile Include="Views\IMainForm.cs" />
+    <Compile Include="Views\ProjectExplorer\IProjectExplorer.cs" />
+    <Compile Include="Services\ProjectModel\IProjectModelNode.cs" />
+    <Compile Include="Views\ProjectExplorer\ProjectExplorerWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\ProjectExplorer\ProjectExplorerWindow.Designer.cs">
+      <DependentUpon>ProjectExplorerWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ThemeColors.cs" />
+    <Compile Include="Views\ToolWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\ToolWindow.Designer.cs">
+      <DependentUpon>ToolWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UiColors.cs" />
+    <Compile Include="Views\UnsafeNativeMethods.cs" />
+    <Compile Include="Views\WaitDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\WaitDialog.Designer.cs">
+      <DependentUpon>WaitDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Util\SingletonApplicationBase.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Google.Solutions.Common\Google.Solutions.Common.csproj">
+      <Project>{fb4c6f4d-32b1-4b0b-ba79-fd47fc4d7912}</Project>
+      <Name>Google.Solutions.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Google.Solutions.IapTunneling\Google.Solutions.IapTunneling.csproj">
+      <Project>{d9493479-1751-402b-880f-60ed33ebb885}</Project>
+      <Name>Google.Solutions.IapTunneling</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <EmbeddedResource Include="Controls\ScreenPicker.resx">
+      <DependentUpon>ScreenPicker.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\About.rtf" />
+    <None Include="packages.config" />
+    <None Include="Services\Adapters\README.md" />
+    <None Include="Services\Integration\README.md" />
+    <None Include="Views\README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Controls\SearchableList.resx">
+      <DependentUpon>SearchableList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\About\AboutWindow.resx">
+      <DependentUpon>AboutWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\Authentication\DeviceFlyoutWindow.resx">
+      <DependentUpon>DeviceFlyoutWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\Authentication\UserFlyoutWindow.resx">
+      <DependentUpon>UserFlyoutWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\Diagnostics\DebugDockingWindow.resx">
+      <DependentUpon>DebugDockingWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\Diagnostics\DebugFocusWindow.resx">
+      <DependentUpon>DebugFocusWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\Diagnostics\DebugFullScreenPane.resx">
+      <DependentUpon>DebugFullScreenPane.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\Diagnostics\DebugProjectExplorerTrackingWindow.resx">
+      <DependentUpon>DebugProjectExplorerTrackingWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\Diagnostics\DebugJobServiceWindow.resx">
+      <DependentUpon>DebugJobServiceWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\FlyoutWindow.resx">
+      <DependentUpon>FlyoutWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\Options\ScreenOptionsControl.resx">
+      <DependentUpon>ScreenOptionsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\Options\GeneralOptionsControl.resx">
+      <DependentUpon>GeneralOptionsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\Options\NetworkOptionsControl.resx">
+      <DependentUpon>NetworkOptionsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\ProjectPicker\ProjectPickerWindow.resx">
+      <DependentUpon>ProjectPickerWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\Properties\PropertiesDialog.resx">
+      <DependentUpon>PropertiesDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\Properties\PropertiesInspectorWindow.resx">
+      <DependentUpon>PropertiesInspectorWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\SlowLoadingPane.resx">
+      <DependentUpon>SlowLoadingPane.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\ProjectExplorer\ProjectExplorerWindow.resx">
+      <DependentUpon>ProjectExplorerWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\ToolWindow.resx">
+      <DependentUpon>ToolWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\WaitDialog.resx">
+      <DependentUpon>WaitDialog.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\About.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Spinner.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Project.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Project_small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Copy_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Connect_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Password_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Log_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Settings_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Refresh_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Refresh_161.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Search_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\logo.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Computer_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ComputerTerminal_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ComputerTerminal_161.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\MSBuild.AssemblyVersion.1.3.0\build\MSBuild.AssemblyVersion.targets" Condition="Exists('..\packages\MSBuild.AssemblyVersion.1.3.0\build\MSBuild.AssemblyVersion.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\MSBuild.AssemblyVersion.1.3.0\build\MSBuild.AssemblyVersion.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSBuild.AssemblyVersion.1.3.0\build\MSBuild.AssemblyVersion.targets'))" />
+  </Target>
+</Project>

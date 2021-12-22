@@ -1,0 +1,107 @@
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Sample data to pre-populate unicodex with
+# Run with: ./manage.py loaddata sampledata
+# 
+# Sample data can be exported with
+# ./manage.py dumpdata unicodex --format yaml
+
+
+# Vendors
+
+- model: unicodex.vendor
+  pk: 1
+  fields:
+    name: Twitter
+- model: unicodex.vendor
+  pk: 4
+  fields:
+    name: Google
+- model: unicodex.vendor
+  pk: 5
+  fields:
+    name: JoyPixels
+- model: unicodex.vendor
+  pk: 6
+  fields:
+    name: OpenMoji
+
+# Vendor Versions
+
+- model: unicodex.vendorversion
+  pk: 1
+  fields:
+    name: Twemoji 1.0
+    vendor: 1
+- model: unicodex.vendorversion
+  pk: 7
+  fields:
+    name: Android 10.0
+    vendor: 4
+- model: unicodex.vendorversion
+  pk: 8
+  fields:
+    name: Android 7.0
+    vendor: 4
+- model: unicodex.vendorversion
+  pk: 9
+  fields:
+    name: Android 4.3
+    vendor: 4
+- model: unicodex.vendorversion
+  pk: 10
+  fields:
+    name: Android 4.4
+    vendor: 4
+- model: unicodex.vendorversion
+  pk: 11
+  fields:
+    name: Twemoji 2.0
+    vendor: 1
+- model: unicodex.vendorversion
+  pk: 12
+  fields:
+    name: Twemoji 2.5
+    vendor: 1
+- model: unicodex.vendorversion
+  pk: 13
+  fields:
+    name: '2.0'
+    vendor: 5
+- model: unicodex.vendorversion
+  pk: 14
+  fields:
+    name: '2.1'
+    vendor: 5
+- model: unicodex.vendorversion
+  pk: 15
+  fields:
+    name: '3.0'
+    vendor: 5
+- model: unicodex.vendorversion
+  pk: 16
+  fields:
+    name: '12.0'
+    vendor: 6
+
+# Codepoints
+
+- model: unicodex.codepoint
+  pk: 1
+  fields:
+    name: Waving
+    description: 'Oh hi!'
+    codepoint: 1F44B
+    emojipedia_name: waving-hand-sign

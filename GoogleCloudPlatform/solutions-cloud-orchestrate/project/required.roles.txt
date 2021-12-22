@@ -1,0 +1,7 @@
+roles/pubsub.publisher 
+roles/errorreporting.writer 
+projects/PLACEHOLDER_ORCHESTRATE_PROJECT/roles/orchestrate.securityAdmin
+roles/cloudkms.cryptoKeyEncrypterDecrypter
+roles/cloudkms.admin
+roles/compute.admin
+roles/deploymentmanager.editor

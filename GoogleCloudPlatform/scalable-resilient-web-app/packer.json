@@ -1,0 +1,32 @@
+{
+  "variables": {
+    "git_commit": "",
+    "git_branch": "",
+    "account_file": "",
+    "project_id": "null"
+  },
+  "builders": [
+    {
+      "type": "googlecompute",
+      "account_file": "{{user `account_file`}}",
+      "project_id": "{{user `project_id`}}",
+      "source_image": "ubuntu-1404-trusty-v20151113",
+      "zone": "us-central1-a",
+      "ssh_username": "root",
+      "image_name": "redmine-{{timestamp}}-{{user `git_branch`}}-{{user `git_commit`}}"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "chef-solo",
+      "install_command": "apt-get update && apt-get install -y curl && curl -L https://www.opscode.com/chef/install.sh | {{if .Sudo}}sudo{{end}} bash",
+      "cookbook_paths": ["chef/site-cookbooks"],
+      "run_list": [
+        "recipe[rails-sample]",
+        "recipe[rails-sample::user]",
+        "recipe[rails-sample::ruby]",
+        "recipe[rails-sample::app]"
+      ]
+    }
+  ]
+}

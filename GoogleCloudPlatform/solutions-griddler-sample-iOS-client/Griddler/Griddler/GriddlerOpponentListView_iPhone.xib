@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="4510" systemVersion="13A603" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+    <dependencies>
+        <deployment defaultVersion="1552" identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3742"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="GriddlerOpponentListViewController">
+            <connections>
+                <outlet property="listFilterSegmentControl" destination="34" id="52"/>
+                <outlet property="noOpponentsImageView" destination="62" id="114"/>
+                <outlet property="noOpponentsText" destination="93" id="115"/>
+                <outlet property="tableView" destination="23" id="28"/>
+                <outlet property="tableViewSpaceToTopConstraint" destination="27" id="117"/>
+                <outlet property="view" destination="1" id="3"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="1">
+            <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="23">
+                    <rect key="frame" x="0.0" y="44" width="320" height="460"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <connections>
+                        <outlet property="dataSource" destination="-1" id="29"/>
+                        <outlet property="delegate" destination="-1" id="30"/>
+                    </connections>
+                </tableView>
+                <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="fill" contentVerticalAlignment="fill" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="34">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="43" id="47"/>
+                        <constraint firstAttribute="width" constant="320" id="gpJ-Kd-6e6"/>
+                        <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="43" id="zhW-1C-85h"/>
+                    </constraints>
+                    <segments>
+                        <segment title="YOUR CIRCLES"/>
+                        <segment title="EVERYONE"/>
+                    </segments>
+                    <connections>
+                        <action selector="listFilterSegmentValueChanged:" destination="-1" eventType="valueChanged" id="53"/>
+                    </connections>
+                </segmentedControl>
+                <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" image="Empty.png" translatesAutoresizingMaskIntoConstraints="NO" id="62">
+                    <rect key="frame" x="104" y="102" width="112" height="112"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                </imageView>
+                <label hidden="YES" opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="No opponents found" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="93">
+                    <rect key="frame" x="0.0" y="234" width="320" height="21"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="23" firstAttribute="leading" secondItem="1" secondAttribute="leading" id="24"/>
+                <constraint firstItem="23" firstAttribute="trailing" secondItem="1" secondAttribute="trailing" id="25"/>
+                <constraint firstItem="23" firstAttribute="bottom" secondItem="1" secondAttribute="bottom" id="26"/>
+                <constraint firstItem="23" firstAttribute="top" secondItem="1" secondAttribute="top" constant="44" id="27"/>
+                <constraint firstItem="34" firstAttribute="top" secondItem="1" secondAttribute="top" id="36"/>
+                <constraint firstItem="34" firstAttribute="leading" secondItem="1" secondAttribute="leading" id="39"/>
+                <constraint firstItem="62" firstAttribute="top" secondItem="1" secondAttribute="top" constant="102" id="75"/>
+                <constraint firstItem="93" firstAttribute="top" secondItem="62" secondAttribute="bottom" constant="20" id="95"/>
+                <constraint firstItem="93" firstAttribute="trailing" secondItem="1" secondAttribute="trailing" id="98"/>
+                <constraint firstItem="93" firstAttribute="leading" secondItem="1" secondAttribute="leading" id="99"/>
+                <constraint firstItem="93" firstAttribute="centerX" secondItem="62" secondAttribute="centerX" id="100"/>
+                <constraint firstAttribute="trailing" secondItem="34" secondAttribute="trailing" id="6Ww-89-GBw"/>
+            </constraints>
+            <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
+            <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" translucent="NO" prompted="NO"/>
+            <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="Empty.png" width="112" height="112"/>
+    </resources>
+</document>

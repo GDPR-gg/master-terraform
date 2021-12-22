@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: echomap
+  namespace: myns
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /foo
+        backend:
+          serviceName: echoheadersx
+          servicePort: 80
+  backend:
+    serviceName: echoheadersx
+    servicePort: 80

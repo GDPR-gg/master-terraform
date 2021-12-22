@@ -1,0 +1,25 @@
+{
+  "hosting": {
+    "site": "easy-ai-serverless",
+    "public": "public",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+        {
+            "source": "/request/**",
+            "destination": "/request.html"
+        },
+        {
+            "source": "/admin",
+            "destination": "/admin.html"
+        },
+        {
+            "source": "/admin/**",
+            "destination": "/admin.html"
+        }
+    ]
+  }
+}

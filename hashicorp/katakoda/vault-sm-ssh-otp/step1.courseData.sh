@@ -1,0 +1,1 @@
+ufw allow 8200/tcp

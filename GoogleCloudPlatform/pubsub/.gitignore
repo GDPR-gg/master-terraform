@@ -1,0 +1,15 @@
+target
+bin
+data
+.classpath
+.idea
+.project
+.settings
+*.iml
+*.out
+.metadata
+*.pyc
+node_modules/
+venv/
+.DS_Store
+.idea/

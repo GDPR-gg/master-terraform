@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+import "ulid.proto";
+import "timestamp.proto";
+import "label.proto";
+import "account.proto";
+
+package pb;
+
+message FlowStream {
+  ULID flow_id = 1;
+  ULID hub_id = 2;
+  ULID agent_id = 3;
+  ULID service_id = 4;
+  Account account = 5;
+  LabelSet labels = 6;
+
+  Timestamp started_at = 10;
+  Timestamp ended_at = 11;
+
+  int64 num_messages = 12;
+  int64 num_bytes = 13;
+
+  int64 duration = 14;
+}
+
+message FlowRecord {
+  message AgentConnection {
+    ULID hub_id = 1;
+    ULID agent_id = 2;
+    Account account = 3;
+
+    Timestamp started_at = 10;
+    Timestamp ended_at = 11;
+
+    int32 num_services = 12;
+    int64 active_streams = 13;
+  }
+
+  AgentConnection agent = 1;
+
+  FlowStream stream = 2;
+
+  message HubStats {
+    ULID hub_id = 1;
+    int64 active_agents = 2;
+    int64 total_agents = 3;
+    int64 services = 4;
+  }
+
+  HubStats hub_stats = 3;
+}
+
+message FlowTopSnapshot {
+  repeated FlowStream records = 1;
+}
+
+message FlowTopRequest {
+  int32 max_records = 1;
+}
+
+service FlowTopReporter {
+  rpc CurrentFlowTop(FlowTopRequest) returns (FlowTopSnapshot) {}
+}

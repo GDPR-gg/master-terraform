@@ -1,0 +1,10 @@
+func (todo *TODO) PostTODO(ctx context.Context) (*client.TODO, *WriteMeta, error) {
+	request := todo.TODOApi().TODO(todo.client.Ctx)
+	result, meta, err := a.client.ExecWrite(ctx, request)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	final := result.(client.TODO)
+	return &final, meta, nil
+}
